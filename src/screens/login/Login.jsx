@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { SlLogin } from "react-icons/sl";
-import { FaFacebookF, FaApple, FaGoogle } from "react-icons/fa";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai"; // Eye icons
+
+// Importing social login components
+import GoogleLoginComponent from "./components/GoogleLoginComponent";
+import FacebookLoginComponent from "./components/FacebookLoginComponent";
+import AppleLoginComponent from "./components/AppleLoginComponent";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
@@ -68,11 +72,14 @@ const Login = () => {
           <div className="w-[40%] h-[1px] bg-gray-300"></div>
         </div>
 
-        {/* Social Login Icons */}
+        {/* Social Login Components */}
         <div className="flex space-x-4 my-6">
-          <FaFacebookF className="w-10 h-10 p-2 text-blue-700 bg-gray-100 rounded-full shadow-lg cursor-pointer" />
-          <FaApple className="w-10 h-10 p-2 bg-gray-100 rounded-full shadow-lg cursor-pointer" />
-          <FaGoogle className="w-10 h-10 p-2 text-red-500 bg-gray-100 rounded-full shadow-lg cursor-pointer" />
+          {/* Google Login */}
+          <GoogleLoginComponent />
+          {/* Facebook Login */}
+          <FacebookLoginComponent />
+          {/* Apple Login */}
+          {/* <AppleLoginComponent /> */}
         </div>
       </div>
     </div>
