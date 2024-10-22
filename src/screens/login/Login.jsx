@@ -16,7 +16,7 @@ const Login = () => {
 
   return (
     <div className="w-full min-h-screen flex justify-center items-center bg-gray-100">
-      <div className="h-[80vh] w-[40%] bg-white rounded-lg shadow-[0px_4px_100px_rgba(0,0,0,0.18)] flex flex-col justify-between items-center p-8">
+      <div className="h-[70vh] w-[35%] bg-white rounded-lg shadow-[0px_4px_100px_rgba(0,0,0,0.18)] flex flex-col justify-between items-center p-8">
         {/* Icon Section */}
         <div className="rounded-lg shadow-[0px_4px_20px_rgba(0,0,0,0.40)] h-auto w-[12%] p-5 flex justify-center items-center">
           <SlLogin className="text-4xl" />
