@@ -2,6 +2,7 @@ import React from 'react';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from 'react-router-dom';
+import { google_login } from '../../../api/Api';
 
 const GoogleLoginComponent = () => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ const GoogleLoginComponent = () => {
       console.log('Decoded Token:', decodedToken);
 
       // Send the token to your backend for verification and session creation
-      const res = await fetch('http://localhost:3000/api/v1/auth/google-login', {
+      const res = await fetch(google_login, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
