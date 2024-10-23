@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { SlLogin } from "react-icons/sl";
-import { FaFacebookF, FaApple, FaGoogle } from "react-icons/fa";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai"; // Eye icons
+
+// Importing social login components
+import GoogleLoginComponent from "./components/GoogleLoginComponent";
+import FacebookLoginComponent from "./components/FacebookLoginComponent";
+import AppleLoginComponent from "./components/AppleLoginComponent";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
@@ -12,9 +16,9 @@ const Login = () => {
 
   return (
     <div className="w-full min-h-screen flex justify-center items-center bg-gray-100">
-      <div className="h-[80vh] w-[40%] bg-white rounded-lg shadow-[0px_4px_100px_rgba(0,0,0,0.18)] flex flex-col justify-between items-center p-8">
+      <div className="h-[70vh] w-[30%] bg-white rounded-lg shadow-[10px_4px_100px_rgba(0,0,0,0.18)] flex flex-col justify-between items-center p-2">
         {/* Icon Section */}
-        <div className="rounded-lg shadow-[0px_4px_20px_rgba(0,0,0,0.40)] h-auto w-[12%] p-5 flex justify-center items-center">
+        <div className="rounded-lg shadow-[0px_4px_20px_rgba(0,0,0,0.40)] h-auto w-[12%] p-5 mt-5 flex justify-center items-center">
           <SlLogin className="text-4xl" />
         </div>
 
@@ -23,7 +27,7 @@ const Login = () => {
 
         {/* Form Section */}
         <div className="w-full flex flex-col items-center space-y-4">
-          {/* Email Input */}
+          
           <div className="w-[80%]">
             <input
               type="text"
@@ -50,13 +54,13 @@ const Login = () => {
 
           {/* Forgot Password */}
           <div className="w-[80%] text-right">
-            <a href="#" className="text-sm text-blue-500 hover:underline">
+            <a href="#" className="text-sm text-[#5D5FEF] hover:underline">
               Forgot Password?
             </a>
           </div>
 
           {/* Get Started Button */}
-          <button className="w-[80%] bg-blue-600 text-white py-3 rounded-md text-lg font-semibold shadow-lg">
+          <button className="w-[80%] bg-[#5D5FEF] text-white py-3 rounded-md text-lg font-semibold shadow-lg">
             Get Started
           </button>
         </div>
@@ -68,11 +72,14 @@ const Login = () => {
           <div className="w-[40%] h-[1px] bg-gray-300"></div>
         </div>
 
-        {/* Social Login Icons */}
+        {/* Social Login Components */}
         <div className="flex space-x-4 my-6">
-          <FaFacebookF className="w-10 h-10 p-2 text-blue-700 bg-gray-100 rounded-full shadow-lg cursor-pointer" />
-          <FaApple className="w-10 h-10 p-2 bg-gray-100 rounded-full shadow-lg cursor-pointer" />
-          <FaGoogle className="w-10 h-10 p-2 text-red-500 bg-gray-100 rounded-full shadow-lg cursor-pointer" />
+          {/* Google Login */}
+          <GoogleLoginComponent />
+          {/* Facebook Login */}
+          <FacebookLoginComponent />
+          {/* Apple Login */}
+          {/* <AppleLoginComponent /> */}
         </div>
       </div>
     </div>
