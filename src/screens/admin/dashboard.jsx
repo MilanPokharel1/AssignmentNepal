@@ -6,10 +6,7 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Clear the token from local storage
     localStorage.removeItem('token');
-
-    // Navigate back to the login page
     navigate('/');
   };
   return (
@@ -31,7 +28,7 @@ const AdminDashboard = () => {
               <a href="#" className="block px-4 py-2">Settings</a>
             </li>
             <li className="hover:bg-gray-200">
-            <a onClick={handleLogout} className="block px-4 py-2">Logout</a>
+              <a onClick={handleLogout} className="block px-4 py-2">Logout</a>
             </li>
           </ul>
         </nav>

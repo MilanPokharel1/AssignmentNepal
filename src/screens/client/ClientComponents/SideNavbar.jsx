@@ -1,5 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
+
 import { NavLink } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
+
+
 import {
   FaClipboardList,
   FaWallet,
@@ -11,12 +15,23 @@ import logo from "../../../assets/random-logo.png";
 import { RiPieChart2Fill } from "react-icons/ri";
 
 const SideNavbar = () => {
+  const navigate = useNavigate();
+
+
   const linkStyles =
     "flex items-center space-x-4 pl-6 text-gray-600 transition-all duration-300 ease-in-out py-2"; // Base link styles
   const activeLinkStyles = "bg-[#5d5fef] text-white rounded-md py-2"; // Styles for active link without enlargement
   const dashboardActiveStyles =
     "bg-[#5d5fef] text-white font-medium rounded-md py-2 text-xl transform scale-105"; // Enlarged style for Dashboard only
 
+
+
+  const handleLogout = () => {
+    // Clear the token from local storage
+    localStorage.removeItem('token');
+    // Navigate back to the login page
+    navigate('/');
+  };
   return (
     <div className="h-full w-full bg-white flex flex-col p-6 shadow-xl drop-shadow-lg">
       {/* Logo Section */}
@@ -87,7 +102,7 @@ const SideNavbar = () => {
         <div className="mt-5 pl-7">
           <button className="flex items-center space-x-4 text-gray-700 hover:text-red-600 transition">
             <FaSignOutAlt className="w-5 h-5" />
-            <span>Sign Out</span>
+            <span onClick={handleLogout}>Sign Out</span>
           </button>
         </div>
       </div>
