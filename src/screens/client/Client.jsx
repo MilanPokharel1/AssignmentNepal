@@ -10,7 +10,7 @@ const Client = () => {
       </div>
       <div className="flex flex-1 flex-col ml-[20%]">
         <div className="h-[4rem]">
-          <TopNavbar notificationCount={99} userName="Dhananjaya" />
+          <TopNavbar notificationCount={19} userName="Dhananjaya" />
         </div>
         <Outlet />
       </div>

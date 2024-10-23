@@ -7,7 +7,7 @@ import {
   FaCog,
   FaSignOutAlt,
 } from "react-icons/fa";
-import logo from "../../../../public/assets/random-logo.png";
+import logo from "../../../assets/random-logo.png";
 import { RiPieChart2Fill } from "react-icons/ri";
 
 const SideNavbar = () => {
