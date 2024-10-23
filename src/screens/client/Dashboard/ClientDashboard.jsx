@@ -95,7 +95,6 @@ const Dashboard = () => {
       dueDate: "Oct 10",
       writer: { name: "Jane Cooper", avatar: profileIcon },
     },
-    
   ];
 
   const handleFilterChange = (filter) => {
@@ -108,14 +107,13 @@ const Dashboard = () => {
       : assignments.filter((a) => a.status === activeFilter);
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <div className="h-[4rem]">
-        <TopNavbar notificationCount={99} userName="Dhananjaya" />
+    <div className="min-h-screen flex">
+      <div className="w-[15%] h-[calc(100vh-4rem)] bg-gray-50">
+        <SideNavbar />
       </div>
-
-      <div className="flex flex-1">
-        <div className="w-[15%] h-[calc(100vh-4rem)] bg-gray-50">
-          <SideNavbar />
+      <div className="flex flex-1 flex-col">
+        <div className="h-[4rem]">
+          <TopNavbar notificationCount={99} userName="Dhananjaya" />
         </div>
 
         <div className="flex-1 p-6">

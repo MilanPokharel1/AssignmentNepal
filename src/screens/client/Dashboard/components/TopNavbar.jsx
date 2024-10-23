@@ -5,7 +5,7 @@ import { MdOutlineNotifications } from "react-icons/md";
 
 const TopNavbar = ({ notificationCount = 0, userName = "Dhananjaya" }) => {
   return (
-    <nav className="w-full bg-white px-5 py-4 flex items-center justify-between mx-auto">
+    <nav className="w-full bg-white px-5 py-4 flex items-center justify-between ">
       <div className="text-xl font-semibold">Dashboard</div>
 
       <div className="flex items-center space-x-4">
