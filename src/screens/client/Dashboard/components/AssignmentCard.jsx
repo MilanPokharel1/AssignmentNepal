@@ -31,8 +31,9 @@ const AssignmentCard = ({ status, title, payment, dueDate, writer }) => {
       </div>
 
       {/* Writer and Due Date Section */}
-      <div className="mt-4 flex justify-between items-center">
+      <div className="mt-4">
         <div className="flex items-center space-x-2">
+          <span>Writer:</span>
           <img
             src={writer.avatar}
             alt="Writer"
@@ -41,6 +42,8 @@ const AssignmentCard = ({ status, title, payment, dueDate, writer }) => {
           <span className="text-sm font-medium">{writer.name}</span>
         </div>
         <span className="text-xs text-gray-500">Due: {dueDate}</span>
+        <br/>
+        <span className="hover:text-blue-700 cursor-pointer">See More →</span>
       </div>
     </div>
   );
