@@ -10,7 +10,7 @@ const FilterButtons = ({ activeFilter, onFilterChange }) => {
           key={button}
           className={`px-4 py-2 rounded-lg ${
             activeFilter === button
-              ? "bg-blue-500 text-white"
+              ? "bg-[#5d5fef] text-white"
               : "bg-gray-100 text-gray-700"
           } transition-colors`}
           onClick={() => onFilterChange(button)}

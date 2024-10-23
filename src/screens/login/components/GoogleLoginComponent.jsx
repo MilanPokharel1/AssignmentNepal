@@ -39,7 +39,7 @@ const GoogleLoginComponent = () => {
       // Save the JWT token received from the backend to local storage or state management
       localStorage.setItem('token', data.token);
 
-      navigate(`/${data.user.role}-dashboard`);
+      navigate(`/${data.user.role}`);
       // Redirect user or perform other actions as needed
     } catch (error) {
       console.error('Error during login process:', error);

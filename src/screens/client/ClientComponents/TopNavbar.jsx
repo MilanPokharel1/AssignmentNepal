@@ -1,6 +1,6 @@
 import React from "react";
-import profileImage from "../components/profile-picture.jpeg";
-import profileIcon from "../components/profileIcon.jpg";
+import profileImage from "../ClientComponents/profile-picture.jpeg";
+import profileIcon from "../ClientComponents/profileIcon.jpg";
 import { MdOutlineNotifications } from "react-icons/md";
 
 const TopNavbar = ({ notificationCount = 0, userName = "Dhananjaya" }) => {
