@@ -79,7 +79,9 @@ const Login = () => {
           {/* Facebook Login */}
           <FacebookLoginComponent />
           {/* Apple Login */}
-          {/* <AppleLoginComponent /> */}
+          {/* <AppleLoginComponent /> */
+          //https://assignment-nepal-backend-production.up.railway.app/api/v1/
+          }
         </div>
       </div>
     </div>
