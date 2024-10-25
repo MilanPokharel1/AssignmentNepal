@@ -1,7 +1,7 @@
 import React from "react";
 
 const FilterButtons = ({ activeFilter, onFilterChange }) => {
-  const buttons = ["All", "Ongoing", "Completed", "Pending"];
+  const buttons = ["All","Pending","Approved", "Ongoing","Submitted", "Completed"];
 
   return (
     <div className="flex gap-4 mt-4">

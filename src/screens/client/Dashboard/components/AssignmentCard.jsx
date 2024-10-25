@@ -21,22 +21,34 @@ const AssignmentCard = ({
 
     return percentage.toFixed(0);
   };
+
   const percentage = calculatePercentage(totalAmount, paidAmount);
+
+  // Function to determine progress bar color based on percentage
+  const getProgressColor = () => {
+    if (percentage < 50) return "-red-500";
+    if (percentage < 80) return "-orange-500";
+    return "-green-500";
+  };
 
   // Status styling
   const statusColors = {
-    ongoing: "bg-orange-100 text-orange-600",
+    ongoing: "bg-yellow-200 text-yellow-600",
+    submitted: "bg-purple-200 text-purple-600",
     completed: "bg-green-100 text-green-600",
-    pending: "bg-yellow-100 text-yellow-600",
+    pending: "bg-orange-100 text-orange-600",
+    approved: "bg-gray-300 text-gray-600",
   };
+
   const handlePay = () => {
     console.log("pay", id);
   };
   const handleView = () => {
     console.log("view", id);
   };
+
   return (
-    <div className="p-4 bg-white rounded-lg shadow-2xl w-[40%] drop-shadow-2xl ">
+    <div className="p-4 bg-white rounded-lg shadow-2xl w-[40%] drop-shadow-2x2 ">
       {/* Title and Status */}
       <div className="mb-4 flex justify-between items-start">
         <div className="flex items-start">
@@ -76,14 +88,17 @@ const AssignmentCard = ({
       </div>
 
       {/* Payment Progress */}
-      <div className="relative pt-2 mb-4">
-        <div className="w-full bg-gray-200 rounded-full h-2">
+      <div className="relative flex items-center pt-2 mb-4">
+        <div className="text-sm block text-gray-600 mr-2">Payment(%):</div>
+        <div className="w-full bg-gray-200 rounded-full h-2 align-middle items-center">
           <div
-            className="bg-orange-500 h-2 rounded-full transition-all duration-300"
+            className={`bg${getProgressColor()} h-2 rounded-full transition-all duration-300`}
             style={{ width: `${percentage}%` }}
           />
         </div>
-        <span className="absolute right-0 -top-4 text-sm text-orange-500">
+        <span
+          className={`absolute right-0 -top-4 text-sm text${getProgressColor()}`}
+        >
           {percentage}%
         </span>
       </div>
@@ -108,16 +123,16 @@ const AssignmentCard = ({
         {/* Action Buttons */}
         <div className="flex gap-2">
           <button
-            className="px-3 py-1 text-sm text-white bg-purple-500 hover:bg-purple-600 rounded-md transition-colors"
-            onClick={handlePay}
-          >
-            Pay
-          </button>
-          <button
-            className="px-3 py-1 text-sm text-purple-500 hover:bg-purple-50 rounded-md transition-colors"
+            className="px-3 py-1 text-sm text-white bg-[#9E9FEE] hover:bg-purple-400 rounded-md transition-colors"
             onClick={handleView}
           >
             View
+          </button>
+          <button
+            className="px-3 py-1 text-sm text-white bg-[#5d5fef] hover:[#5d5feg] rounded-md transition-colors"
+            onClick={handlePay}
+          >
+            Pay
           </button>
         </div>
       </div>

@@ -10,6 +10,15 @@ const Dashboard = () => {
 
   const assignments = [
     {
+      id: 3,
+      title: "Regarding project management of my homework",
+      status: "Pending",
+      totalAmount: "Rs 5000",
+      paidAmount: "Rs 1000",
+      dueDate: "Oct 8",
+      writer: { name: "Jane Cooper", avatar: profileIcon },
+    },
+    {
       id: 1,
       title: "Regarding project management of my homework",
       status: "Ongoing",
@@ -18,21 +27,23 @@ const Dashboard = () => {
       dueDate: "Oct 8",
       writer: { name: "Jane Cooper", avatar: profileIcon },
     },
-    {
-      id: 2,
-      title: "Regarding project management of my homework",
-      status: "Completed",
-      totalAmount: "NRs 5000",
-      paidAmount: "NRs 3000",
-      dueDate: "Oct 8",
-      writer: { name: "Jane Cooper", avatar: profileIcon },
-    },
+
     {
       id: 3,
       title: "Regarding project management of my homework",
-      status: "Pending",
+      status: "Submitted",
       totalAmount: "Rs 5000",
-      paidAmount: "Rs 3000",
+      paidAmount: "Rs 4500",
+      dueDate: "Oct 8",
+      writer: { name: "Jane Cooper", avatar: profileIcon },
+    },
+
+    {
+      id: 3,
+      title: "Regarding project management of my homework",
+      status: "Approved",
+      totalAmount: "Rs 5000",
+      paidAmount: "Rs 2500",
       dueDate: "Oct 8",
       writer: { name: "Jane Cooper", avatar: profileIcon },
     },
@@ -75,10 +86,18 @@ const Dashboard = () => {
           theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
         />
       </div>
-      <FilterButtons
-        activeFilter={activeFilter}
-        onFilterChange={handleFilterChange}
-      />
+      <div className= "flex justify-between w-[81%]">
+        <FilterButtons
+          activeFilter={activeFilter}
+          onFilterChange={handleFilterChange}
+        />
+        <button
+          className="px-4 py-2 rounded-lg text-sm mt-4 text-white bg-[#5d5fef] hover:bg-purple-600 transition-colors"
+
+        >
+          +Create Order
+        </button>
+      </div>
       <div className="flex flex-wrap gap-4 mt-4">
         {filteredAssignments.map((assignment, index) => (
           <AssignmentCard key={index} {...assignment} />
