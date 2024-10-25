@@ -1,6 +1,7 @@
 import React from "react";
 
 const AssignmentCard = ({
+  id,
   title,
   status = "Pending",
   totalAmount,
@@ -28,7 +29,12 @@ const AssignmentCard = ({
     completed: "bg-green-100 text-green-600",
     pending: "bg-yellow-100 text-yellow-600",
   };
-
+  const handlePay = () => {
+    console.log("pay", id);
+  };
+  const handleView = () => {
+    console.log("view", id);
+  };
   return (
     <div className="p-4 bg-white rounded-lg shadow-2xl w-[40%] drop-shadow-2xl ">
       {/* Title and Status */}
@@ -101,10 +107,16 @@ const AssignmentCard = ({
 
         {/* Action Buttons */}
         <div className="flex gap-2">
-          <button className="px-3 py-1 text-sm text-white bg-purple-500 hover:bg-purple-600 rounded-md transition-colors">
+          <button
+            className="px-3 py-1 text-sm text-white bg-purple-500 hover:bg-purple-600 rounded-md transition-colors"
+            onClick={handlePay}
+          >
             Pay
           </button>
-          <button className="px-3 py-1 text-sm text-purple-500 hover:bg-purple-50 rounded-md transition-colors">
+          <button
+            className="px-3 py-1 text-sm text-purple-500 hover:bg-purple-50 rounded-md transition-colors"
+            onClick={handleView}
+          >
             View
           </button>
         </div>
