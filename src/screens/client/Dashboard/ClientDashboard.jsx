@@ -4,93 +4,36 @@ import { MdShoppingCart } from "react-icons/md";
 import Card from "./components/Card";
 import AssignmentCard from "./components/AssignmentCard";
 import FilterButtons from "./components/FilterButtons";
-import profileIcon from "../ClientComponents/profileIcon.jpg"
+import profileIcon from "../ClientComponents/profileIcon.jpg";
 const Dashboard = () => {
   const [activeFilter, setActiveFilter] = useState("All");
 
   const assignments = [
     {
+      id: 1,
+      title: "Regarding project management of my homework",
       status: "Ongoing",
-      title: "Final Accounting",
-      payment: "Initial",
+      totalAmount: "NRs 5000",
+      paidAmount: "NRs 3000",
       dueDate: "Oct 8",
       writer: { name: "Jane Cooper", avatar: profileIcon },
     },
     {
+      id: 2,
+      title: "Regarding project management of my homework",
       status: "Completed",
-      title: "Marketing Report",
-      payment: "Mid pay",
-      dueDate: "Oct 6",
-      writer: { name: "Jane Cooper", avatar: profileIcon },
-    },
-    {
-      status: "Pending",
-      title: "Taxation Law",
-      payment: "Initial",
-      dueDate: "Oct 10",
-      writer: { name: "Jane Cooper", avatar: profileIcon },
-    },
-    {
-      status: "Ongoing",
-      title: "Final Accounting",
-      payment: "Initial",
+      totalAmount: "NRs 5000",
+      paidAmount: "NRs 3000",
       dueDate: "Oct 8",
       writer: { name: "Jane Cooper", avatar: profileIcon },
     },
     {
-      status: "Completed",
-      title: "Marketing Report",
-      payment: "Mid pay",
-      dueDate: "Oct 6",
-      writer: { name: "Jane Cooper", avatar: profileIcon },
-    },
-    {
+      id: 3,
+      title: "Regarding project management of my homework",
       status: "Pending",
-      title: "Taxation Law",
-      payment: "Initial",
-      dueDate: "Oct 10",
-      writer: { name: "Jane Cooper", avatar: profileIcon },
-    },
-    {
-      status: "Ongoing",
-      title: "Final Accounting",
-      payment: "Initial",
+      totalAmount: "Rs 5000",
+      paidAmount: "Rs 3000",
       dueDate: "Oct 8",
-      writer: { name: "Jane Cooper", avatar: profileIcon },
-    },
-    {
-      status: "Completed",
-      title: "Marketing Report",
-      payment: "Mid pay",
-      dueDate: "Oct 6",
-      writer: { name: "Jane Cooper", avatar: profileIcon },
-    },
-    {
-      status: "Pending",
-      title: "Taxation Law",
-      payment: "Initial",
-      dueDate: "Oct 10",
-      writer: { name: "Jane Cooper", avatar: profileIcon },
-    },
-    {
-      status: "Ongoing",
-      title: "Final Accounting",
-      payment: "Initial",
-      dueDate: "Oct 8",
-      writer: { name: "Jane Cooper", avatar: profileIcon },
-    },
-    {
-      status: "Completed",
-      title: "Marketing Report",
-      payment: "Mid pay",
-      dueDate: "Oct 6",
-      writer: { name: "Jane Cooper", avatar: profileIcon },
-    },
-    {
-      status: "Pending",
-      title: "Taxation Law",
-      payment: "Initial",
-      dueDate: "Oct 10",
       writer: { name: "Jane Cooper", avatar: profileIcon },
     },
   ];

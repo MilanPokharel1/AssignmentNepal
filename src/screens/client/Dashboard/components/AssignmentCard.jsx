@@ -1,49 +1,113 @@
 import React from "react";
 
-const AssignmentCard = ({ status, title, payment, dueDate, writer }) => {
-  const statusColors = {
-    Ongoing: "bg-yellow-100 text-yellow-600",
-    Completed: "bg-green-100 text-green-600",
-    Pending: "bg-orange-100 text-orange-600",
-  };
+const AssignmentCard = ({
+  title,
+  status = "Pending",
+  totalAmount,
+  paidAmount,
+  dueDate,
+  writer,
+}) => {
+  const calculatePercentage = (totalAmount, paidAmount) => {
+    const total = parseFloat(totalAmount.replace(/[^0-9.-]+/g, ""));
+    const paid = parseFloat(paidAmount.replace(/[^0-9.-]+/g, ""));
 
-  const paymentColors = {
-    Initial: "bg-red-100 text-red-600",
-    "Mid pay": "bg-yellow-100 text-yellow-600",
-    "Final pay": "bg-green-100 text-green-600",
+    if (isNaN(total) || isNaN(paid) || total === 0) {
+      return 0;
+    }
+
+    const percentage = (paid / total) * 100;
+
+    return percentage.toFixed(0);
+  };
+  const percentage = calculatePercentage(totalAmount, paidAmount);
+
+  // Status styling
+  const statusColors = {
+    ongoing: "bg-orange-100 text-orange-600",
+    completed: "bg-green-100 text-green-600",
+    pending: "bg-yellow-100 text-yellow-600",
   };
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-md w-[300px]">
-      {/* Status Tag */}
-      <div className={`w-min px-2 py-1 rounded-full ${statusColors[status]}`}>
-        {status}
+    <div className="p-4 bg-white rounded-lg shadow-2xl w-[40%] drop-shadow-2xl ">
+      {/* Title and Status */}
+      <div className="mb-4 flex justify-between items-start">
+        <div className="flex items-start">
+          <div className="text-sm font-medium text-gray-700 flex-shrink-0">
+            Assignment Title:
+          </div>
+          <span
+            className="text-gray-900 ml-2 line-clamp-2 overflow-hidden"
+            style={{
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}
+          >
+            {title}
+          </span>
+        </div>
+        <div
+          className={`px-2 py-1 rounded-full text-sm capitalize ${
+            statusColors[status.toLowerCase()]
+          }`}
+        >
+          {status}
+        </div>
       </div>
 
-      {/* Title */}
-      <h3 className="mt-2 text-lg font-semibold">{title}</h3>
-
-      {/* Payment Badge */}
-      <div
-        className={`w-fit  px-3 py-1 mt-2 text-sm font-medium rounded-lg ${paymentColors[payment]}`}
-      >
-        Payment: {payment}
+      <span className="text-xs text-red-500">Due {dueDate}</span>
+      {/* Payment Info */}
+      <div className="mb-2">
+        <div className="text-sm text-gray-600">
+          Total Amount: <span className="font-medium">{totalAmount}</span>
+        </div>
+        <div className="text-sm text-gray-600">
+          Paid Amount: <span className="font-medium">{paidAmount}</span>
+        </div>
       </div>
 
-      {/* Writer and Due Date Section */}
-      <div className="mt-4">
-        <div className="flex items-center space-x-2">
-          <span>Writer:</span>
+      {/* Payment Progress */}
+      <div className="relative pt-2 mb-4">
+        <div className="w-full bg-gray-200 rounded-full h-2">
+          <div
+            className="bg-orange-500 h-2 rounded-full transition-all duration-300"
+            style={{ width: `${percentage}%` }}
+          />
+        </div>
+        <span className="absolute right-0 -top-4 text-sm text-orange-500">
+          {percentage}%
+        </span>
+      </div>
+
+      {/* Writer Info */}
+      <div className="flex justify-between items-center mt-4">
+        <div className="flex items-center gap-2">
           <img
             src={writer.avatar}
-            alt="Writer"
+            alt={writer.name}
             className="w-8 h-8 rounded-full object-cover"
           />
-          <span className="text-sm font-medium">{writer.name}</span>
+          <div className="flex flex-col gap-1">
+            <span className="text-sm font-medium text-gray-900">
+              {writer.name}
+            </span>
+
+            <span className="text-xs text-gray-500">writer</span>
+          </div>
         </div>
-        <span className="text-xs text-gray-500">Due: {dueDate}</span>
-        <br/>
-        <span className="hover:text-blue-700 cursor-pointer">See More →</span>
+
+        {/* Action Buttons */}
+        <div className="flex gap-2">
+          <button className="px-3 py-1 text-sm text-white bg-purple-500 hover:bg-purple-600 rounded-md transition-colors">
+            Pay
+          </button>
+          <button className="px-3 py-1 text-sm text-purple-500 hover:bg-purple-50 rounded-md transition-colors">
+            View
+          </button>
+        </div>
       </div>
     </div>
   );
