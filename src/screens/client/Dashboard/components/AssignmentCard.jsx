@@ -26,9 +26,19 @@ const AssignmentCard = ({
 
   // Function to determine progress bar color based on percentage
   const getProgressColor = () => {
-    if (percentage < 50) return "-red-500";
-    if (percentage < 80) return "-orange-500";
-    return "-green-500";
+    console.log(percentage)
+
+    if(percentage < 50){
+      return "-red-500";
+    } else if(percentage >=50 && percentage < 80){
+      return "-orange-500";
+    }
+    else{
+      return "-green-500";
+    }
+    // if (percentage < 50) return "-red-500";
+    // if (percentage < 80) return "-orange-500";
+    // return "-green-500";
   };
 
   // Status styling
@@ -93,7 +103,7 @@ const AssignmentCard = ({
         <div className="w-full bg-gray-200 rounded-full h-2 align-middle items-center">
           <div
             className={`bg${getProgressColor()} h-2 rounded-full transition-all duration-300`}
-            style={{ width: `${percentage}%` }}
+            style={{ width: `${percentage}% ` }}
           />
         </div>
         <span

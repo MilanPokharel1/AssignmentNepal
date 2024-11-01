@@ -47,6 +47,16 @@ const Dashboard = () => {
       dueDate: "Oct 8",
       writer: { name: "Jane Cooper", avatar: profileIcon },
     },
+
+    {
+      id: 3,
+      title: "Regarding project management of my homework",
+      status: "Completed",
+      totalAmount: "Rs 5000",
+      paidAmount: "Rs 5000",
+      dueDate: "Oct 8",
+      writer: { name: "Jane Cooper", avatar: profileIcon },
+    },
   ];
 
   const handleFilterChange = (filter) => {
