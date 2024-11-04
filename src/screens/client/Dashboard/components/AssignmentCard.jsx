@@ -58,7 +58,7 @@ const AssignmentCard = ({
   };
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-2xl w-[40%] drop-shadow-2x2 ">
+    <div className="p-4 bg-white rounded-lg shadow-2xl w-[40%] ">
       {/* Title and Status */}
       <div className="mb-4 flex justify-between items-start">
         <div className="flex items-start">

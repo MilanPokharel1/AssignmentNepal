@@ -85,7 +85,7 @@ const SideNavbar = () => {
           </div>
           <div>
             <NavLink
-              to="/support"
+              to="/client/helpsupport"
               className={({ isActive }) =>
                 `${linkStyles} ${isActive ? activeLinkStyles : ""}`
               }
