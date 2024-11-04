@@ -131,7 +131,7 @@ const ClientOrder = () => {
   const sortOptions = ["Newest", "Oldest"];
 
   return (
-    <div className="w-[85%] mx-auto">
+    <div>
       <div className="flex flex-row px-4 mt-5 max-w-[85%]">
         <h1 className="flex-1">Assignment</h1>
         <div className="flex justify-between items-center mr-5 gap-3">
