@@ -6,6 +6,7 @@ import Client from "./screens/client/Client";
 import ClientOrder from "./screens/client/Order/ClientOrder";
 import ClientPayments from "./screens/client/Payments/ClientPayments";
 import ClientReminders from "./screens/client/Reminders/ClientReminders";
+import Admin from "./screens/admin/admin";
 
 function App() {
   return (
@@ -18,7 +19,7 @@ function App() {
           <Route path="payments" element={<ClientPayments />} />
           <Route path="reminders" element={<ClientReminders />} />
         </Route>
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
     </Router>
   );
