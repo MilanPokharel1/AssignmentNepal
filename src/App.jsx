@@ -18,7 +18,7 @@ function App() {
           <Route path="payments" element={<ClientPayments />} />
           <Route path="reminders" element={<ClientReminders />} />
         </Route>
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/admin" element={<AdminDashboard />} />
       </Routes>
     </Router>
   );

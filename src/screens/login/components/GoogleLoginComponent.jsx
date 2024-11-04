@@ -14,8 +14,6 @@ const GoogleLoginComponent = () => {
       console.log('Login Success:', response);
 
       const { credential } = response;
-      const decodedToken = jwtDecode(credential);
-      console.log('Decoded Token:', decodedToken);
 
       const res = await fetch(google_login, {
         method: 'POST',
@@ -32,12 +30,16 @@ const GoogleLoginComponent = () => {
       const data = await res.json();
       console.log('Backend Response:', data);
 
+
       localStorage.setItem('token', data.token);
+      localStorage.setItem('firstName', data.user.firstName);
+      localStorage.setItem('picture', data.user.picture);
 
       navigate(`/${data.user.role}`);
     } catch (error) {
       console.error('Error during login process:', error);
     }
+
   };
 
   const handleLoginFailure = (error) => {
@@ -51,7 +53,7 @@ const GoogleLoginComponent = () => {
         onError={handleLoginFailure}
         text='continue_with'
         size='large'
-        
+
         render={(renderProps) => (
 
           <button

@@ -3,7 +3,7 @@ import profileImage from "../ClientComponents/profile-picture.jpeg";
 import profileIcon from "../ClientComponents/profileIcon.jpg";
 import { MdOutlineNotifications } from "react-icons/md";
 
-const TopNavbar = ({ notificationCount = 0, userName = "Dhananjaya" }) => {
+const TopNavbar = ({ notificationCount = 0, userName = localStorage.getItem("firstName") }) => {
   return (
     <nav className="w-full bg-white px-5 py-4 flex items-center justify-between ">
       <div className="text-xl font-semibold">Dashboard</div>
@@ -21,15 +21,15 @@ const TopNavbar = ({ notificationCount = 0, userName = "Dhananjaya" }) => {
         </div>
 
         {/* User Profile */}
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 mr-3">
           <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden">
             <img
-              src={profileImage}
-              alt={profileIcon}
+              src={`${localStorage.getItem("picture")}`}
+              // alt={profileIcon}
               className="w-full h-full object-cover"
             />
           </div>
-          <span className="text-sm font-medium text-gray-700">{userName}</span>
+          <span className="text-sm font-medium text-gray-700 mr-5">{userName}</span>
         </div>
       </div>
     </nav>

@@ -37,8 +37,9 @@ const Login = () => {
       const data = await response.json();
       if (response.ok) {
         setIsLoading(false);
-        localStorage.setItem('token', data.token);
+        localStorage.setItem('userData', data.user);
         navigate(`/${data.user.role}`);
+
       } else {
         setIsLoading(false);
         setError(`*${data.error}` || "Login failed. Please try again.");
