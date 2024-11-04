@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import AssignmentCard from "./components/AssignmentCard";
 import FilterButtons from "./components/FilterButtons";
 import profileIcon from "../ClientComponents/profileIcon.jpg";
+import { ImSearch } from "react-icons/im";
+import { FaChevronDown } from "react-icons/fa";
+
 const ClientOrder = () => {
   const [activeFilter, setActiveFilter] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
@@ -10,12 +13,12 @@ const ClientOrder = () => {
 
   const assignments = [
     {
-      id: 3,
+      id: 2,
       title: "Regarding project management of my homework",
       status: "Pending",
       totalAmount: "Rs 5000",
       paidAmount: "Rs 1000",
-      dueDate: "Oct 8",
+      dueDate: "Oct 9",
       writer: { name: "Jane Cooper", avatar: profileIcon },
     },
     {
@@ -24,12 +27,11 @@ const ClientOrder = () => {
       status: "Ongoing",
       totalAmount: "NRs 5000",
       paidAmount: "NRs 3000",
-      dueDate: "Oct 8",
+      dueDate: "Oct 5",
       writer: { name: "Jane Cooper", avatar: profileIcon },
     },
-
     {
-      id: 3,
+      id: 4,
       title: "Regarding project management of my homework",
       status: "Submitted",
       totalAmount: "Rs 5000",
@@ -37,9 +39,8 @@ const ClientOrder = () => {
       dueDate: "Oct 8",
       writer: { name: "Jane Cooper", avatar: profileIcon },
     },
-
     {
-      id: 3,
+      id: 6,
       title: "Regarding project management of my homework",
       status: "Approved",
       totalAmount: "Rs 5000",
@@ -47,9 +48,8 @@ const ClientOrder = () => {
       dueDate: "Oct 8",
       writer: { name: "Jane Cooper", avatar: profileIcon },
     },
-
     {
-      id: 3,
+      id: 9,
       title: "Regarding project management of my homework",
       status: "Completed",
       totalAmount: "Rs 5000",
@@ -63,10 +63,25 @@ const ClientOrder = () => {
     setActiveFilter(filter);
   };
 
-  const filteredAssignments =
-    activeFilter === "All"
-      ? assignments
-      : assignments.filter((a) => a.status === activeFilter);
+  const normalizeText = (text) => {
+    return text.toString().toLowerCase().replace(/\s+/g, "");
+  };
+
+  const highlightText = (text, searchTerm) => {
+    if (!searchTerm) return text;
+    const regex = new RegExp(`(${searchTerm.replace(/\s+/g, "[\\s]*")})`, "gi");
+    const parts = text.toString().split(regex);
+    return parts.map((part, index) =>
+      normalizeText(part) === normalizeText(searchTerm) ? (
+        <span key={index} className="bg-yellow-200">
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
+  };
+
   const NoDataFound = () => (
     <div className="flex flex-col items-center justify-center py-16 px-4">
       <div className="bg-gray-100 rounded-full p-6 mb-4">
@@ -76,7 +91,7 @@ const ClientOrder = () => {
         No Results Found
       </h3>
       <p className="text-gray-500 text-center max-w-md">
-        We couldn't find any payments matching "{searchTerm}". Try adjusting
+        We couldn't find any assignments matching "{searchTerm}". Try adjusting
         your search terms or filters.
       </p>
       <button
@@ -88,59 +103,43 @@ const ClientOrder = () => {
     </div>
   );
 
-  const highlightText = (text, searchTerm) => {
-    if (!searchTerm) return text;
+  const filteredAssignments = assignments
+    .filter((assignment) => {
+      if (activeFilter === "All") return true;
+      return assignment.status === activeFilter;
+    })
+    .filter((assignment) => {
+      const search = normalizeText(searchTerm);
+      return (
+        normalizeText(assignment.title).includes(search) ||
+        normalizeText(assignment.dueDate).includes(search) ||
+        normalizeText(assignment.writer.name).includes(search)
+      );
+    });
 
-    const parts = text.toString().split(new RegExp(`(${searchTerm})`, "gi"));
-    return parts.map((part, index) =>
-      part.toLowerCase() === searchTerm.toLowerCase() ? (
-        <span key={index} className="bg-yellow-200">
-          {part}
-        </span>
-      ) : (
-        part
-      )
-    );
-  };
-
-  const filteredPayments = assignments.filter((assignments) => {
-    const searchStr = searchTerm.toLowerCase();
-    return (
-      assignments.title.toLowerCase().includes(searchStr) ||
-      assignments.method.toLowerCase().includes(searchStr) ||
-      assignments.remarks.toLowerCase().includes(searchStr) ||
-      assignments.amount.toString().includes(searchStr) ||
-      assignments.date.toLowerCase().includes(searchStr)
-    );
-  });
-
-  const sortedPayments = [...filteredPayments].sort((a, b) => {
-    const dateA = new Date(a.date.split("/").reverse().join("-"));
-    const dateB = new Date(b.date.split("/").reverse().join("-"));
-
+  const sortedAssignments = [...filteredAssignments].sort((a, b) => {
     switch (sortOrder) {
       case "Newest":
-        return dateB - dateA;
+        return b.id - a.id;
       case "Oldest":
-        return dateA - dateB;
-      case "Amount (High to Low)":
-        return b.amount - a.amount;
-      case "Amount (Low to High)":
-        return a.amount - b.amount;
+        return a.id - b.id;
       default:
         return 0;
     }
   });
+
+  const sortOptions = ["Newest", "Oldest"];
+
   return (
-    <div>
-      <div className="flex flex-row">
-        <h1>Assignment</h1>
-        <div className="flex justify-between items-center mb-4 gap-3">
+    <div className="w-[85%] mx-auto">
+      <div className="flex flex-row px-4 mt-5 max-w-[85%]">
+        <h1 className="flex-1">Assignment</h1>
+        <div className="flex justify-between items-center mr-5 gap-3">
           <div className="relative">
             <input
               type="text"
               placeholder="Search here..."
-              className="p-2 px-4 pl-10 border-none rounded-2xl bg-[#dbedff] w-64 focus:border-none  outline-none focus:ring-2 focus:ring-blue-300 focus:bg-[#dbedff]"
+              className="p-2 px-4 pl-10 border-none rounded-2xl bg-[#dbedff] w-64 focus:border-none outline-none focus:ring-2 focus:ring-blue-300 focus:bg-[#dbedff]"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -158,7 +157,7 @@ const ClientOrder = () => {
               <FaChevronDown className="h-4 w-4" />
             </button>
             {showOptions && (
-              <div className="absolute right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10 text-base">
+              <div className="absolute right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10 text-base px-4">
                 {sortOptions.map((option) => (
                   <div
                     key={option}
@@ -174,6 +173,36 @@ const ClientOrder = () => {
               </div>
             )}
           </div>
+        </div>
+      </div>
+      <div className="mt-5">
+        <div className="flex justify-between w-[81%]">
+          <FilterButtons
+            activeFilter={activeFilter}
+            onFilterChange={handleFilterChange}
+          />
+          <button className="px-4 py-2 rounded-lg text-sm mt-4 text-white bg-[#5d5fef] hover:bg-purple-600 transition-colors">
+            +Create Order
+          </button>
+        </div>
+
+        <div className="flex flex-wrap gap-4 mt-4">
+          {sortedAssignments.length > 0 ? (
+            sortedAssignments.map((assignment) => (
+              <AssignmentCard
+                key={assignment.id}
+                {...assignment}
+                title={highlightText(assignment.title, searchTerm)}
+                writer={{
+                  ...assignment.writer,
+                  name: highlightText(assignment.writer.name, searchTerm),
+                }}
+                dueDate={highlightText(assignment.dueDate, searchTerm)}
+              />
+            ))
+          ) : (
+            <NoDataFound />
+          )}
         </div>
       </div>
     </div>
