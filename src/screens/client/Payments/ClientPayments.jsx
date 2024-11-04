@@ -10,7 +10,8 @@ const ClientPayments = () => {
 
   const paymentData = [
     {
-      title: "This is my second assignment submission...",
+      title:
+        "This is my second assignment submission eqwnjkdewnudnqewdnoiqenoandlaskndkaslndkasndklasndlkkasdasnlxnasxlasxnsa",
       date: "20/02/2024",
       method: "Fonepay",
       currency: "NPR",
@@ -18,7 +19,8 @@ const ClientPayments = () => {
       amount: 8000,
     },
     {
-      title: "This is my second assignment submission...",
+      title:
+        "This is my second assignment submission sndiasncasnclkasncoisdacwslkdcnoisdancosdancosc",
       date: "20/01/2024",
       method: "Fonepay",
       currency: "NPR",
@@ -26,7 +28,8 @@ const ClientPayments = () => {
       amount: 7000,
     },
     {
-      title: "It should be relatively short, but still...",
+      title:
+        "It should be relatively short, but still anxcoilasncxoilasndcxoliasnxnlzkm",
       date: "20/01/2024",
       method: "Fonepay",
       currency: "NPR",
@@ -34,7 +37,8 @@ const ClientPayments = () => {
       amount: 8000,
     },
     {
-      title: "It should be relatively short, but still...",
+      title:
+        "It should be relatively short, but still nsnjakdcnjskdncksdncksdncsdncsd",
       date: "20/01/2024",
       method: "Cash",
       currency: "NPR",
@@ -116,7 +120,7 @@ const ClientPayments = () => {
   );
 
   return (
-    <div className="p-8">
+    <div className="p-8 bg-[#fafbfc]">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold mb-6">Payments</h1>
         <div className="flex justify-between items-center mb-4 gap-3">
@@ -124,22 +128,25 @@ const ClientPayments = () => {
             <input
               type="text"
               placeholder="Search here..."
-              className="p-2 pl-10 border-none rounded-2xl px-4 bg-[#dbedff] w-64"
+              className="p-2 px-4 pl-10 border-none rounded-2xl bg-[#dbedff] w-64 focus:border-none  outline-none focus:ring-2 focus:ring-blue-300 focus:bg-[#dbedff]"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <ImSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+            <ImSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-600" />
           </div>
-          <div className="relative">
+          <div className="relative text-sm">
             <button
-              className="p-2 border border-gray-300 rounded-lg bg-[#dbedff] flex items-center gap-2"
+              className="p-2 border border-gray-300 rounded-lg bg-[#dbedff] flex items-center gap-2 w-64"
               onClick={() => setShowOptions(!showOptions)}
             >
-              {sortOrder}
+              <div className="flex-1 font-medium">
+                <span className="text-sm text-gray-600">Sort by:&ensp;</span>
+                {sortOrder}
+              </div>
               <FaChevronDown className="h-4 w-4" />
             </button>
             {showOptions && (
-              <div className="absolute right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10">
+              <div className="absolute right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10 text-base">
                 {sortOptions.map((option) => (
                   <div
                     key={option}
