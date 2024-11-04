@@ -132,8 +132,7 @@ const ClientOrder = () => {
 
   return (
     <div className="flex-1 p-6">
-      <div className="flex flex-row px-4 mt-5 max-w-[85%]">
-        <h1 className="flex-1">Assignment</h1>
+      <div className="flex flex-row-reverse px-4 mt-5 max-w-[85%]">
         <div className="flex justify-between items-center mr-5 gap-3">
           <div className="relative">
             <input

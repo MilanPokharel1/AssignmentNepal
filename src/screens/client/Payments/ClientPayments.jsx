@@ -121,8 +121,7 @@ const ClientPayments = () => {
 
   return (
     <div className="p-6 flex-1 bg-[#fafbfc] max-w-[85%]">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold mb-6">Payments</h1>
+      <div className="flex justify-between items-center flex-row-reverse">
         <div className="flex justify-between items-center mb-4 gap-3">
           <div className="relative">
             <input
