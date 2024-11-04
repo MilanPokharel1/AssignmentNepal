@@ -100,7 +100,7 @@ const Dashboard = () => {
           theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
         />
       </div>
-      <div className="flex justify-between w-[81%]">
+      <div className="flex justify-between w-[81%] my-5">
         <FilterButtons
           activeFilter={activeFilter}
           onFilterChange={handleFilterChange}

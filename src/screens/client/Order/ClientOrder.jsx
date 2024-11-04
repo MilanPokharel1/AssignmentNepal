@@ -15,6 +15,7 @@ const ClientOrder = () => {
     {
       id: 2,
       title: "Regarding project management of my homework",
+      description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fugiat iure ipsum unde doloribus accusamus odit quaerat aperiam commodi, quidem, magni nisi in ullam velit id nulla earum illo ab libero dicta vitae labore? Debitis fuga facere blanditiis explicabo voluptatibus!",
       status: "Pending",
       totalAmount: "Rs 5000",
       paidAmount: "Rs 1000",
@@ -24,6 +25,7 @@ const ClientOrder = () => {
     {
       id: 1,
       title: "Regarding project management of my homework",
+      description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fugiat iure ipsum unde doloribus accusamus odit quaerat aperiam commodi, quidem, magni nisi in ullam velit id nulla earum illo ab libero dicta vitae labore? Debitis fuga facere blanditiis explicabo voluptatibus!",
       status: "Ongoing",
       totalAmount: "NRs 5000",
       paidAmount: "NRs 3000",
@@ -33,6 +35,7 @@ const ClientOrder = () => {
     {
       id: 4,
       title: "Regarding project management of my homework",
+      description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fugiat iure ipsum unde doloribus accusamus odit quaerat aperiam commodi, quidem, magni nisi in ullam velit id nulla earum illo ab libero dicta vitae labore? Debitis fuga facere blanditiis explicabo voluptatibus!",
       status: "Submitted",
       totalAmount: "Rs 5000",
       paidAmount: "Rs 450",
@@ -42,6 +45,7 @@ const ClientOrder = () => {
     {
       id: 6,
       title: "Regarding project management of my homework",
+      description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fugiat iure ipsum unde doloribus accusamus odit quaerat aperiam commodi, quidem, magni nisi in ullam velit id nulla earum illo ab libero dicta vitae labore? Debitis fuga facere blanditiis explicabo voluptatibus!",
       status: "Approved",
       totalAmount: "Rs 5000",
       paidAmount: "Rs 2500",
@@ -51,6 +55,7 @@ const ClientOrder = () => {
     {
       id: 9,
       title: "Regarding project management of my homework",
+      description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fugiat iure ipsum unde doloribus accusamus odit quaerat aperiam commodi, quidem, magni nisi in ullam velit id nulla earum illo ab libero dicta vitae labore? Debitis fuga facere blanditiis explicabo voluptatibus!",
       status: "Completed",
       totalAmount: "Rs 5000",
       paidAmount: "Rs 5000",

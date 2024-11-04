@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
+import PaymentPopup from "./ClientPaymentPopup";
 
 const AssignmentCard = ({
   id,
   title,
+  description,
   status = "Pending",
   totalAmount,
   paidAmount,
@@ -52,10 +54,14 @@ const AssignmentCard = ({
     approved: "bg-gray-300 text-gray-600",
   };
 
+
+  const [showPaymentPopup, setShowPaymentPopup] = useState(false);
+
   const handlePay = () => {
-    console.log("pay", id);
+    setShowPaymentPopup(true);
   };
-  
+
+
   const handleView = () => {
     console.log("view", id);
   };
@@ -83,9 +89,8 @@ const AssignmentCard = ({
           </span>
         </div>
         <div
-          className={`px-2 py-1 rounded-full text-sm capitalize ${
-            statusColors[status.toLowerCase()]
-          }`}
+          className={`px-2 py-1 rounded-full text-sm capitalize ${statusColors[status.toLowerCase()]
+            }`}
         >
           {status}
         </div>
@@ -148,6 +153,12 @@ const AssignmentCard = ({
           </button>
         </div>
       </div>
+      {showPaymentPopup && (
+        <PaymentPopup
+          onClose={() => setShowPaymentPopup(false)}
+          assignment={{ id, title, description, status, totalAmount,paidAmount, dueDate }}
+        />
+      )}
     </div>
   );
 };

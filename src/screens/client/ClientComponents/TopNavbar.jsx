@@ -26,7 +26,7 @@ const TopNavbar = ({ notificationCount = 0, userName = localStorage.getItem("fir
 
 
   return (
-    <nav className="w-full bg-white px-5 py-4 flex items-center justify-between ">
+    <nav className="w-full bg-white pl-6 pr-10 py-4 flex items-center justify-between ">
       <div className="text-xl font-semibold">{headerTitle}</div>
 
       <div className="flex items-center space-x-4">
