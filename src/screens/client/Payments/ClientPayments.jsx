@@ -120,7 +120,7 @@ const ClientPayments = () => {
   );
 
   return (
-    <div className="p-8 bg-[#fafbfc]">
+    <div className="p-8 bg-[#fafbfc] max-w-[85%]">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold mb-6">Payments</h1>
         <div className="flex justify-between items-center mb-4 gap-3">

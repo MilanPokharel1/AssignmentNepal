@@ -1,8 +1,9 @@
 import React from 'react';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import { useNavigate } from 'react-router-dom';
 import { google_login } from '../../../api/Api';
+import { FcGoogle } from 'react-icons/fc'; // Google icon
 
 const GoogleLoginComponent = () => {
   const navigate = useNavigate();
@@ -10,15 +11,12 @@ const GoogleLoginComponent = () => {
 
   const handleLoginSuccess = async (response) => {
     try {
-      // Log the response for debugging
       console.log('Login Success:', response);
 
-      // Get the credential (ID token)
       const { credential } = response;
       const decodedToken = jwtDecode(credential);
       console.log('Decoded Token:', decodedToken);
 
-      // Send the token to your backend for verification and session creation
       const res = await fetch(google_login, {
         method: 'POST',
         headers: {
@@ -27,20 +25,16 @@ const GoogleLoginComponent = () => {
         body: JSON.stringify({ token: credential }),
       });
 
-      // Check if the response is OK (status in the range 200-299)
       if (!res.ok) {
         throw new Error('Network response was not ok');
       }
 
-      // Parse the JSON response
       const data = await res.json();
       console.log('Backend Response:', data);
 
-      // Save the JWT token received from the backend to local storage or state management
       localStorage.setItem('token', data.token);
 
       navigate(`/${data.user.role}`);
-      // Redirect user or perform other actions as needed
     } catch (error) {
       console.error('Error during login process:', error);
     }
@@ -55,6 +49,16 @@ const GoogleLoginComponent = () => {
       <GoogleLogin
         onSuccess={handleLoginSuccess}
         onError={handleLoginFailure}
+        render={(renderProps) => (
+          <button
+            onClick={renderProps.onClick}
+            disabled={renderProps.disabled}
+            className="flex items-center justify-center w-full h-12 rounded-md bg-white border border-gray-300 shadow-md font-semibold text-gray-700 hover:bg-gray-100 transition-colors"
+          >
+            <FcGoogle className="text-2xl mr-2" /> {/* Google icon */}
+            Continue with Google
+          </button>
+        )}
       />
     </GoogleOAuthProvider>
   );
