@@ -1,164 +1,181 @@
-import React, { useState } from 'react';
-import { upload_file } from '../../../api/Api';
-
+import React, { useState } from "react";
+import AssignmentCard from "./components/AssignmentCard";
+import FilterButtons from "./components/FilterButtons";
+import profileIcon from "../ClientComponents/profileIcon.jpg";
 const ClientOrder = () => {
-  const [formData, setFormData] = useState({
-    instagramTitle: '',
-    assignmentTitle: '',
-    description: '',
-    deadline: '',
-    orderFixedBy: '',
-    file: null,
+  const [activeFilter, setActiveFilter] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState("Newest");
+  const [showOptions, setShowOptions] = useState(false);
+
+  const assignments = [
+    {
+      id: 3,
+      title: "Regarding project management of my homework",
+      status: "Pending",
+      totalAmount: "Rs 5000",
+      paidAmount: "Rs 1000",
+      dueDate: "Oct 8",
+      writer: { name: "Jane Cooper", avatar: profileIcon },
+    },
+    {
+      id: 1,
+      title: "Regarding project management of my homework",
+      status: "Ongoing",
+      totalAmount: "NRs 5000",
+      paidAmount: "NRs 3000",
+      dueDate: "Oct 8",
+      writer: { name: "Jane Cooper", avatar: profileIcon },
+    },
+
+    {
+      id: 3,
+      title: "Regarding project management of my homework",
+      status: "Submitted",
+      totalAmount: "Rs 5000",
+      paidAmount: "Rs 4500",
+      dueDate: "Oct 8",
+      writer: { name: "Jane Cooper", avatar: profileIcon },
+    },
+
+    {
+      id: 3,
+      title: "Regarding project management of my homework",
+      status: "Approved",
+      totalAmount: "Rs 5000",
+      paidAmount: "Rs 2500",
+      dueDate: "Oct 8",
+      writer: { name: "Jane Cooper", avatar: profileIcon },
+    },
+
+    {
+      id: 3,
+      title: "Regarding project management of my homework",
+      status: "Completed",
+      totalAmount: "Rs 5000",
+      paidAmount: "Rs 5000",
+      dueDate: "Oct 8",
+      writer: { name: "Jane Cooper", avatar: profileIcon },
+    },
+  ];
+
+  const handleFilterChange = (filter) => {
+    setActiveFilter(filter);
+  };
+
+  const filteredAssignments =
+    activeFilter === "All"
+      ? assignments
+      : assignments.filter((a) => a.status === activeFilter);
+  const NoDataFound = () => (
+    <div className="flex flex-col items-center justify-center py-16 px-4">
+      <div className="bg-gray-100 rounded-full p-6 mb-4">
+        <ImSearch className="w-12 h-12 text-gray-400" />
+      </div>
+      <h3 className="text-xl font-semibold text-gray-700 mb-2">
+        No Results Found
+      </h3>
+      <p className="text-gray-500 text-center max-w-md">
+        We couldn't find any payments matching "{searchTerm}". Try adjusting
+        your search terms or filters.
+      </p>
+      <button
+        onClick={() => setSearchTerm("")}
+        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+      >
+        Clear Search
+      </button>
+    </div>
+  );
+
+  const highlightText = (text, searchTerm) => {
+    if (!searchTerm) return text;
+
+    const parts = text.toString().split(new RegExp(`(${searchTerm})`, "gi"));
+    return parts.map((part, index) =>
+      part.toLowerCase() === searchTerm.toLowerCase() ? (
+        <span key={index} className="bg-yellow-200">
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
+  };
+
+  const filteredPayments = assignments.filter((assignments) => {
+    const searchStr = searchTerm.toLowerCase();
+    return (
+      assignments.title.toLowerCase().includes(searchStr) ||
+      assignments.method.toLowerCase().includes(searchStr) ||
+      assignments.remarks.toLowerCase().includes(searchStr) ||
+      assignments.amount.toString().includes(searchStr) ||
+      assignments.date.toLowerCase().includes(searchStr)
+    );
   });
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState('');
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: files ? files[0] : value,
-    }));
+  const sortedPayments = [...filteredPayments].sort((a, b) => {
+    const dateA = new Date(a.date.split("/").reverse().join("-"));
+    const dateB = new Date(b.date.split("/").reverse().join("-"));
 
-    // Call handleFileUpload if the file input is changed
-    if (name === 'file') {
-      handleFileUpload(e); // Simulate file upload
+    switch (sortOrder) {
+      case "Newest":
+        return dateB - dateA;
+      case "Oldest":
+        return dateA - dateB;
+      case "Amount (High to Low)":
+        return b.amount - a.amount;
+      case "Amount (Low to High)":
+        return a.amount - b.amount;
+      default:
+        return 0;
     }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setUploading(true);
-    setError(''); // Reset any previous error
-
-    const form = new FormData();
-    for (const key in formData) {
-      form.append(key, formData[key]);
-    }
-
-    try {
-      const response = await fetch(upload_file, {
-        method: 'POST',
-        body: form,
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to upload the file.');
-      }
-
-      // Handle successful response
-      alert('Order submitted successfully!');
-      setFormData({
-        instagramTitle: '',
-        assignmentTitle: '',
-        description: '',
-        deadline: '',
-        orderFixedBy: '',
-        file: null,
-      });
-      setUploadProgress(0);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const totalSize = file.size;
-      let uploadedSize = 0; // Start from 0
-
-      const interval = setInterval(() => {
-        if (uploadedSize < totalSize) {
-          // Simulate upload progress
-          uploadedSize += totalSize * 0.1; // Simulating upload of 10% every interval
-          const progress = Math.min((uploadedSize / totalSize) * 100, 100);
-          setUploadProgress(progress);
-        } else {
-          clearInterval(interval);
-        }
-      }, 1000); // Update progress every second
-    }
-  };
-
+  });
   return (
-    <div className="w-full max-w-lg mx-auto bg-white rounded-lg shadow-lg p-8">
-      <form onSubmit={handleSubmit}>
-        <div className="mb-6">
-          <h2 className="text-sm font-medium text-gray-900 mb-6">Basic Information</h2>
-          <div className="space-y-4">
-            {/* Form fields */}
+    <div>
+      <div className="flex flex-row">
+        <h1>Assignment</h1>
+        <div className="flex justify-between items-center mb-4 gap-3">
+          <div className="relative">
             <input
               type="text"
-              name="instagramTitle"
-              value={formData.instagramTitle}
-              onChange={handleChange}
-              placeholder="Instagram Title"
-              className="w-full px-3 py-1.5 border border-gray-200 rounded text-sm"
-              required
+              placeholder="Search here..."
+              className="p-2 px-4 pl-10 border-none rounded-2xl bg-[#dbedff] w-64 focus:border-none  outline-none focus:ring-2 focus:ring-blue-300 focus:bg-[#dbedff]"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <input
-              type="text"
-              name="assignmentTitle"
-              value={formData.assignmentTitle}
-              onChange={handleChange}
-              placeholder="Assignment Title"
-              className="w-full px-3 py-1.5 border border-gray-200 rounded text-sm"
-              required
-            />
-            <input
-              type="text"
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              placeholder="Description"
-              className="w-full px-3 py-1.5 border border-gray-200 rounded text-sm"
-              required
-            />
-            <input
-              type="date"
-              name="deadline"
-              value={formData.deadline}
-              onChange={handleChange}
-              className="w-full px-3 py-1.5 border border-gray-200 rounded text-sm"
-              required
-            />
-            <input
-              type="file"
-              name="file"
-              onChange={handleChange} // Changed to handleChange for file input
-              className="w-full px-3 py-1.5 border border-gray-200 rounded text-sm"
-              required
-            />
-            <input
-              type="text"
-              name="orderFixedBy"
-              value={formData.orderFixedBy}
-              onChange={handleChange}
-              placeholder="Order Fixed By"
-              className="w-full px-3 py-1.5 border border-gray-200 rounded text-sm"
-              required
-            />
+            <ImSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-600" />
+          </div>
+          <div className="relative text-sm">
+            <button
+              className="p-2 border border-gray-300 rounded-lg bg-[#dbedff] flex items-center gap-2 w-64"
+              onClick={() => setShowOptions(!showOptions)}
+            >
+              <div className="flex-1 font-medium">
+                <span className="text-sm text-gray-600">Sort by:&ensp;</span>
+                {sortOrder}
+              </div>
+              <FaChevronDown className="h-4 w-4" />
+            </button>
+            {showOptions && (
+              <div className="absolute right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10 text-base">
+                {sortOptions.map((option) => (
+                  <div
+                    key={option}
+                    className="p-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => {
+                      setSortOrder(option);
+                      setShowOptions(false);
+                    }}
+                  >
+                    {option}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
-
-        <div className="mb-4">
-          {uploading && (
-            <div>
-              <progress value={uploadProgress} max="100" className="w-full" />
-              <div>{uploadProgress.toFixed(0)}% - Estimated time: {((1 - uploadProgress / 100) * 10).toFixed(1)}s</div>
-            </div>
-          )}
-          {error && <div className="text-red-500">{error}</div>}
-        </div>
-
-        <button type="submit" className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition-colors">
-          Submit
-        </button>
-      </form>
+      </div>
     </div>
   );
 };
