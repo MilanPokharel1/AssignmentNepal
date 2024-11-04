@@ -58,14 +58,17 @@ const Login = () => {
         </div>
       )}
       <div className="h-[70vh] w-[60%] bg-white rounded-lg shadow-lg flex p-5">
-        
+
         {/* Social Login Section */}
         <div className="w-1/2 flex flex-col items-center justify-center space-y-4 border-r border-gray-200 px-6">
-          <FacebookLoginComponent />
-          <GoogleLoginComponent />
+          <div className="w-[55%]">
+            <FacebookLoginComponent />
+            <GoogleLoginComponent />
+          </div>
+
           {/* <AppleLoginComponent /> */}
         </div>
-        
+
         {/* Email Login Section */}
         <div className="w-1/2 flex flex-col justify-center items-center space-y-4 px-10">
           <div className="flex justify-center items-center w-full">
@@ -73,7 +76,7 @@ const Login = () => {
           </div>
           <h1 className="text-2xl font-semibold text-center">Sign in with the email</h1>
           {error && <div className="w-full text-red-400 text-sm">{error}</div>}
-          
+
           <input
             type="text"
             placeholder="E-mail"
@@ -96,11 +99,11 @@ const Login = () => {
               {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
             </span>
           </div>
-          
+
           <div className="w-full text-right">
             <a href="#" className="text-sm text-[#5D5FEF] hover:underline">Forgot Password?</a>
           </div>
-          
+
           <button
             onClick={handleLogin}
             className="w-full bg-[#5D5FEF] text-white py-3 rounded-md text-lg font-semibold shadow-lg"

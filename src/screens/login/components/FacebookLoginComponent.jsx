@@ -22,7 +22,7 @@ const FacebookLoginComponent = () => {
       scope="ads_read,ads_management"
       callback={responseFacebook}
       onFailure={handleFailure}
-      cssClass="flex items-center justify-center px-4  w-full h-12 rounded-md bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700 transition-colors"
+      cssClass="flex items-center mb-4 justify-center px-4  w-full h-12 rounded-md bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700 transition-colors"
       textButton="Continue with Facebook"
       icon={<FaFacebook className="text-2xl mr-2" />}
     />
