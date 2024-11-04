@@ -5,6 +5,9 @@ import Card from "./components/Card";
 import AssignmentCard from "./components/AssignmentCard";
 import FilterButtons from "./components/FilterButtons";
 import profileIcon from "../ClientComponents/profileIcon.jpg";
+import { HiArrowRight } from "react-icons/hi";
+import PaymentCard from "../Payments/Components/PaymentCard";
+
 const Dashboard = () => {
   const [activeFilter, setActiveFilter] = useState("All");
 
@@ -27,38 +30,37 @@ const Dashboard = () => {
       dueDate: "Oct 8",
       writer: { name: "Jane Cooper", avatar: profileIcon },
     },
-
-    {
-      id: 3,
-      title: "Regarding project management of my homework",
-      status: "Submitted",
-      totalAmount: "Rs 5000",
-      paidAmount: "Rs 4500",
-      dueDate: "Oct 8",
-      writer: { name: "Jane Cooper", avatar: profileIcon },
-    },
-
-    {
-      id: 3,
-      title: "Regarding project management of my homework",
-      status: "Approved",
-      totalAmount: "Rs 5000",
-      paidAmount: "Rs 2500",
-      dueDate: "Oct 8",
-      writer: { name: "Jane Cooper", avatar: profileIcon },
-    },
-
-    {
-      id: 3,
-      title: "Regarding project management of my homework",
-      status: "Completed",
-      totalAmount: "Rs 5000",
-      paidAmount: "Rs 5000",
-      dueDate: "Oct 8",
-      writer: { name: "Jane Cooper", avatar: profileIcon },
-    },
   ];
 
+  const paymentData = [
+    {
+      title:
+        "This is my second assignment submission eqwnjkdewnudnqewdnoiqenoandlaskndkaslndkasndklasndlkkasdasnlxnasxlasxnsa",
+      date: "20/02/2024",
+      method: "Fonepay",
+      currency: "NPR",
+      remarks: "First Payment",
+      amount: 8000,
+    },
+    {
+      title:
+        "This is my second assignment submission sndiasncasnclkasncoisdacwslkdcnoisdancosdancosc",
+      date: "20/01/2024",
+      method: "Fonepay",
+      currency: "NPR",
+      remarks: "First Payment",
+      amount: 7000,
+    },
+    {
+      title:
+        "It should be relatively short, but still anxcoilasncxoilasndcxoliasnxnlzkm",
+      date: "20/01/2024",
+      method: "Fonepay",
+      currency: "NPR",
+      remarks: "Mid payment",
+      amount: 8000,
+    },
+  ];
   const handleFilterChange = (filter) => {
     setActiveFilter(filter);
   };
@@ -69,7 +71,7 @@ const Dashboard = () => {
       : assignments.filter((a) => a.status === activeFilter);
 
   return (
-    <div className="flex-1 p-6">
+    <div className="flex-1 p-6 bg-[#fafbfc]">
       <div className="flex gap-4">
         <Card
           Icon={IoBookSharp}
@@ -96,15 +98,12 @@ const Dashboard = () => {
           theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
         />
       </div>
-      <div className= "flex justify-between w-[81%]">
+      <div className="flex justify-between w-[81%]">
         <FilterButtons
           activeFilter={activeFilter}
           onFilterChange={handleFilterChange}
         />
-        <button
-          className="px-4 py-2 rounded-lg text-sm mt-4 text-white bg-[#5d5fef] hover:bg-purple-600 transition-colors"
-
-        >
+        <button className="px-4 py-2 rounded-lg text-sm mt-4 text-white bg-[#5d5fef] hover:bg-purple-600 transition-colors">
           +Create Order
         </button>
       </div>
@@ -112,6 +111,29 @@ const Dashboard = () => {
         {filteredAssignments.map((assignment, index) => (
           <AssignmentCard key={index} {...assignment} />
         ))}
+      </div>
+      <div>
+        <div className="flex justify-between items-center w-[81%] mt-12 px-4">
+          <h1 className="font-semibold">Transactions</h1>
+          <div className="flex items-center gap-1 cursor-pointer hover:text-blue-600">
+            View all
+            <HiArrowRight className="text-lg" />
+          </div>
+        </div>
+        <div className="w-[81%]">
+          {paymentData.length > 0 &&
+            paymentData.map((payment, index) => (
+              <PaymentCard
+                key={index}
+                title={payment.title}
+                date={payment.date}
+                method={payment.method}
+                currency={payment.currency}
+                remarks={payment.remarks}
+                amount={payment.amount}
+              />
+            ))}
+        </div>
       </div>
     </div>
   );
