@@ -111,7 +111,7 @@ const Dashboard = () => {
         >
           +Create Order
         </button>
-        {orderPopup && <ClientOrderPopup />}
+        {orderPopup && <ClientOrderPopup setorderPopup={setorderPopup} />}
       </div>
       <div className="flex flex-wrap gap-4 mt-4">
         {filteredAssignments.map((assignment, index) => (
