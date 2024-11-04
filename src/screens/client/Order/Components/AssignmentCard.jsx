@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import PaymentPopup from "./ClientPaymentPopup";
+import { useNavigate } from "react-router-dom";
 
 const AssignmentCard = ({
   id,
@@ -11,6 +12,11 @@ const AssignmentCard = ({
   dueDate,
   writer,
 }) => {
+  const navigate = useNavigate();
+
+  const handleView = () => {
+    navigate(`/client/orders/view/${id}`);
+  };
   const calculatePercentage = (totalAmount, paidAmount) => {
     const total = parseFloat(totalAmount.replace(/[^0-9.-]+/g, ""));
     const paid = parseFloat(paidAmount.replace(/[^0-9.-]+/g, ""));
@@ -30,17 +36,17 @@ const AssignmentCard = ({
     if (parseInt(percentage) < 50) {
       return {
         bar: "bg-red-500",
-        text: "text-red-500"
+        text: "text-red-500",
       };
     } else if (parseInt(percentage) < 80) {
       return {
         bar: "bg-orange-500",
-        text: "text-orange-500"
+        text: "text-orange-500",
       };
     } else {
       return {
         bar: "bg-green-500",
-        text: "text-green-500"
+        text: "text-green-500",
       };
     }
   };
@@ -54,16 +60,10 @@ const AssignmentCard = ({
     approved: "bg-gray-300 text-gray-600",
   };
 
-
   const [showPaymentPopup, setShowPaymentPopup] = useState(false);
 
   const handlePay = () => {
     setShowPaymentPopup(true);
-  };
-
-
-  const handleView = () => {
-    console.log("view", id);
   };
 
   const progressClasses = getProgressClasses();
@@ -89,8 +89,9 @@ const AssignmentCard = ({
           </span>
         </div>
         <div
-          className={`px-2 py-1 rounded-full text-sm capitalize ${statusColors[status.toLowerCase()]
-            }`}
+          className={`px-2 py-1 rounded-full text-sm capitalize ${
+            statusColors[status.toLowerCase()]
+          }`}
         >
           {status}
         </div>
@@ -116,7 +117,9 @@ const AssignmentCard = ({
             style={{ width: `${percentage}%` }}
           />
         </div>
-        <span className={`absolute right-0 -top-4 text-sm ${progressClasses.text}`}>
+        <span
+          className={`absolute right-0 -top-4 text-sm ${progressClasses.text}`}
+        >
           {percentage}%
         </span>
       </div>
@@ -156,7 +159,15 @@ const AssignmentCard = ({
       {showPaymentPopup && (
         <PaymentPopup
           onClose={() => setShowPaymentPopup(false)}
-          assignment={{ id, title, description, status, totalAmount,paidAmount, dueDate }}
+          assignment={{
+            id,
+            title,
+            description,
+            status,
+            totalAmount,
+            paidAmount,
+            dueDate,
+          }}
         />
       )}
     </div>
