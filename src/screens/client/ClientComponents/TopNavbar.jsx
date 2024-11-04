@@ -1,12 +1,33 @@
-import React from "react";
-import profileImage from "../ClientComponents/profile-picture.jpeg";
-import profileIcon from "../ClientComponents/profileIcon.jpg";
+import React, { useState, useEffect } from "react";
 import { MdOutlineNotifications } from "react-icons/md";
+import { useLocation } from "react-router-dom";
+
+
+const pathToTitleMap = {
+  "/client": "Dashboard",
+  "/client/orders": "Orders",
+  "/client/payments": "Payments",
+  "/client/reminders": "Reminders",
+}
 
 const TopNavbar = ({ notificationCount = 0, userName = localStorage.getItem("firstName") }) => {
+  const location = useLocation();
+
+  const [headerTitle, setHeaderTitle] = useState("");
+
+
+
+  useEffect(() => {
+    const title = pathToTitleMap[location.pathname];
+    if (title) {
+      setHeaderTitle(title);
+    }
+  }, [location.pathname]);
+
+
   return (
     <nav className="w-full bg-white px-5 py-4 flex items-center justify-between ">
-      <div className="text-xl font-semibold">Dashboard</div>
+      <div className="text-xl font-semibold">{headerTitle}</div>
 
       <div className="flex items-center space-x-4">
         <div className="relative w-auto h-auto p-1 rounded-2xl bg-yellow-100">

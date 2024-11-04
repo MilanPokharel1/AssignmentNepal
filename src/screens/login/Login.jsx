@@ -62,6 +62,7 @@ const Login = () => {
 
         {/* Social Login Section */}
         <div className="w-1/2 flex flex-col items-center justify-center space-y-4 border-r border-gray-200 px-6">
+
           <div className="w-[55%]">
             <FacebookLoginComponent />
             <GoogleLoginComponent />
