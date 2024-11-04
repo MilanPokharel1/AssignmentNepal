@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 
 import { NavLink } from "react-router-dom";
-import { useNavigate } from 'react-router-dom';
-
+import { useNavigate } from "react-router-dom";
 
 import {
   FaClipboardList,
@@ -17,20 +16,17 @@ import { RiPieChart2Fill } from "react-icons/ri";
 const SideNavbar = () => {
   const navigate = useNavigate();
 
-
   const linkStyles =
     "flex items-center space-x-4 pl-6 text-gray-600 transition-all duration-300 ease-in-out py-2"; // Base link styles
   const activeLinkStyles = "bg-[#5d5fef] text-white rounded-md py-2"; // Styles for active link without enlargement
   const dashboardActiveStyles =
     "bg-[#5d5fef] text-white font-medium rounded-md py-2 text-xl transform scale-105"; // Enlarged style for Dashboard only
 
-
-
   const handleLogout = () => {
     // Clear the token from local storage
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
     // Navigate back to the login page
-    navigate('/');
+    navigate("/");
   };
   return (
     <div className="h-full w-full bg-white flex flex-col p-6 shadow-xl drop-shadow-lg">
@@ -78,7 +74,7 @@ const SideNavbar = () => {
           </div>
           <div>
             <NavLink
-              to="/reminders"
+              to="/client/reminders"
               className={({ isActive }) =>
                 `${linkStyles} ${isActive ? activeLinkStyles : ""}`
               }

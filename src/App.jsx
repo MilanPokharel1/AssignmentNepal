@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Client from "./screens/client/Client";
 import ClientOrder from "./screens/client/Order/ClientOrder";
 import ClientPayments from "./screens/client/Payments/ClientPayments";
+import ClientReminders from "./screens/client/Reminders/ClientReminders";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route index element={<ClientDashboard />} />
           <Route path="orders" element={<ClientOrder />} />
           <Route path="payments" element={<ClientPayments />} />
+          <Route path="reminders" element={<ClientReminders />} />
         </Route>
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
       </Routes>
