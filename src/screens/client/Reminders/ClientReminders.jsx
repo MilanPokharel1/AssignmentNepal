@@ -43,8 +43,7 @@ const ClientReminders = () => {
   return (
     <div className="bg-[#fafbfc] min-h-screen p-6">
       <div className="w-[81%] mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold text-gray-800">Reminders</h2>
+        <div className="flex justify-between items-center mb-6 flex-row-reverse">
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-600">Sort by:</span>
             <select

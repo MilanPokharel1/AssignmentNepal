@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { upload_file } from '../../../api/Api';
+import React, { useState } from "react";
+import { upload_file } from "../../../../api/Api.jsx";
 
 const ClientOrderPopup = () => {
   const [formData, setFormData] = useState({
-    instagramTitle: '',
-    assignmentTitle: '',
-    description: '',
-    deadline: '',
-    orderFixedBy: '',
+    instagramTitle: "",
+    assignmentTitle: "",
+    description: "",
+    deadline: "",
+    orderFixedBy: "",
     file: null,
   });
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -21,7 +21,7 @@ const ClientOrderPopup = () => {
       [name]: files ? files[0] : value,
     }));
 
-    if (name === 'file') {
+    if (name === "file") {
       handleFileUpload(e);
     }
   };
@@ -29,7 +29,7 @@ const ClientOrderPopup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setUploading(true);
-    setError(''); // Reset any previous error
+    setError(""); // Reset any previous error
 
     const form = new FormData();
     for (const key in formData) {
@@ -38,22 +38,22 @@ const ClientOrderPopup = () => {
 
     try {
       const response = await fetch(upload_file, {
-        method: 'POST',
+        method: "POST",
         body: form,
       });
 
       if (!response.ok) {
-        throw new Error('Failed to upload the file.');
+        throw new Error("Failed to upload the file.");
       }
 
       // Handle successful response
-      alert('Order submitted successfully!');
+      alert("Order submitted successfully!");
       setFormData({
-        instagramTitle: '',
-        assignmentTitle: '',
-        description: '',
-        deadline: '',
-        orderFixedBy: '',
+        instagramTitle: "",
+        assignmentTitle: "",
+        description: "",
+        deadline: "",
+        orderFixedBy: "",
         file: null,
       });
       setUploadProgress(0);
@@ -87,7 +87,9 @@ const ClientOrderPopup = () => {
     <div className="w-full max-w-lg mx-auto bg-white rounded-lg shadow-lg p-8">
       <form onSubmit={handleSubmit}>
         <div className="mb-6">
-          <h2 className="text-sm font-medium text-gray-900 mb-6">Basic Information</h2>
+          <h2 className="text-sm font-medium text-gray-900 mb-6">
+            Basic Information
+          </h2>
           <div className="space-y-4">
             {/* Form fields */}
             <input
@@ -148,13 +150,19 @@ const ClientOrderPopup = () => {
           {uploading && (
             <div>
               <progress value={uploadProgress} max="100" className="w-full" />
-              <div>{uploadProgress.toFixed(0)}% - Estimated time: {((1 - uploadProgress / 100) * 10).toFixed(1)}s</div>
+              <div>
+                {uploadProgress.toFixed(0)}% - Estimated time:{" "}
+                {((1 - uploadProgress / 100) * 10).toFixed(1)}s
+              </div>
             </div>
           )}
           {error && <div className="text-red-500">{error}</div>}
         </div>
 
-        <button type="submit" className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition-colors">
+        <button
+          type="submit"
+          className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition-colors"
+        >
           Submit
         </button>
       </form>

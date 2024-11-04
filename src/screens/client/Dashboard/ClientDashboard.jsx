@@ -7,9 +7,11 @@ import FilterButtons from "./components/FilterButtons";
 import profileIcon from "../ClientComponents/profileIcon.jpg";
 import { HiArrowRight } from "react-icons/hi";
 import PaymentCard from "../Payments/Components/PaymentCard";
+import ClientOrderPopup from "../Order/Components/ClientOrderPopup.jsx";
 
 const Dashboard = () => {
   const [activeFilter, setActiveFilter] = useState("All");
+  const [orderPopup, setorderPopup] = useState(false);
 
   const assignments = [
     {
@@ -103,9 +105,13 @@ const Dashboard = () => {
           activeFilter={activeFilter}
           onFilterChange={handleFilterChange}
         />
-        <button className="px-4 py-2 rounded-lg text-sm mt-4 text-white bg-[#5d5fef] hover:bg-purple-600 transition-colors">
+        <button
+          className="px-4 py-2 rounded-lg text-sm mt-4 text-white bg-[#5d5fef] hover:bg-purple-600 transition-colors"
+          onClick={() => setorderPopup(true)}
+        >
           +Create Order
         </button>
+        {orderPopup && <ClientOrderPopup />}
       </div>
       <div className="flex flex-wrap gap-4 mt-4">
         {filteredAssignments.map((assignment, index) => (
