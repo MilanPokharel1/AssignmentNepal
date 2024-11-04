@@ -67,7 +67,7 @@ const SideNavbar = () => {
           </div>
           <div>
             <NavLink
-              to="/payments"
+              to="/client/payments"
               className={({ isActive }) =>
                 `${linkStyles} ${isActive ? activeLinkStyles : ""}`
               }
