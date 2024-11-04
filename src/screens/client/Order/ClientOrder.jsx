@@ -4,18 +4,20 @@ import FilterButtons from "./components/FilterButtons";
 import profileIcon from "../ClientComponents/profileIcon.jpg";
 import { ImSearch } from "react-icons/im";
 import { FaChevronDown } from "react-icons/fa";
+import ClientOrderPopup from "./Components/ClientOrderPopup";
 
 const ClientOrder = () => {
   const [activeFilter, setActiveFilter] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("Newest");
   const [showOptions, setShowOptions] = useState(false);
+  const [orderPopup, setorderPopup] = useState(false);
 
   const assignments = [
     {
       id: 2,
-      title: "Regarding project management of my homework",
-      description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fugiat iure ipsum unde doloribus accusamus odit quaerat aperiam commodi, quidem, magni nisi in ullam velit id nulla earum illo ab libero dicta vitae labore? Debitis fuga facere blanditiis explicabo voluptatibus!",
+      title: "Regarding project management of my homework Lorem ipsum, dolor sit amet consectetur adipisicing elit. Porro nisi accusantium laborum quidem cumque aperiam? Numquam ut tenetur voluptatum vel.",
+      description: "hello friends Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fugiat iure ipsum unde doloribus accusamus odit quaerat aperiam commodi, quidem, magni nisi in ullam velit id nulla earum illo ab libero dicta vitae labore? Debitis fuga facere blanditiis explicabo voluptatibus!",
       status: "Pending",
       totalAmount: "Rs 5000",
       paidAmount: "Rs 1000",
@@ -25,7 +27,7 @@ const ClientOrder = () => {
     {
       id: 1,
       title: "Regarding project management of my homework",
-      description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fugiat iure ipsum unde doloribus accusamus odit quaerat aperiam commodi, quidem, magni nisi in ullam velit id nulla earum illo ab libero dicta vitae labore? Debitis fuga facere blanditiis explicabo voluptatibus!",
+      description: "hello my frends Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fugiat iure ipsum unde doloribus accusamus odit quaerat aperiam commodi, quidem, magni nisi in ullam velit id nulla earum illo ab libero dicta vitae labore? Debitis fuga facere blanditiis explicabo voluptatibus!",
       status: "Ongoing",
       totalAmount: "NRs 5000",
       paidAmount: "NRs 3000",
@@ -118,7 +120,8 @@ const ClientOrder = () => {
       return (
         normalizeText(assignment.title).includes(search) ||
         normalizeText(assignment.dueDate).includes(search) ||
-        normalizeText(assignment.writer.name).includes(search)
+        normalizeText(assignment.writer.name).includes(search) ||
+        normalizeText(assignment.description).includes(search)
       );
     });
 
@@ -185,9 +188,13 @@ const ClientOrder = () => {
             activeFilter={activeFilter}
             onFilterChange={handleFilterChange}
           />
-          <button className="px-4 py-2 rounded-lg text-sm mt-4 text-white bg-[#5d5fef] hover:bg-purple-600 transition-colors">
+          <button
+            onClick={() => setorderPopup(true)}
+            className="px-4 py-2 rounded-lg text-sm mt-4 text-white bg-[#5d5fef] hover:bg-purple-600 transition-colors">
             +Create Order
           </button>
+
+          {orderPopup && <ClientOrderPopup setorderPopup={setorderPopup} />}
         </div>
 
         <div className="flex flex-wrap gap-4 mt-4">

@@ -9,7 +9,7 @@ const ClientOrderPopup = ({ setorderPopup }) => {
     description: "",
     deadline: "",
     orderFixedBy: "",
-    file: null,
+    files: [], // Updated to hold multiple files
     categories: "",
     amount: "",
   });
@@ -20,13 +20,18 @@ const ClientOrderPopup = ({ setorderPopup }) => {
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: files ? files[0] : value,
-    }));
-
-    if (name === "file") {
+    if (name === "files") {
+      const selectedFiles = Array.from(files);
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: selectedFiles, // Store all selected files
+      }));
       handleFileUpload(e);
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
     }
   };
 
@@ -37,7 +42,14 @@ const ClientOrderPopup = ({ setorderPopup }) => {
 
     const form = new FormData();
     for (const key in formData) {
-      form.append(key, formData[key]);
+      // Append each file to the FormData
+      if (key === "files") {
+        formData.files.forEach((file) => {
+          form.append("files", file);
+        });
+      } else {
+        form.append(key, formData[key]);
+      }
     }
 
     try {
@@ -54,7 +66,7 @@ const ClientOrderPopup = ({ setorderPopup }) => {
       setTimeout(() => {
         setShowSuccessPopup(false);
         setorderPopup(false);
-      }, 2000);
+      }, 3000);
 
       setFormData({
         instagramTitle: "",
@@ -62,7 +74,7 @@ const ClientOrderPopup = ({ setorderPopup }) => {
         description: "",
         deadline: "",
         orderFixedBy: "",
-        file: null,
+        files: [], // Reset files after submission
         categories: "",
         amount: "",
       });
@@ -75,21 +87,18 @@ const ClientOrderPopup = ({ setorderPopup }) => {
   };
 
   const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const totalSize = file.size;
-      let uploadedSize = 0;
+    const totalFiles = e.target.files.length;
+    let uploadedFiles = 0;
 
-      const interval = setInterval(() => {
-        if (uploadedSize < totalSize) {
-          uploadedSize += totalSize * 0.1;
-          const progress = Math.min((uploadedSize / totalSize) * 100, 100);
-          setUploadProgress(progress);
-        } else {
-          clearInterval(interval);
-        }
-      }, 1000);
-    }
+    const interval = setInterval(() => {
+      if (uploadedFiles < totalFiles) {
+        uploadedFiles += 1; // Increment uploaded files count
+        const progress = Math.min((uploadedFiles / totalFiles) * 100, 100);
+        setUploadProgress(progress);
+      } else {
+        clearInterval(interval);
+      }
+    }, 100); // Adjust the interval time for smoothness
   };
 
   return (
@@ -152,15 +161,43 @@ const ClientOrderPopup = ({ setorderPopup }) => {
                   required
                 />
               </div>
-              <div>
-                <label className="block text-sm mb-2">File Upload</label>
+              <div className="mb-4">
+                <label className="block text-sm font-medium mb-2">File Upload</label>
                 <input
                   type="file"
-                  name="file"
+                  name="files"
                   onChange={handleChange}
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded text-sm"
+                  className="hidden" // Hide the default file input
+                  id="file-upload"
+                  multiple // Allow multiple files
                   required
                 />
+                <label
+                  htmlFor="file-upload" // Use the label to trigger the file input
+                  className="flex items-center justify-center w-full px-4 py-2.5 border border-gray-300 rounded-md text-sm text-gray-700 bg-white cursor-pointer hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200"
+                >
+                  <span className="mr-2">Choose files</span>
+                  <svg
+                    className="w-5 h-5 text-gray-500"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path d="M10 0a2 2 0 00-2 2v2.585l-1.293-1.293A2 2 0 005 4.586l6 6a2 2 0 002 0l6-6a2 2 0 00-1.414-3.414L12 6.586V2a2 2 0 00-2-2z" />
+                    <path d="M2 11a2 2 0 00-2 2v5a2 2 0 002 2h16a2 2 0 002-2v-5a2 2 0 00-2-2H2zm16 7H2v-5h16v5z" />
+                  </svg>
+                </label>
+                {/* Display the selected files */}
+                <div className="mt-2 text-sm text-gray-500">
+                  {formData.files.length > 0 ? (
+                    formData.files.map((file, index) => (
+                      <div key={index} className="mt-1">{file.name}</div>
+                    ))
+                  ) : (
+                    <div>No files selected</div>
+                  )}
+                </div>
               </div>
               <div>
                 <label className="block text-sm mb-2">Order fixed by</label>
@@ -205,50 +242,33 @@ const ClientOrderPopup = ({ setorderPopup }) => {
             </div>
           </div>
 
-          {uploading && (
-            <div>
-              <progress value={uploadProgress} max="100" className="w-full" />
-              <div>
-                {uploadProgress.toFixed(0)}% - Estimated time:{" "}
-                {((1 - uploadProgress / 100) * 10).toFixed(1)}s
+          <div className="flex items-center justify-between mt-6">
+            <button
+              type="submit"
+              className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700 transition duration-300"
+              disabled={uploading}
+            >
+              {uploading ? "Uploading..." : "Submit"}
+            </button>
+          </div>
+
+          {uploadProgress > 0 && (
+            <div className="mt-2">
+              <div className="bg-gray-200 rounded-full h-2.5">
+                <div
+                  className="bg-blue-600 h-2.5 rounded-full"
+                  style={{ width: `${uploadProgress}%` }}
+                ></div>
               </div>
             </div>
           )}
-          {error && <div className="text-red-500">{error}</div>}
 
-          <button
-            type="submit"
-            className="w-full bg-[#6466F1] text-white py-3 rounded hover:bg-[#5355ED] transition-colors text-sm font-medium"
-          >
-            Submit
-          </button>
+          {error && <div className="text-red-500 mt-2">{error}</div>}
+          {showSuccessPopup && (
+            <div className="mt-2 text-green-500">Order submitted successfully!</div>
+          )}
         </form>
       </div>
-
-      {showSuccessPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60]">
-          <div className="bg-white rounded-lg p-8 flex flex-col items-center max-w-sm mx-4">
-            <div className="w-16 h-16 bg-[#0066FF] rounded-full flex items-center justify-center mb-4">
-              <svg
-                className="w-8 h-8 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
-            <p className="text-center text-lg">
-              Thank you for Submitting you Assignment
-            </p>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
