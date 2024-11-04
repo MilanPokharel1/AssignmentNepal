@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AssignmentCard from "./components/AssignmentCard";
+import AssignmentCard from "./Components/AssignmentCard";
 import FilterButtons from "./components/FilterButtons";
 import profileIcon from "../ClientComponents/profileIcon.jpg";
 import { ImSearch } from "react-icons/im";
@@ -19,7 +19,7 @@ const ClientOrder = () => {
       totalAmount: "Rs 5000",
       paidAmount: "Rs 1000",
       dueDate: "Oct 9",
-      writer: { name: "Jane Cooper", avatar: profileIcon },
+      writer: { name: "Not Assigned", avatar: profileIcon },
     },
     {
       id: 1,
@@ -35,7 +35,7 @@ const ClientOrder = () => {
       title: "Regarding project management of my homework",
       status: "Submitted",
       totalAmount: "Rs 5000",
-      paidAmount: "Rs 4500",
+      paidAmount: "Rs 450",
       dueDate: "Oct 8",
       writer: { name: "Jane Cooper", avatar: profileIcon },
     },
@@ -46,7 +46,7 @@ const ClientOrder = () => {
       totalAmount: "Rs 5000",
       paidAmount: "Rs 2500",
       dueDate: "Oct 8",
-      writer: { name: "Jane Cooper", avatar: profileIcon },
+      writer: { name: "Not Assigned", avatar: profileIcon },
     },
     {
       id: 9,
@@ -91,7 +91,7 @@ const ClientOrder = () => {
         No Results Found
       </h3>
       <p className="text-gray-500 text-center max-w-md">
-        We couldn't find any assignments matching "{searchTerm}". Try adjusting
+        We couldn't find any payments matching "{searchTerm}". Try adjusting
         your search terms or filters.
       </p>
       <button

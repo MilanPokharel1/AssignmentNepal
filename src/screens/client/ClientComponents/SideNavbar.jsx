@@ -25,6 +25,8 @@ const SideNavbar = () => {
   const handleLogout = () => {
     // Clear the token from local storage
     localStorage.removeItem("token");
+    localStorage.removeItem("firstName");
+    localStorage.removeItem("picture");
     // Navigate back to the login page
     navigate("/");
   };
