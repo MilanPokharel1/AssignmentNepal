@@ -18,27 +18,29 @@ const AssignmentCard = ({
     }
 
     const percentage = (paid / total) * 100;
-
     return percentage.toFixed(0);
   };
 
   const percentage = calculatePercentage(totalAmount, paidAmount);
 
-  // Function to determine progress bar color based on percentage
-  const getProgressColor = () => {
-    console.log(percentage)
-
-    if(percentage < 50){
-      return "-red-500";
-    } else if(percentage >=50 && percentage < 80){
-      return "-orange-500";
+  // Function to determine progress bar and text classes based on percentage
+  const getProgressClasses = () => {
+    if (parseInt(percentage) < 50) {
+      return {
+        bar: "bg-red-500",
+        text: "text-red-500"
+      };
+    } else if (parseInt(percentage) < 80) {
+      return {
+        bar: "bg-orange-500",
+        text: "text-orange-500"
+      };
+    } else {
+      return {
+        bar: "bg-green-500",
+        text: "text-green-500"
+      };
     }
-    else{
-      return "-green-500";
-    }
-    // if (percentage < 50) return "-red-500";
-    // if (percentage < 80) return "-orange-500";
-    // return "-green-500";
   };
 
   // Status styling
@@ -53,12 +55,15 @@ const AssignmentCard = ({
   const handlePay = () => {
     console.log("pay", id);
   };
+  
   const handleView = () => {
     console.log("view", id);
   };
 
+  const progressClasses = getProgressClasses();
+
   return (
-    <div className="p-4 bg-white rounded-lg shadow-2xl w-[40%] drop-shadow-2x2 ">
+    <div className="p-4 bg-white rounded-lg shadow-2xl w-[40%] drop-shadow-2x2">
       {/* Title and Status */}
       <div className="mb-4 flex justify-between items-start">
         <div className="flex items-start">
@@ -102,13 +107,11 @@ const AssignmentCard = ({
         <div className="text-sm block text-gray-600 mr-2">Payment(%):</div>
         <div className="w-full bg-gray-200 rounded-full h-2 align-middle items-center">
           <div
-            className={`bg${getProgressColor()} h-2 rounded-full transition-all duration-300`}
-            style={{ width: `${percentage}% ` }}
+            className={`${progressClasses.bar} h-2 rounded-full transition-all duration-300`}
+            style={{ width: `${percentage}%` }}
           />
         </div>
-        <span
-          className={`absolute right-0 -top-4 text-sm text${getProgressColor()}`}
-        >
+        <span className={`absolute right-0 -top-4 text-sm ${progressClasses.text}`}>
           {percentage}%
         </span>
       </div>
@@ -125,7 +128,6 @@ const AssignmentCard = ({
             <span className="text-sm font-medium text-gray-900">
               {writer.name}
             </span>
-
             <span className="text-xs text-gray-500">writer</span>
           </div>
         </div>
@@ -139,7 +141,7 @@ const AssignmentCard = ({
             View
           </button>
           <button
-            className="px-3 py-1 text-sm text-white bg-[#5d5fef] hover:[#5d5feg] rounded-md transition-colors"
+            className="px-3 py-1 text-sm text-white bg-[#5d5fef] hover:bg-[#4a4cef] rounded-md transition-colors"
             onClick={handlePay}
           >
             Pay

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { IoBookSharp, IoCheckmarkSharp } from "react-icons/io5";
 import { MdShoppingCart } from "react-icons/md";
 import Card from "./components/Card";
-import AssignmentCard from "./components/AssignmentCard";
+import AssignmentCard from "../Order/Components/AssignmentCard";
 import FilterButtons from "./components/FilterButtons";
 import profileIcon from "../ClientComponents/profileIcon.jpg";
 import { HiArrowRight } from "react-icons/hi";
@@ -21,7 +21,7 @@ const Dashboard = () => {
       totalAmount: "Rs 5000",
       paidAmount: "Rs 1000",
       dueDate: "Oct 8",
-      writer: { name: "Jane Cooper", avatar: profileIcon },
+      writer: { name: "Not Assigned", avatar: profileIcon },
     },
     {
       id: 1,
