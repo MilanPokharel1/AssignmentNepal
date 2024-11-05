@@ -1,9 +1,10 @@
 // const url = "https://assignment-nepal-backend-production.up.railway.app/api/v1";
-const url = "http://192.168.1.178:3000/api/v1";
+const url = "http://localhost:3000/api/v1";
 export const google_login = `${url}/auth/google-login`;
 export const manual_login = `${url}/auth/login`;
 export const upload_file = `${url}/file/upload`;
-export const get_file = `${url}/file/downloads`;
+export const get_orders = `${url}/file/orders`;
+export const download_file = `${url}/file/download`;
 
 
 

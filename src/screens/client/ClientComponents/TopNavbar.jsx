@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MdOutlineNotifications } from "react-icons/md";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+
 
 
 const pathToTitleMap = {
@@ -12,6 +13,7 @@ const pathToTitleMap = {
 
 const TopNavbar = ({ notificationCount = 0, userName = localStorage.getItem("firstName") }) => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [headerTitle, setHeaderTitle] = useState("");
 
@@ -24,14 +26,14 @@ const TopNavbar = ({ notificationCount = 0, userName = localStorage.getItem("fir
     }
   }, [location.pathname]);
 
-
   return (
     <nav className="w-full bg-white pl-6 pr-10 py-4 flex items-center justify-between ">
       <div className="text-xl font-semibold">{headerTitle}</div>
 
       <div className="flex items-center space-x-4">
         <div className="relative w-auto h-auto p-1 rounded-2xl bg-yellow-100">
-          <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+          <button
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors">
             <MdOutlineNotifications className="h-5 w-5 text-yellow-600" />
             {notificationCount > 0 && (
               <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">

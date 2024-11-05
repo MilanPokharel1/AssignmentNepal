@@ -2,13 +2,23 @@ import React from 'react';
 import { FileIcon, AlertCircle } from "lucide-react";
 
 const PaymentPopup = ({ onClose, assignment }) => {
+
+
+  const statusColors = {
+    ongoing: "bg-yellow-200 text-yellow-600",
+    submitted: "bg-purple-200 text-purple-600",
+    completed: "bg-green-100 text-green-600",
+    pending: "bg-orange-100 text-orange-600",
+    approved: "bg-gray-300 text-gray-600",
+  };
+
   return (
     <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
       <div className="relative w-full max-w-md mx-auto bg-white p-6 rounded-md shadow-lg">
         {/* Close Button */}
         <button 
           onClick={onClose} 
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+          className="absolute text-[20px] top-4 right-4 text-gray-500 hover:text-gray-800"
           aria-label="Close" // For accessibility
         >
           &times; {/* Close icon or text */}
@@ -19,7 +29,7 @@ const PaymentPopup = ({ onClose, assignment }) => {
             {/* Assignment Title */}
             <div>
               <label className="text-sm text-gray-500">Assignment Title:</label>
-              <div className="mt-1 p-2 bg-gray-50 rounded-md text-sm">
+              <div className="mt-1 px-2 bg-gray-50 rounded-md text-sm line-clamp-2 overflow-hidden">
                 {assignment.title} {/* Display assignment title */}
               </div>
             </div>
@@ -27,7 +37,7 @@ const PaymentPopup = ({ onClose, assignment }) => {
             {/* Description */}
             <div>
               <label className="text-sm text-gray-500">Description:</label>
-              <div className="mt-1 p-2 bg-gray-50 rounded-md text-sm">
+              <div className="mt-1 px-2 bg-gray-50 rounded-md text-sm line-clamp-4 overflow-hidden">
                 {assignment.description} {/* Display assignment description */}
               </div>
             </div>
@@ -51,7 +61,7 @@ const PaymentPopup = ({ onClose, assignment }) => {
               <div>
                 <label className="text-sm text-gray-500">Assignment Status:</label>
                 <div className="text-sm">
-                  <span className={`px-2 py-1 rounded-full text-xs ${assignment.status === 'Submitted' ? 'bg-green-100 text-green-600' : 'bg-yellow-100 text-yellow-600'}`}>
+                  <span className={`px-2 py-1 rounded-full text-xs ${statusColors[assignment.status.toLowerCase()]}`}>
                     {assignment.status} {/* Display assignment status */}
                   </span>
                 </div>

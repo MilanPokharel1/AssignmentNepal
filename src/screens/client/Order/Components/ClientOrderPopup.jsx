@@ -17,6 +17,7 @@ const ClientOrderPopup = ({ setorderPopup }) => {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [estimatedTime, setEstimatedTime] = useState(0);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -24,16 +25,19 @@ const ClientOrderPopup = ({ setorderPopup }) => {
       ...prevData,
       [name]: files ? files[0] : value,
     }));
-
-    if (name === "file") {
-      handleFileUpload(e);
-    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.file) {
+      setError("Please select a file to upload");
+      return;
+    }
+
     setUploading(true);
     setError("");
+    setUploadProgress(0);
+    setEstimatedTime(0);
 
     const form = new FormData();
     for (const key in formData) {
@@ -41,21 +45,57 @@ const ClientOrderPopup = ({ setorderPopup }) => {
     }
 
     try {
-      const response = await fetch(upload_file, {
-        method: "POST",
-        body: form,
+      const xhr = new XMLHttpRequest();
+      const startTime = Date.now();
+
+      xhr.upload.addEventListener('progress', (event) => {
+        if (event.lengthComputable) {
+          const percentComplete = (event.loaded / event.total) * 100;
+          setUploadProgress(percentComplete);
+
+          // Calculate estimated time remaining
+          const uploadSpeed = event.loaded / (Date.now() - startTime); // bytes per millisecond
+          const remainingBytes = event.total - event.loaded;
+          const estimatedTimeRemaining = remainingBytes / uploadSpeed / 1000; // convert to seconds
+
+          setEstimatedTime(Math.max(0, estimatedTimeRemaining));
+          if (percentComplete >= 100) {
+            setShowSuccessPopup(true);
+            setTimeout(() => {
+              setShowSuccessPopup(false);
+              // setorderPopup(false);
+            }, 3000);
+          }
+        }
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to upload the file.");
-      }
+      // Create a promise to handle the XHR
+      const uploadPromise = new Promise((resolve, reject) => {
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve(xhr.response);
+          } else {
+            reject(new Error('Upload failed'));
+          }
+        };
+
+        xhr.onerror = () => reject(new Error('Network error occurred during upload'));
+        xhr.onabort = () => reject(new Error('Upload was cancelled'));
+      });
+
+      xhr.open('POST', upload_file);
+      xhr.send(form);
+
+      // Wait for upload to complete
+      await uploadPromise;
 
       setShowSuccessPopup(true);
       setTimeout(() => {
         setShowSuccessPopup(false);
         setorderPopup(false);
-      }, 2000);
+      }, 3000);
 
+      // Reset form
       setFormData({
         instagramTitle: "",
         assignmentTitle: "",
@@ -66,35 +106,36 @@ const ClientOrderPopup = ({ setorderPopup }) => {
         categories: "",
         amount: "",
       });
-      setUploadProgress(0);
+
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'An error occurred during upload');
     } finally {
       setUploading(false);
+      setUploadProgress(0);
+      setEstimatedTime(0);
     }
   };
 
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const totalSize = file.size;
-      let uploadedSize = 0;
-
-      const interval = setInterval(() => {
-        if (uploadedSize < totalSize) {
-          uploadedSize += totalSize * 0.1;
-          const progress = Math.min((uploadedSize / totalSize) * 100, 100);
-          setUploadProgress(progress);
-        } else {
-          clearInterval(interval);
-        }
-      }, 1000);
+  // Format time remaining
+  const formatTimeRemaining = (seconds) => {
+    if (seconds < 60) {
+      return `${Math.round(seconds)}s`;
     }
+    return `${Math.floor(seconds / 60)}m ${Math.round(seconds % 60)}s`;
+  };
+
+  // Format file size
+  const formatFileSize = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="w-full max-w-2xl mx-4 bg-white rounded-lg p-8 relative">
+      <div className="w-full max-w-2xl mx-4 bg-white rounded-lg p-8 relative max-h-[90vh] overflow-y-auto">
         <button
           onClick={() => setorderPopup(false)}
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
@@ -206,14 +247,20 @@ const ClientOrderPopup = ({ setorderPopup }) => {
           </div>
 
           {uploading && (
-            <div>
-              <progress value={uploadProgress} max="100" className="w-full" />
-              <div>
-                {uploadProgress.toFixed(0)}% - Estimated time:{" "}
-                {((1 - uploadProgress / 100) * 10).toFixed(1)}s
+            <div className="flex flex-col items-center w-full">
+              <div className="relative w-full h-4 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-blue-500 rounded-full transition-all duration-300 ease-in-out"
+                  style={{ width: `${uploadProgress}%` }}
+                />
+              </div>
+              <div className="mt-2 flex justify-between w-full text-sm">
+                <span>{uploadProgress.toFixed(0)}%</span>
+                <span>Estimated time: {((1 - uploadProgress / 100) * 10).toFixed(1)}s</span>
               </div>
             </div>
           )}
+
           {error && <div className="text-red-500">{error}</div>}
 
           <button
@@ -243,8 +290,8 @@ const ClientOrderPopup = ({ setorderPopup }) => {
                 />
               </svg>
             </div>
-            <p className="text-center text-lg">
-              Thank you for Submitting you Assignment
+            <p className="text-center text-lg font-medium text-gray-900">
+              Thank you for Submitting your Assignment
             </p>
           </div>
         </div>
