@@ -9,7 +9,7 @@ const ClientOrderPopup = ({ setorderPopup }) => {
     description: "",
     deadline: "",
     orderFixedBy: "",
-    files: [], // Updated to hold multiple files
+    file: null,
     categories: "",
     amount: "",
   });
@@ -17,50 +17,77 @@ const ClientOrderPopup = ({ setorderPopup }) => {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [estimatedTime, setEstimatedTime] = useState(0);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === "files") {
-      const selectedFiles = Array.from(files);
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: selectedFiles, // Store all selected files
-      }));
-      handleFileUpload(e);
-    } else {
-      setFormData((prevData) => ({
-        ...prevData,
-        [name]: value,
-      }));
-    }
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: files ? files[0] : value,
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.file) {
+      setError("Please select a file to upload");
+      return;
+    }
+
     setUploading(true);
     setError("");
+    setUploadProgress(0);
+    setEstimatedTime(0);
 
     const form = new FormData();
     for (const key in formData) {
-      // Append each file to the FormData
-      if (key === "files") {
-        formData.files.forEach((file) => {
-          form.append("files", file);
-        });
-      } else {
-        form.append(key, formData[key]);
-      }
+      form.append(key, formData[key]);
     }
 
     try {
-      const response = await fetch(upload_file, {
-        method: "POST",
-        body: form,
+      const xhr = new XMLHttpRequest();
+      const startTime = Date.now();
+
+      xhr.upload.addEventListener('progress', (event) => {
+        if (event.lengthComputable) {
+          const percentComplete = (event.loaded / event.total) * 100;
+          setUploadProgress(percentComplete);
+
+          // Calculate estimated time remaining
+          const uploadSpeed = event.loaded / (Date.now() - startTime); // bytes per millisecond
+          const remainingBytes = event.total - event.loaded;
+          const estimatedTimeRemaining = remainingBytes / uploadSpeed / 1000; // convert to seconds
+
+          setEstimatedTime(Math.max(0, estimatedTimeRemaining));
+          if (percentComplete >= 100) {
+            setShowSuccessPopup(true);
+            setTimeout(() => {
+              setShowSuccessPopup(false);
+              // setorderPopup(false);
+            }, 3000);
+          }
+        }
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to upload the file.");
-      }
+      // Create a promise to handle the XHR
+      const uploadPromise = new Promise((resolve, reject) => {
+        xhr.onload = () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve(xhr.response);
+          } else {
+            reject(new Error('Upload failed'));
+          }
+        };
+
+        xhr.onerror = () => reject(new Error('Network error occurred during upload'));
+        xhr.onabort = () => reject(new Error('Upload was cancelled'));
+      });
+
+      xhr.open('POST', upload_file);
+      xhr.send(form);
+
+      // Wait for upload to complete
+      await uploadPromise;
 
       setShowSuccessPopup(true);
       setTimeout(() => {
@@ -68,42 +95,47 @@ const ClientOrderPopup = ({ setorderPopup }) => {
         setorderPopup(false);
       }, 3000);
 
+      // Reset form
       setFormData({
         instagramTitle: "",
         assignmentTitle: "",
         description: "",
         deadline: "",
         orderFixedBy: "",
-        files: [], // Reset files after submission
+        file: null,
         categories: "",
         amount: "",
       });
-      setUploadProgress(0);
+
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'An error occurred during upload');
     } finally {
       setUploading(false);
+      setUploadProgress(0);
+      setEstimatedTime(0);
     }
   };
 
-  const handleFileUpload = (e) => {
-    const totalFiles = e.target.files.length;
-    let uploadedFiles = 0;
+  // Format time remaining
+  const formatTimeRemaining = (seconds) => {
+    if (seconds < 60) {
+      return `${Math.round(seconds)}s`;
+    }
+    return `${Math.floor(seconds / 60)}m ${Math.round(seconds % 60)}s`;
+  };
 
-    const interval = setInterval(() => {
-      if (uploadedFiles < totalFiles) {
-        uploadedFiles += 1; // Increment uploaded files count
-        const progress = Math.min((uploadedFiles / totalFiles) * 100, 100);
-        setUploadProgress(progress);
-      } else {
-        clearInterval(interval);
-      }
-    }, 100); // Adjust the interval time for smoothness
+  // Format file size
+  const formatFileSize = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="w-full max-w-2xl mx-4 bg-white rounded-lg p-8 relative">
+      <div className="w-full max-w-2xl mx-4 bg-white rounded-lg p-8 relative max-h-[90vh] overflow-y-auto">
         <button
           onClick={() => setorderPopup(false)}
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
@@ -161,43 +193,15 @@ const ClientOrderPopup = ({ setorderPopup }) => {
                   required
                 />
               </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium mb-2">File Upload</label>
+              <div>
+                <label className="block text-sm mb-2">File Upload</label>
                 <input
                   type="file"
-                  name="files"
+                  name="file"
                   onChange={handleChange}
-                  className="hidden" // Hide the default file input
-                  id="file-upload"
-                  multiple // Allow multiple files
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded text-sm"
                   required
                 />
-                <label
-                  htmlFor="file-upload" // Use the label to trigger the file input
-                  className="flex items-center justify-center w-full px-4 py-2.5 border border-gray-300 rounded-md text-sm text-gray-700 bg-white cursor-pointer hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200"
-                >
-                  <span className="mr-2">Choose files</span>
-                  <svg
-                    className="w-5 h-5 text-gray-500"
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path d="M10 0a2 2 0 00-2 2v2.585l-1.293-1.293A2 2 0 005 4.586l6 6a2 2 0 002 0l6-6a2 2 0 00-1.414-3.414L12 6.586V2a2 2 0 00-2-2z" />
-                    <path d="M2 11a2 2 0 00-2 2v5a2 2 0 002 2h16a2 2 0 002-2v-5a2 2 0 00-2-2H2zm16 7H2v-5h16v5z" />
-                  </svg>
-                </label>
-                {/* Display the selected files */}
-                <div className="mt-2 text-sm text-gray-500">
-                  {formData.files.length > 0 ? (
-                    formData.files.map((file, index) => (
-                      <div key={index} className="mt-1">{file.name}</div>
-                    ))
-                  ) : (
-                    <div>No files selected</div>
-                  )}
-                </div>
               </div>
               <div>
                 <label className="block text-sm mb-2">Order fixed by</label>
@@ -242,33 +246,56 @@ const ClientOrderPopup = ({ setorderPopup }) => {
             </div>
           </div>
 
-          <div className="flex items-center justify-between mt-6">
-            <button
-              type="submit"
-              className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700 transition duration-300"
-              disabled={uploading}
-            >
-              {uploading ? "Uploading..." : "Submit"}
-            </button>
-          </div>
-
-          {uploadProgress > 0 && (
-            <div className="mt-2">
-              <div className="bg-gray-200 rounded-full h-2.5">
+          {uploading && (
+            <div className="flex flex-col items-center w-full">
+              <div className="relative w-full h-4 bg-gray-200 rounded-full overflow-hidden">
                 <div
-                  className="bg-blue-600 h-2.5 rounded-full"
+                  className="h-full bg-blue-500 rounded-full transition-all duration-300 ease-in-out"
                   style={{ width: `${uploadProgress}%` }}
-                ></div>
+                />
+              </div>
+              <div className="mt-2 flex justify-between w-full text-sm">
+                <span>{uploadProgress.toFixed(0)}%</span>
+                <span>Estimated time: {((1 - uploadProgress / 100) * 10).toFixed(1)}s</span>
               </div>
             </div>
           )}
 
-          {error && <div className="text-red-500 mt-2">{error}</div>}
-          {showSuccessPopup && (
-            <div className="mt-2 text-green-500">Order submitted successfully!</div>
-          )}
+          {error && <div className="text-red-500">{error}</div>}
+
+          <button
+            type="submit"
+            className="w-full bg-[#6466F1] text-white py-3 rounded hover:bg-[#5355ED] transition-colors text-sm font-medium"
+          >
+            Submit
+          </button>
         </form>
       </div>
+
+      {showSuccessPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60]">
+          <div className="bg-white rounded-lg p-8 flex flex-col items-center max-w-sm mx-4">
+            <div className="w-16 h-16 bg-[#0066FF] rounded-full flex items-center justify-center mb-4">
+              <svg
+                className="w-8 h-8 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+            <p className="text-center text-lg font-medium text-gray-900">
+              Thank you for Submitting your Assignment
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
