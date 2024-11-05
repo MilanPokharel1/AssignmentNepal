@@ -45,7 +45,7 @@ const ClientOrderView = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-bold mb-4">Assignment for Order ID: {id}</h2>
+      <h2 className="text-2xl font-bold mb-4">Assignment</h2>
 
       {/* Assignment Info Section */}
       <div className="mb-6">
@@ -70,11 +70,7 @@ const ClientOrderView = () => {
           <h4 className="font-semibold mb-2">Uploaded Files</h4>
           <div className="flex items-center space-x-2">
             <FolderIcon className="h-5 w-5 text-yellow-500" />
-            <a
-              href="/path/to/download"
-              download
-              className="text-blue-600 underline"
-            >
+            <a href="/path/to/download" download>
               theprojekts-design-tokens.zip
             </a>
           </div>
@@ -83,11 +79,7 @@ const ClientOrderView = () => {
           <h4 className="font-semibold mb-2">Downloads Available</h4>
           <div className="flex items-center space-x-2">
             <FolderIcon className="h-5 w-5 text-yellow-500" />
-            <a
-              href="/path/to/download"
-              download
-              className="text-blue-600 underline"
-            >
+            <a href="/path/to/download" download>
               finalaccounting.zip
             </a>
           </div>

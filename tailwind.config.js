@@ -6,6 +6,9 @@ export default {
       fontFamily: {
         sans: ["Poppins", "sans-serif"], // Set Poppins as default for sans font
       },
+      screens: {
+        SideNavHide: "1846px",
+      },
     },
   },
   plugins: [],
