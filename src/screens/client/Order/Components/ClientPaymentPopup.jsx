@@ -87,7 +87,7 @@ const PaymentPopup = ({ onClose, assignment }) => {
             </div>
 
             {/* Payment Button */}
-            <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md">
+            <button className="w-full bg-black hover:bg-gray-600 text-white py-2 rounded-md">
               Proceed To Pay
             </button>
 

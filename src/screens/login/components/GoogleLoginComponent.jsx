@@ -33,6 +33,7 @@ const GoogleLoginComponent = () => {
 
       localStorage.setItem('token', data.token);
       localStorage.setItem('firstName', data.user.firstName);
+      localStorage.setItem('lastName', data.user.lastName);
       localStorage.setItem('picture', data.user.picture);
 
       navigate(`/${data.user.role}`);

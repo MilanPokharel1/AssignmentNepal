@@ -9,24 +9,36 @@ const HelpSupport = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch(get_orders); // Update the endpoint accordingly
+        const token = localStorage.getItem("token"); // Replace with the actual token
+
+        const response = await fetch(get_orders, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+
         if (!response.ok) {
           throw new Error("Failed to fetch orders");
         }
+
         const data = await response.json();
         setOrders(data);
-        console.log(data)
+        console.log(data);
       } catch (error) {
         console.error("Error fetching orders:", error);
       }
     };
 
     fetchOrders();
+
   }, []);
 
   // Function to handle file download
   const handleDownload = async (fileUrl) => {
+
     try {
+      const token = localStorage.getItem("token");
       const fileId = new URL(fileUrl).searchParams.get("id"); // Get the id from the URL
       console.log(fileId)
       if (!fileId) {
@@ -37,6 +49,7 @@ const HelpSupport = () => {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
         },
       });
 
@@ -91,7 +104,7 @@ const HelpSupport = () => {
               <td className="border-b p-2">{order.assignmentTitle}</td>
               <td className="border-b p-2">
                 <button
-                  onClick={() => handleDownload(order.fileUrl)} // Ensure fileId is part of your order data
+                  onClick={() => handleDownload(order.files[0].fileUrl)} // Ensure fileId is part of your order data
                   className="bg-blue-500 text-white px-4 py-2 rounded"
                 >
                   Download

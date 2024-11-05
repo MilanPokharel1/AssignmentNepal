@@ -11,12 +11,12 @@ const pathToTitleMap = {
   "/client/reminders": "Reminders",
 }
 
-const TopNavbar = ({ notificationCount = 0, userName = localStorage.getItem("firstName") }) => {
+const TopNavbar = ({ notificationCount = 0, userName = localStorage.getItem("firstName") + " " + localStorage.getItem("lastName") }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const [profilePicture, setProfilePicture] = useState("");
   const [headerTitle, setHeaderTitle] = useState("");
-
 
 
   useEffect(() => {
@@ -25,6 +25,15 @@ const TopNavbar = ({ notificationCount = 0, userName = localStorage.getItem("fir
       setHeaderTitle(title);
     }
   }, [location.pathname]);
+
+  useEffect(() => {
+    const pictureUrl = localStorage.getItem("picture");
+    if (pictureUrl) {
+      setProfilePicture(pictureUrl);
+    }
+  }, [localStorage.getItem("picture")]);
+
+
 
   return (
     <nav className="w-full bg-white pl-6 pr-10 py-4 flex items-center justify-between ">
@@ -46,9 +55,9 @@ const TopNavbar = ({ notificationCount = 0, userName = localStorage.getItem("fir
         {/* User Profile */}
         <div className="flex items-center space-x-2 mr-3">
           <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden">
-            <img
-              src={`${localStorage.getItem("picture")}`}
-              // alt={profileIcon}
+          <img
+              src={profilePicture || ""}
+              alt="User profile"
               className="w-full h-full object-cover"
             />
           </div>

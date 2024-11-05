@@ -7,11 +7,14 @@ const ClientOrderPopup = ({ setorderPopup }) => {
     instagramTitle: "",
     assignmentTitle: "",
     description: "",
+    categorie: "",
     deadline: "",
     orderFixedBy: "",
+    totalAmount: "",
+    paidAmount: "",
+    paymentMethod: "Cash",
+    paymentCurrency: "Rs",
     file: null,
-    categories: "",
-    amount: "",
   });
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
@@ -59,23 +62,25 @@ const ClientOrderPopup = ({ setorderPopup }) => {
           const estimatedTimeRemaining = remainingBytes / uploadSpeed / 1000; // convert to seconds
 
           setEstimatedTime(Math.max(0, estimatedTimeRemaining));
-          if (percentComplete >= 100) {
-            setShowSuccessPopup(true);
-            setTimeout(() => {
-              setShowSuccessPopup(false);
-              // setorderPopup(false);
-            }, 3000);
-          }
+          // if (percentComplete >= 100) {
+          //   setShowSuccessPopup(true);
+          //   setTimeout(() => {
+          //     setShowSuccessPopup(false);
+          //     // setorderPopup(false);
+          //   }, 3000);
+          // }
         }
       });
-
+      const token = localStorage.getItem("token");
+      xhr.open('POST', upload_file);
+      xhr.setRequestHeader("Authorization", `Bearer ${token}`);
       // Create a promise to handle the XHR
       const uploadPromise = new Promise((resolve, reject) => {
         xhr.onload = () => {
           if (xhr.status >= 200 && xhr.status < 300) {
             resolve(xhr.response);
           } else {
-            reject(new Error('Upload failed'));
+            reject(new Error('Upload failed 2'));
           }
         };
 
@@ -83,7 +88,6 @@ const ClientOrderPopup = ({ setorderPopup }) => {
         xhr.onabort = () => reject(new Error('Upload was cancelled'));
       });
 
-      xhr.open('POST', upload_file);
       xhr.send(form);
 
       // Wait for upload to complete
@@ -216,12 +220,12 @@ const ClientOrderPopup = ({ setorderPopup }) => {
                 />
               </div>
               <div>
-                <label className="block text-sm mb-2">Categories</label>
+                <label className="block text-sm mb-2">Categorie</label>
                 <input
                   type="text"
-                  name="categories"
+                  name="categorie"
                   placeholder="Type Here"
-                  value={formData.categories}
+                  value={formData.categorie}
                   onChange={handleChange}
                   className="w-full px-4 py-2.5 border border-gray-200 rounded text-sm"
                   required
@@ -230,21 +234,34 @@ const ClientOrderPopup = ({ setorderPopup }) => {
             </div>
           </div>
 
-          <div className="border-t border-gray-200 pt-6">
-            <h2 className="text-lg font-semibold mb-6">Payments</h2>
+          <div className="border-t border-gray-200 pt-3">
+            <h2 className="text-lg font-semibold mb-3">Payments</h2>
             <div>
-              <label className="block text-sm mb-2">Amount</label>
+              <label className="block text-sm mb-2">Total Amount</label>
               <input
                 type="text"
-                name="amount"
-                placeholder="Amount"
-                value={formData.amount}
+                name="totalAmount"
+                placeholder="Total Amount"
+                value={formData.totalAmount}
+                onChange={handleChange}
+                className="w-full px-4 py-2.5 border border-gray-200 rounded text-sm"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm mb-2">Paid Amount</label>
+              <input
+                type="text"
+                name="paidAmount"
+                placeholder="Paid Amount"
+                value={formData.paidAmount}
                 onChange={handleChange}
                 className="w-full px-4 py-2.5 border border-gray-200 rounded text-sm"
                 required
               />
             </div>
           </div>
+
 
           {uploading && (
             <div className="flex flex-col items-center w-full">
