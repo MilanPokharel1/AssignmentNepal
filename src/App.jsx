@@ -19,7 +19,7 @@ function App() {
           <Route index element={<ClientDashboard />} />
           <Route path="orders" element={<ClientOrder />}>
             <Route index element={<AllClientOrder />} />
-            <Route path="view/:id" element={<ClientOrderView />} />
+            <Route path="view/:orderId" element={<ClientOrderView />} />
           </Route>
           <Route path="payments" element={<ClientPayments />} />
           <Route path="reminders" element={<ClientReminders />} />

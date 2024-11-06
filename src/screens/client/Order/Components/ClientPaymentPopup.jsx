@@ -56,7 +56,7 @@ const PaymentPopup = ({ onClose, assignment }) => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="text-sm text-gray-500">Deadline:</label>
-                <div className="text-sm text-red-500">{assignment.dueDate}</div> {/* Display due date */}
+                <div className="text-sm text-red-500">{assignment.deadline}</div> {/* Display due date */}
               </div>
               <div>
                 <label className="text-sm text-gray-500">Assignment Status:</label>

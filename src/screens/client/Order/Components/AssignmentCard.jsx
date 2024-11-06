@@ -1,25 +1,30 @@
 import React, { useState } from "react";
 import PaymentPopup from "./ClientPaymentPopup";
 import { useNavigate } from "react-router-dom";
+import profileIcon from "../../ClientComponents/profileIcon.jpg";
+
+
 
 const AssignmentCard = ({
-  id,
-  title,
+  _id,
+  assignmentTitle,
   description,
   status = "Pending",
   totalAmount,
-  paidAmount,
-  dueDate,
-  writer,
+  paidAmount = 400,
+  deadline,
+  writerName = "Not Assigned",
+  writerPic = profileIcon,
+  writerId = ""
 }) => {
   const navigate = useNavigate();
 
   const handleView = () => {
-    navigate(`/client/orders/view/${id}`);
+    navigate(`/client/orders/view/${_id}`);
   };
   const calculatePercentage = (totalAmount, paidAmount) => {
-    const total = parseFloat(totalAmount.replace(/[^0-9.-]+/g, ""));
-    const paid = parseFloat(paidAmount.replace(/[^0-9.-]+/g, ""));
+    const total = parseFloat(totalAmount);
+    const paid = parseFloat(paidAmount);
 
     if (isNaN(total) || isNaN(paid) || total === 0) {
       return 0;
@@ -28,7 +33,9 @@ const AssignmentCard = ({
     const percentage = (paid / total) * 100;
     return percentage.toFixed(0);
   };
-
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
+  };
   const percentage = calculatePercentage(totalAmount, paidAmount);
 
   // Function to determine progress bar and text classes based on percentage
@@ -70,11 +77,11 @@ const AssignmentCard = ({
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-2xl w-[40%] drop-shadow-2x2">
-      {/* Title and Status */}
+      {/* assignmentTitle and Status */}
       <div className="mb-4 flex justify-between items-start">
         <div className="flex items-start">
           <div className="text-sm font-medium text-gray-700 flex-shrink-0">
-            Assignment Title:
+            Assignment title:
           </div>
           <span
             className="text-gray-900 ml-2 line-clamp-2 overflow-hidden"
@@ -85,19 +92,18 @@ const AssignmentCard = ({
               overflow: "hidden",
             }}
           >
-            {title}
+            {assignmentTitle}
           </span>
         </div>
         <div
-          className={`px-2 py-1 rounded-full text-sm capitalize ${
-            statusColors[status.toLowerCase()]
-          }`}
+          className={`px-2 py-1 rounded-full text-sm capitalize ${statusColors[status.toLowerCase()]
+            }`}
         >
           {status}
         </div>
       </div>
 
-      <span className="text-xs text-red-500">Due {dueDate}</span>
+      <span className="text-xs text-red-500">Due {formatDate(deadline)}</span>
       {/* Payment Info */}
       <div className="mb-2">
         <div className="text-sm text-gray-600">
@@ -128,13 +134,13 @@ const AssignmentCard = ({
       <div className="flex justify-between items-center mt-4">
         <div className="flex items-center gap-2">
           <img
-            src={writer.avatar}
-            alt={writer.name}
+            src={writerPic}
+            alt={writerPic}
             className="w-8 h-8 rounded-full object-cover"
           />
           <div className="flex flex-col gap-1">
             <span className="text-sm font-medium text-gray-900">
-              {writer.name}
+              {writerName}
             </span>
             <span className="text-xs text-gray-500">writer</span>
           </div>
@@ -160,13 +166,13 @@ const AssignmentCard = ({
         <PaymentPopup
           onClose={() => setShowPaymentPopup(false)}
           assignment={{
-            id,
-            title,
+            _id,
+            assignmentTitle,
             description,
             status,
             totalAmount,
             paidAmount,
-            dueDate,
+            deadline,
           }}
         />
       )}

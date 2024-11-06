@@ -3,18 +3,124 @@ import { Download, Loader, Loader2 } from "lucide-react";
 import { FolderIcon } from "@heroicons/react/solid";
 import profileIcon from "../ClientComponents/profileIcon.jpg";
 import profilePictureClient from "../ClientComponents/profile-picture.jpeg";
+import { download_file, get_orderById, send_comment } from "../../../api/Api";
 import { useParams } from "react-router-dom";
+
 
 const AssignmentView = () => {
   const [comment, setComment] = useState("");
-
-  const [description, setDescription] = useState(
-    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Est sequi magnam rerum dolorum provident, quo optio voluptatum voluptates molestiae tempora at inventore ea omnis non aliquam sapiente, hic, modi quis et sint sunt ducimus quas eveniet placeat. Placeat quas, facilis quidem dolorem dolores eveniet dolore enim itaque corrupti impedit doloremque optio ex, delectus modi dolor incidunt hic cum omnis soluta blanditiis commodi culpa nesciunt amet. Reiciendis doloremque quaerat officia praesentium beatae hic necessitatibus, nobis nulla a iure quidem ipsa dignissimos sapiente ad veritatis blanditiis amet cum quibusdam mollitia vero, cumque itaque. Reprehenderit facilis omnis voluptas quia distinctio commodi repellendus obcaecati ab, corrupti aperiam nobis libero id. Sequi unde nulla, eveniet odio dignissimos ipsum iusto minus corporis quos eius cupiditate perferendis ad corrupti tempora nostrum qui alias ipsa repudiandae! In earum alias iusto vel. Earum, tenetur consequuntur. Quis unde eum dolorum, officia dolores laboriosam, quos impedit porro perferendis amet tenetur doloremque aperiam commodi eius voluptatum ipsum. Sed fugit voluptatibus illo commodi veritatis perspiciatis architecto eaque eveniet quidem, dolores placeat et modi magnam ullam quia, consequatur, tempora itaque excepturi at. Perferendis, quae corrupti porro vero facere adipisci debitis quas ut corporis culpa laborum. Laborum fuga dolore odit aperiam, ipsa temporibus alias voluptates earum, porro vel reprehenderit aliquid? Quasi iusto vero pariatur eius praesentium molestias expedita! Unde, ratione excepturi consequatur tempora quia, labore in fugit inventore quae minima, sapiente obcaecati magnam delectus laborum laudantium aperiam. Dolorum debitis voluptatum doloribus nemo dolor ipsam quos id, animi deserunt ab quia magnam modi nostrum tempore amet. Laudantium pariatur soluta voluptatibus eligendi, provident distinctio veritatis eos veniam obcaecati consequuntur laborum omnis non aliquam rem similique. Accusamus quibusdam facilis dolor et nemo dolore, aspernatur ex quam consectetur nam id quae nostrum facere beatae similique eum, veniam exercitationem quis perspiciatis! Odit, quibusdam quam, quasi neque ducimus maxime similique, voluptates tempore dolore velit ipsa veniam nobis nihil vero sit repellat a quae expedita obcaecati itaque corporis mollitia doloribus placeat. Sed, nobis nesciunt. Nihil ullam omnis nesciunt vero dignissimos molestiae cum quam, assumenda, accusamus, officiis nam adipisci id nemo enim possimus reprehenderit voluptate quidem aspernatur in? Repudiandae aliquid ducimus facilis architecto saepe sunt nobis consequuntur ratione provident, odit vel deserunt totam voluptatem neque maxime eum vero dolorem eligendi. Dicta distinctio cum sint in vitae exercitationem? Laborum hic tempore, ratione blanditiis facilis ea nobis deleniti placeat suscipit quam error deserunt voluptatibus odit, numquam maiores fugiat nihil harum! Ad qui recusandae odio accusamus sequi eius porro ducimus deserunt itaque in? Aliquid id, iste voluptate a libero hic, minima rerum cumque iure quaerat repellat deserunt accusantium necessitatibus maxime error tenetur nulla saepe. Accusantium cupiditate enim esse voluptate autem facilis tenetur minus, dicta adipisci consectetur rerum distinctio nihil hic dolor, rem pariatur. Ipsa aperiam officiis et ea culpa tempore amet eos quod cumque veritatis tenetur, eius neque nesciunt error dignissimos ad ipsum soluta modi laboriosam quos. Illo voluptatibus consequatur dicta hic adipisci deserunt explicabo temporibus odio minus pariatur, sed omnis ducimus inventore! Praesentium vitae laboriosam reprehenderit provident deleniti voluptas numquam perspiciatis, earum natus deserunt a?"
-  );
-
+  const [assignment, setAssignment] = useState({
+    files: [], // Initialize with empty array
+    assignmentTitle: "",
+    description: ""
+  });
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDownloading, setisDownloading] = useState(false);
   const textareaRef = useRef(null);
+  const [downloadingFiles, setDownloadingFiles] = useState({});
+  const [newComment, setNewComment] = useState("");
+
+  const { orderId } = useParams(); // Get orderId from the URL
+
+
+  useEffect(() => {
+
+    fetchOrderById();
+
+  }, []);
+
+  const fetchOrderById = async () => {
+
+    try {
+      const token = localStorage.getItem("token"); // Replace with the actual token
+      const response = await fetch(get_orderById, {
+        method: "POST",
+        body: JSON.stringify({ orderId }), // Convert body to JSON string
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch orders");
+      }
+
+      const data = await response.json();
+      setAssignment(data);
+      console.log(data)
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    }
+  };
+
+
+
+  const handleAddComment = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(send_comment, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ orderId, text: newComment }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add comment");
+      }
+
+      setNewComment("");
+      fetchOrderById(); // Refresh order page to show new comment
+    } catch (error) {
+      console.error("Add comment error:", error);
+    }
+  };
+
+  const handleDownload = async (fileUrl, fileName) => {
+    const fileId = new URL(fileUrl).searchParams.get("id"); // Get the id from the URL
+    setDownloadingFiles(prev => ({ ...prev, [fileId]: true }));
+    try {
+      const token = localStorage.getItem("token");
+
+      console.log(fileId)
+      if (!fileId) {
+        throw new Error("Invalid file URL");
+      }
+
+      const response = await fetch(`${download_file}/${fileId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to download file");
+      }
+      // Create a blob from the response
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.style.display = "none";
+      a.href = url;
+      // Use the filename from the header, or fall back to a default
+      a.download = fileName;
+      document.body.appendChild(a);
+      a.click();
+
+      // Cleanup
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error("Error downloading the file:", error);
+    } finally {
+      setDownloadingFiles(prev => ({ ...prev, [fileId]: false }));
+    }
+  };
 
   const adjustHeight = () => {
     if (textareaRef.current) {
@@ -25,23 +131,27 @@ const AssignmentView = () => {
 
   useEffect(() => {
     adjustHeight();
-  }, [isExpanded]);
+  }, [assignment, isExpanded]);
+
+
+
 
   const toggleExpand = () => {
     setIsExpanded((prev) => !prev);
   };
 
-  const getDisplayText = () => {
+  const getDisplayText = (description) => {
+    if (!description) return;
     const maxLength = 700;
     if (isExpanded || description.length <= maxLength) return description;
     return description.slice(0, maxLength) + "...";
   };
 
-  const uploadedFiles = [
-    { name: "theprojekts-design-tokens.zip", size: "5.3MB", url: "exampleURL" },
-    { name: "project-requirements.pdf", size: "2.1MB", url: "exampleURL" },
-    { name: "research-data.xlsx", size: "1.8MB", url: "" },
-  ];
+  // const files = [
+  //   { name: "theprojekts-design-tokens.zip", size: "5.3MB", url: "exampleURL" },
+  //   { name: "project-requirements.pdf", size: "2.1MB", url: "exampleURL" },
+  //   { name: "research-data.xlsx", size: "1.8MB", url: "" },
+  // ];
 
   // Sample data for downloadable files
   const downloadableFiles = [
@@ -50,25 +160,25 @@ const AssignmentView = () => {
     { name: "final-report.docx", size: "1.5MB", status: "pending" },
   ];
 
-  // Sample comment history with role-based images
-  const comments = [
-    {
-      id: 1,
-      name: "Milan",
-      role: "writer",
-      date: "6 Jan 2012",
-      message: "Hello cute dhanan.I am your writer",
-      image: profileIcon, // profileIcon for writer
-    },
-    {
-      id: 2,
-      name: "Dhanan",
-      role: "client",
-      date: "6 Jan 2012",
-      message: "Hello milan bhaiya.how are you?",
-      image: profilePictureClient, // profilePictureClient for client
-    },
-  ];
+  // Sample comment history with role-based pictures
+  // const comments = [
+  //   {
+  //     id: 1,
+  //     name: "Milan",
+  //     role: "writer",
+  //     date: "6 Jan 2012",
+  //     message: "Hello cute dhanan.I am your writer",
+  //     picture: profileIcon, // profileIcon for writer
+  //   },
+  //   {
+  //     id: 2,
+  //     name: "Dhanan",
+  //     role: "client",
+  //     date: "6 Jan 2012",
+  //     message: "Hello milan bhaiya.how are you?",
+  //     picture: profilePictureClient, // profilePictureClient for client
+  //   },
+  // ];
 
   const handleCommentChange = (e) => {
     const input = e.target.value;
@@ -81,11 +191,8 @@ const AssignmentView = () => {
     }
   };
 
-  const handleSend = () => {
-    if (comment.trim()) {
-      // Handle sending comment
-      setComment("");
-    }
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
   };
 
   const truncateText = (text, length = 150) => {
@@ -106,7 +213,7 @@ const AssignmentView = () => {
             </label>
             <input
               type="text"
-              value="This the my second assignment i su..."
+              value={assignment.assignmentTitle}
               className="w-full p-2 bg-white border border-gray-200 rounded"
               readOnly
             />
@@ -119,7 +226,7 @@ const AssignmentView = () => {
             <div className="relative">
               <textarea
                 ref={textareaRef}
-                value={getDisplayText()}
+                value={getDisplayText(assignment.description)}
                 className="w-full p-3 bg-white border border-gray-200 rounded resize-none overflow-hidden"
                 readOnly
               />
@@ -136,37 +243,44 @@ const AssignmentView = () => {
               Comments:
             </h3>
             <div className="space-y-3 max-h-[80vh] overflow-y-auto mb-2 p-3">
-              {comments.map((comment) => (
-                <div key={comment.id} className="flex items-center">
-                  <img
-                    src={comment.image}
-                    alt={comment.name}
-                    className="w-8 h-8 rounded-full"
-                  />
-                  <div className="flex-1 bg-white rounded-lg p-3">
-                    <div className="flex items-center space-x-2 mb-1">
-                      <span className="text-sm font-medium ">
-                        {comment.name}
-                      </span>
-                      <span className="text-xs text-gray-500">
-                        {comment.date}
-                      </span>
+              {assignment.comments && assignment.comments.length > 0 ? (
+                assignment.comments.map((comment) => (
+                  <div key={comment._id} className="flex items-center">
+                    <img
+                      src={comment.picture}
+                      alt={comment.name}
+                      className="w-8 h-8 rounded-full"
+                    />
+                    <div className="flex-1 bg-white rounded-lg p-3">
+                      <div className="flex items-center space-x-2 mb-1">
+                        <span className="text-sm font-medium ">
+                          {comment.name}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          {formatDate(comment.createdAt)}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          {comment.createdTime}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-600">{comment.text}</p>
                     </div>
-                    <p className="text-sm text-gray-600">{comment.message}</p>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p className="text-gray-500 text-sm ">No comments yet</p>
+              )}
             </div>
             <div className="flex space-x-2">
               <input
                 type="text"
-                value={comment}
-                onChange={handleCommentChange}
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
                 placeholder="Comment as Dhananjaya Raut..."
                 className="flex-1 p-2 border border-gray-200 rounded"
               />
               <button
-                onClick={handleSend}
+                onClick={() => handleAddComment()}
                 className="px-4 py-2 bg-[#5d5fef] text-white  hover:bg-blue-700 transition-colors rounded-2xl"
               >
                 Send
@@ -181,31 +295,40 @@ const AssignmentView = () => {
               Uploaded Files
             </h3>
             <div className="space-y-2">
-              {uploadedFiles.map((file, index) => (
+              {assignment && assignment.files.map((file, index) => (
                 <div key={index} className="relative">
                   <div
-                    className={`flex items-center justify-between p-2 rounded border ${
-                      file.url
-                        ? "bg-white border-gray-200"
-                        : "bg-gray-100 border-gray-300 "
-                    }`}
+                    className={`flex items-center justify-between p-2 rounded border ${file.fileUrl
+                      ? "bg-white border-gray-200"
+                      : "bg-gray-100 border-gray-300 "
+                      }`}
                   >
                     <div className="flex items-center space-x-2">
                       <FolderIcon className="h-5 w-5 text-yellow-500" />
                       <div>
                         <p className="text-sm font-medium text-gray-700">
-                          {file.name}
+                          {file.fileName}
                         </p>
-                        <p className="text-xs text-gray-500">{file.size}</p>
+                        <p className="text-xs text-gray-500">{file.fileSize}</p>
                       </div>
                     </div>
-                    {file.url ? (
-                      <Download className="w-4 h-4 text-gray-500" />
-                    ) : null}
+                    {file.fileUrl && (
+                      <button
+                        className="focus:outline-none"
+                        onClick={() => handleDownload(file.fileUrl, file.fileName)}
+                        disabled={downloadingFiles[new URL(file.fileUrl).searchParams.get("id")]}
+                      >
+                        {downloadingFiles[new URL(file.fileUrl).searchParams.get("id")] ? (
+                          <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
+                        ) : (
+                          <Download className="w-4 h-4 text-gray-500 hover:cursor-pointer" />
+                        )}
+                      </button>
+                    )}
                   </div>
 
                   {/* Overlay for blur and loader */}
-                  {!file.url && (
+                  {!file.fileUrl && (
                     <div className="absolute inset-0 bg-white/5 opacity-85 backdrop-blur flex items-center justify-center rounded">
                       <Loader className="w-5 h-5 text-gray-500  animate-spin" />
                     </div>
@@ -235,7 +358,7 @@ const AssignmentView = () => {
                     </div>
                   </div>
                   {file.status === "pending" ? (
-                    <button disabled className="focus:outline-none">
+                    <button className="focus:outline-none">
                       <Download className="w-4 h-4 text-gray-300" />
                     </button>
                   ) : (

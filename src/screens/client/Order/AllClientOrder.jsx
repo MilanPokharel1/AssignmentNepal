@@ -1,10 +1,11 @@
-import React, { useState } from "react";
-import AssignmentCard from "./Components/AssignmentCard";
+import React, { useState, useEffect } from "react";
+import AssignmentCard from "./components/AssignmentCard";
 import FilterButtons from "./components/FilterButtons";
 import profileIcon from "../ClientComponents/profileIcon.jpg";
 import { ImSearch } from "react-icons/im";
 import { FaChevronDown } from "react-icons/fa";
 import ClientOrderPopup from "./Components/ClientOrderPopup";
+import { get_orders } from "../../../api/Api";
 
 const AllClientOrder = () => {
   const [activeFilter, setActiveFilter] = useState("All");
@@ -12,64 +13,104 @@ const AllClientOrder = () => {
   const [sortOrder, setSortOrder] = useState("Newest");
   const [showOptions, setShowOptions] = useState(false);
   const [orderPopup, setorderPopup] = useState(false);
+  const [assignments, setAssignments] = useState([])
 
-  const assignments = [
-    {
-      id: 2,
-      title: "Regarding project management of my homework",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fugiat iure ipsum unde doloribus accusamus odit quaerat aperiam commodi, quidem, magni nisi in ullam velit id nulla earum illo ab libero dicta vitae labore? Debitis fuga facere blanditiis explicabo voluptatibus!",
-      status: "Pending",
-      totalAmount: "Rs 5000",
-      paidAmount: "Rs 1000",
-      dueDate: "Oct 9",
-      writer: { name: "Not Assigned", avatar: profileIcon },
-    },
-    {
-      id: 1,
-      title: "Regarding project management of my homework",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fugiat iure ipsum unde doloribus accusamus odit quaerat aperiam commodi, quidem, magni nisi in ullam velit id nulla earum illo ab libero dicta vitae labore? Debitis fuga facere blanditiis explicabo voluptatibus!",
-      status: "Ongoing",
-      totalAmount: "NRs 5000",
-      paidAmount: "NRs 3000",
-      dueDate: "Oct 5",
-      writer: { name: "Jane Cooper", avatar: profileIcon },
-    },
-    {
-      id: 4,
-      title: "Regarding project management of my homework",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fugiat iure ipsum unde doloribus accusamus odit quaerat aperiam commodi, quidem, magni nisi in ullam velit id nulla earum illo ab libero dicta vitae labore? Debitis fuga facere blanditiis explicabo voluptatibus!",
-      status: "Submitted",
-      totalAmount: "Rs 5000",
-      paidAmount: "Rs 450",
-      dueDate: "Oct 8",
-      writer: { name: "Jane Cooper", avatar: profileIcon },
-    },
-    {
-      id: 6,
-      title: "Regarding project management of my homework",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fugiat iure ipsum unde doloribus accusamus odit quaerat aperiam commodi, quidem, magni nisi in ullam velit id nulla earum illo ab libero dicta vitae labore? Debitis fuga facere blanditiis explicabo voluptatibus!",
-      status: "Approved",
-      totalAmount: "Rs 5000",
-      paidAmount: "Rs 2500",
-      dueDate: "Oct 8",
-      writer: { name: "Not Assigned", avatar: profileIcon },
-    },
-    {
-      id: 9,
-      title: "Regarding project management of my homework",
-      description:
-        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fugiat iure ipsum unde doloribus accusamus odit quaerat aperiam commodi, quidem, magni nisi in ullam velit id nulla earum illo ab libero dicta vitae labore? Debitis fuga facere blanditiis explicabo voluptatibus!",
-      status: "Completed",
-      totalAmount: "Rs 5000",
-      paidAmount: "Rs 5000",
-      dueDate: "Oct 8",
-      writer: { name: "Jane Cooper", avatar: profileIcon },
-    },
-  ];
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
+
+        const response = await fetch(get_orders, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch orders");
+        }
+
+        const data = await response.json();
+        setAssignments(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      }
+    };
+
+    fetchOrders();
+
+  }, []);
+
+  // const assignments = [
+  //   {
+  //     id: 2,
+  //     assignmentTitle: "Regarding project management of my homework",
+  //     description:
+  //       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fugiat iure ipsum unde doloribus accusamus odit quaerat aperiam commodi, quidem, magni nisi in ullam velit id nulla earum illo ab libero dicta vitae labore? Debitis fuga facere blanditiis explicabo voluptatibus!",
+  //     status: "Pending",
+  //     totalAmount: "Rs 5000",
+  //     paidAmount: "Rs 1000",
+  //     writerId: "6716d1646d39e6063a8b93db",
+  //     deadline: "Oct 9",
+  //     writerName: "Milan Pokharel",
+  //     writerPic: "https://lh3.googleusercontent.com/a/ACg8ocIdT0rdyEnHM8nKwi_phWYzfPbEj3NdK-PVmBMg5Y2TxyF0rJ-T=s96-c"
+  //   },
+  //   {
+  //     id: 1,
+  //     assignmentTitle: "Regarding project management of my homework",
+  //     description:
+  //       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fugiat iure ipsum unde doloribus accusamus odit quaerat aperiam commodi, quidem, magni nisi in ullam velit id nulla earum illo ab libero dicta vitae labore? Debitis fuga facere blanditiis explicabo voluptatibus!",
+  //     status: "Ongoing",
+  //     totalAmount: "NRs 5000",
+  //     paidAmount: "NRs 3000",
+  //     writerId: "6716d1646d39e6063a8b93db",
+  //     deadline: "Oct 5",
+  //     writerName: "Milan Pokharel",
+  //     writerPic: "https://lh3.googleusercontent.com/a/ACg8ocIdT0rdyEnHM8nKwi_phWYzfPbEj3NdK-PVmBMg5Y2TxyF0rJ-T=s96-c"
+  //   },
+  //   {
+  //     id: 4,
+  //     assignmentTitle: "Regarding project management of my homework",
+  //     description:
+  //       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fugiat iure ipsum unde doloribus accusamus odit quaerat aperiam commodi, quidem, magni nisi in ullam velit id nulla earum illo ab libero dicta vitae labore? Debitis fuga facere blanditiis explicabo voluptatibus!",
+  //     status: "Submitted",
+  //     totalAmount: "Rs 5000",
+  //     paidAmount: "Rs 450",
+  //     writerId: "6716d1646d39e6063a8b93db",
+  //     deadline: "Oct 8",
+  //     writerName: "Milan Pokharel",
+  //     writerPic: "https://lh3.googleusercontent.com/a/ACg8ocIdT0rdyEnHM8nKwi_phWYzfPbEj3NdK-PVmBMg5Y2TxyF0rJ-T=s96-c"
+
+  //   },
+  //   {
+  //     id: 6,
+  //     assignmentTitle: "Regarding project management of my homework",
+  //     description:
+  //       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fugiat iure ipsum unde doloribus accusamus odit quaerat aperiam commodi, quidem, magni nisi in ullam velit id nulla earum illo ab libero dicta vitae labore? Debitis fuga facere blanditiis explicabo voluptatibus!",
+  //     status: "Approved",
+  //     totalAmount: "Rs 5000",
+  //     paidAmount: "Rs 2500",
+  //     deadline: "Oct 8",
+  //     writerId: "6716d1646d39e6063a8b93db",
+  //     writerName: "Milan Pokharel",
+  //     writerPic: "https://lh3.googleusercontent.com/a/ACg8ocIdT0rdyEnHM8nKwi_phWYzfPbEj3NdK-PVmBMg5Y2TxyF0rJ-T=s96-c"
+
+  //   },
+  //   {
+  //     id: 9,
+  //     assignmentTitle: "Regarding project management of my homework",
+  //     description:
+  //       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fugiat iure ipsum unde doloribus accusamus odit quaerat aperiam commodi, quidem, magni nisi in ullam velit id nulla earum illo ab libero dicta vitae labore? Debitis fuga facere blanditiis explicabo voluptatibus!",
+  //     status: "Completed",
+  //     totalAmount: "Rs 5000",
+  //     paidAmount: "Rs 5000",
+  //     deadline: "Oct 8",
+
+  //   },
+  // ];
 
   const handleFilterChange = (filter) => {
     setActiveFilter(filter);
@@ -123,18 +164,18 @@ const AllClientOrder = () => {
     .filter((assignment) => {
       const search = normalizeText(searchTerm);
       return (
-        normalizeText(assignment.title).includes(search) ||
-        normalizeText(assignment.dueDate).includes(search) ||
-        normalizeText(assignment.writer.name).includes(search)
+        normalizeText(assignment.assignmentTitle).includes(search) ||
+        normalizeText(assignment.deadline).includes(search) ||
+        (assignment.writerName && normalizeText(assignment.writerName).includes(search))
       );
     });
 
   const sortedAssignments = [...filteredAssignments].sort((a, b) => {
     switch (sortOrder) {
       case "Newest":
-        return b.id - a.id;
+        return b._id - a._id;
       case "Oldest":
-        return a.id - b.id;
+        return a._id - b._id;
       default:
         return 0;
     }
@@ -204,14 +245,12 @@ const AllClientOrder = () => {
           {sortedAssignments.length > 0 ? (
             sortedAssignments.map((assignment) => (
               <AssignmentCard
-                key={assignment.id}
+                key={assignment._id}
                 {...assignment}
-                title={highlightText(assignment.title, searchTerm)}
-                writer={{
-                  ...assignment.writer,
-                  name: highlightText(assignment.writer.name, searchTerm),
-                }}
-                dueDate={highlightText(assignment.dueDate, searchTerm)}
+                assignmentTitle={highlightText(assignment.assignmentTitle, searchTerm)}
+                writerName={assignment.writerName ? highlightText(assignment.writerName, searchTerm) : "Not Assigned"}
+
+                deadline={highlightText(assignment.deadline, searchTerm)}
               />
             ))
           ) : (

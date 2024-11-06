@@ -11,7 +11,7 @@ const pathToTitleMap = {
   "/admin/orderrequests": "Order Requests",
 }
 
-const AdminTopNavbar = ({ notificationCount = 0, userName = localStorage.getItem("firstName") }) => {
+const AdminTopNavbar = ({ notificationCount = 0, userName = localStorage.getItem("firstName") + " " + localStorage.getItem("lastName") }) => {
   const location = useLocation();
 
   const [headerTitle, setHeaderTitle] = useState("");
@@ -50,7 +50,7 @@ const AdminTopNavbar = ({ notificationCount = 0, userName = localStorage.getItem
         {/* User Profile */}
         <div className="flex items-center space-x-2 mr-3">
           <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden">
-          <img
+            <img
               src={profilePicture || ""}
               alt="User profile"
               className="w-full h-full object-cover"
