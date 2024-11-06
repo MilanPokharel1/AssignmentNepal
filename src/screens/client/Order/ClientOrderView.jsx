@@ -58,14 +58,28 @@ const AssignmentView = () => {
 
   const handleAddComment = async () => {
     try {
+      if (!newComment) return;
       const token = localStorage.getItem("token");
+
+      const contactRegex = /\b\d{10}\b/;
+
+      // Mask the phone number if it matches the regex
+      let maskedComment = newComment;
+
+      if (contactRegex.test(maskedComment)) {
+        maskedComment = maskedComment.replace(contactRegex, (match) => {
+          // Mask the middle digits, keeping the first 2 and last 2 digits
+          return match.slice(0, 2) + "******" + match.slice(-2);
+        });
+      }
+
       const response = await fetch(send_comment, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ orderId, text: newComment }),
+        body: JSON.stringify({ orderId, text: maskedComment }),
       });
 
       if (!response.ok) {
