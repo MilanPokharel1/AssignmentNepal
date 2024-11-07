@@ -9,7 +9,7 @@ const AssignmentCard = ({
   _id,
   assignmentTitle,
   description,
-  status = "Pending",
+  status,
   totalAmount,
   paidAmount = 400,
   deadline,

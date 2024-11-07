@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 
 
 const AssignmentView = () => {
-  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState("");
   const [assignment, setAssignment] = useState({
     files: [], // Initialize with empty array
     assignmentTitle: "",
@@ -17,11 +17,25 @@ const AssignmentView = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDownloading, setisDownloading] = useState(false);
   const textareaRef = useRef(null);
+  const commenttextareaRef = useRef(null);
+  const commentAreaRef = useRef(null);
   const [downloadingFiles, setDownloadingFiles] = useState({});
   const [newComment, setNewComment] = useState("");
-
+  const commentsContainerRef = useRef(null);
   const { orderId } = useParams(); // Get orderId from the URL
 
+
+  const scrollToBottom = () => {
+    commentsContainerRef.current.scrollTop = commentsContainerRef.current.scrollHeight;
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+    if (commenttextareaRef.current) {
+      commenttextareaRef.current.style.height = 'auto';  // Reset the height
+      commenttextareaRef.current.style.height = `${commenttextareaRef.current.scrollHeight}px`;  // Set height to match content
+    }
+  }, [comments]);
 
   useEffect(() => {
 
@@ -48,7 +62,7 @@ const AssignmentView = () => {
 
       const data = await response.json();
       setAssignment(data);
-      console.log(data)
+      setComments(data.comments)
     } catch (error) {
       console.error("Error fetching orders:", error);
     }
@@ -56,16 +70,21 @@ const AssignmentView = () => {
 
 
 
-  const handleAddComment = async () => {
+  const handleAddComment = async (e) => {
+    e.preventDefault();
     try {
       if (!newComment) return;
+
       const token = localStorage.getItem("token");
 
       const contactRegex = /\b\d{10}\b/;
 
       // Mask the phone number if it matches the regex
       let maskedComment = newComment;
-
+      setNewComment("");
+      if (commentAreaRef.current) {
+        commentAreaRef.current.style.height = 'auto';  // Reset height to initial size
+      }
       if (contactRegex.test(maskedComment)) {
         maskedComment = maskedComment.replace(contactRegex, (match) => {
           // Mask the middle digits, keeping the first 2 and last 2 digits
@@ -86,20 +105,44 @@ const AssignmentView = () => {
         throw new Error("Failed to add comment");
       }
 
-      setNewComment("");
-      fetchOrderById(); // Refresh order page to show new comment
+      const res = await response.json();
+      console.log(res)
+      setComments([...comments, res.newComment]);
+
+
     } catch (error) {
       console.error("Add comment error:", error);
     }
   };
 
+  function formatTimeRemaining(timeRemaining) {
+    if (timeRemaining < 60) {
+      // If time is below 1 minute, show in seconds
+      return `${Math.floor(timeRemaining)} s`;
+    } else if (timeRemaining < 3600) {
+      // If time is below 1 hour, show in minutes and seconds
+      const minutes = Math.floor(timeRemaining / 60);
+      const seconds = Math.floor(timeRemaining % 60);
+      return `${minutes} min ${seconds}s`;
+    } else {
+      // If time is 1 hour or more, show in hours, minutes, and seconds
+      const hours = Math.floor(timeRemaining / 3600);
+      const minutes = Math.floor((timeRemaining % 3600) / 60);
+      const seconds = Math.floor(timeRemaining % 60);
+      return `${hours} hr ${minutes} min ${seconds}s`;
+    }
+  }
+
   const handleDownload = async (fileUrl, fileName) => {
-    const fileId = new URL(fileUrl).searchParams.get("id"); // Get the id from the URL
-    setDownloadingFiles(prev => ({ ...prev, [fileId]: true }));
+    const fileId = new URL(fileUrl).searchParams.get("id");
+    setDownloadingFiles((prev) => ({
+      ...prev,
+      [fileId]: { downloading: true, progress: 0, total: 0, timeRemaining: "Calculating..." },
+    }));
+
     try {
       const token = localStorage.getItem("token");
 
-      console.log(fileId)
       if (!fileId) {
         throw new Error("Invalid file URL");
       }
@@ -115,24 +158,53 @@ const AssignmentView = () => {
       if (!response.ok) {
         throw new Error("Failed to download file");
       }
-      // Create a blob from the response
-      const blob = await response.blob();
+
+      const totalSize = parseInt(response.headers.get("Content-Length"), 10);
+      let loaded = 0;
+      const reader = response.body.getReader();
+      const chunks = [];
+
+      // Track download start time
+      const startTime = Date.now();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        loaded += value.length;
+
+        // Update progress and estimate time
+        const progress = (loaded / totalSize) * 100;
+        const elapsedTime = (Date.now() - startTime) / 1000;
+        const estimatedTotalTime = (elapsedTime / loaded) * totalSize;
+        const timeRemaining = formatTimeRemaining(estimatedTotalTime - elapsedTime);
+
+        setDownloadingFiles((prev) => ({
+          ...prev,
+          [fileId]: {
+            downloading: true,
+            progress: Math.round(progress),
+            total: totalSize,
+            timeRemaining: `${timeRemaining} Remaining`,
+          },
+        }));
+      }
+
+      const blob = new Blob(chunks);
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.style.display = "none";
       a.href = url;
-      // Use the filename from the header, or fall back to a default
       a.download = fileName;
       document.body.appendChild(a);
       a.click();
 
-      // Cleanup
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     } catch (error) {
       console.error("Error downloading the file:", error);
     } finally {
-      setDownloadingFiles(prev => ({ ...prev, [fileId]: false }));
+      setDownloadingFiles((prev) => ({ ...prev, [fileId]: false }));
     }
   };
 
@@ -174,48 +246,14 @@ const AssignmentView = () => {
     { name: "final-report.docx", size: "1.5MB", status: "pending" },
   ];
 
-  // Sample comment history with role-based pictures
-  // const comments = [
-  //   {
-  //     id: 1,
-  //     name: "Milan",
-  //     role: "writer",
-  //     date: "6 Jan 2012",
-  //     message: "Hello cute dhanan.I am your writer",
-  //     picture: profileIcon, // profileIcon for writer
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Dhanan",
-  //     role: "client",
-  //     date: "6 Jan 2012",
-  //     message: "Hello milan bhaiya.how are you?",
-  //     picture: profilePictureClient, // profilePictureClient for client
-  //   },
-  // ];
 
-  const handleCommentChange = (e) => {
-    const input = e.target.value;
-    const contactRegex = /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b|\b\d{10}\b/;
-
-    if (contactRegex.test(input)) {
-      alert("Entering contact numbers is against the rules.");
-    } else {
-      setComment(input);
-    }
-  };
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
   };
 
-  const truncateText = (text, length = 150) => {
-    if (text.length <= length) return text;
-    return text.slice(0, length) + "...";
-  };
-
   return (
-    <div className="w-full mx-auto p-6 bg-[#fafbfc] rounded-lg ">
+    <div className="w-full mx-auto p-6 bg-[#fafbfc] rounded-lg pb-10">
       <h2 className="text-2xl font-bold mb-6">Assignment</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-8 gap-6">
@@ -228,7 +266,7 @@ const AssignmentView = () => {
             <input
               type="text"
               value={assignment.assignmentTitle}
-              className="w-full p-2 bg-white border border-gray-200 rounded"
+              className="w-full p-4 bg-white border border-gray-200 rounded-xl focus:outline-none"
               readOnly
             />
           </div>
@@ -241,7 +279,7 @@ const AssignmentView = () => {
               <textarea
                 ref={textareaRef}
                 value={getDisplayText(assignment.description)}
-                className="w-full p-3 bg-white border border-gray-200 rounded resize-none overflow-hidden"
+                className="w-full p-6 space-y-3 bg-white border border-gray-200 rounded-xl resize-none overflow-hidden focus:outline-none"
                 readOnly
               />
             </div>
@@ -256,17 +294,19 @@ const AssignmentView = () => {
             <h3 className="text-md font-semibold tracking-wider mb-1">
               Comments:
             </h3>
-            <div className="space-y-3 max-h-[80vh] overflow-y-auto mb-2 p-3">
-              {assignment.comments && assignment.comments.length > 0 ? (
-                assignment.comments.map((comment) => (
-                  <div key={comment._id} className="flex items-center">
+            <div
+              ref={commentsContainerRef}
+              className="space-y-3 max-h-[35rem] overflow-y-auto mb-2 px-3">
+              {comments && comments.length > 0 ? (
+                comments.map((comment) => (
+                  <div key={comment._id} className="flex items-top">
                     <img
                       src={comment.picture}
                       alt={comment.name}
                       className="w-8 h-8 rounded-full"
                     />
-                    <div className="flex-1 bg-white rounded-lg p-3">
-                      <div className="flex items-center space-x-2 mb-1">
+                    <div className="flex-1 bg-white rounded-lg px-3">
+                      <div className="flex items-center space-x-auto mb-1">
                         <span className="text-sm font-medium ">
                           {comment.name}
                         </span>
@@ -277,7 +317,12 @@ const AssignmentView = () => {
                           {comment.createdTime}
                         </span>
                       </div>
-                      <p className="text-sm text-gray-600">{comment.text}</p>
+                      <textarea
+                        ref={commenttextareaRef}
+                        readOnly
+                        className="text-sm text-gray-600 w-full focus:outline-none resize-none overflow-hidden"
+                        value={comment.text}
+                      />
                     </div>
                   </div>
                 ))
@@ -285,21 +330,29 @@ const AssignmentView = () => {
                 <p className="text-gray-500 text-sm ">No comments yet</p>
               )}
             </div>
-            <div className="flex space-x-2">
-              <input
+            <form onSubmit={handleAddComment} className="relative flex items-center w-full">
+              <textarea
                 type="text"
+                ref={commentAreaRef}
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                placeholder="Comment as Dhananjaya Raut..."
-                className="flex-1 p-2 border border-gray-200 rounded"
+                placeholder={`Comment as ${localStorage.getItem("firstName")}...`}
+                className="flex-1 p-4 pr-10 border border-gray-200 rounded-[30px] resize-none h-18 max-h-52 overflow-y-auto focus:outline-none"
+                rows={1}
+                onInput={(e) => {
+                  e.target.style.height = 'auto'; // Reset height to auto on each input
+                  e.target.style.height = `${e.target.scrollHeight}px`; // Adjust height based on scrollHeight
+                }}
               />
               <button
-                onClick={() => handleAddComment()}
-                className="px-4 py-2 bg-[#5d5fef] text-white  hover:bg-blue-700 transition-colors rounded-2xl"
+                type="submit"
+                className="absolute right-2 bottom-2 flex font-extrabold text-[20px] items-center justify-center w-[2.65rem] h-[2.65rem] bg-[#5d5fef] text-white rounded-full transition-colors hover:bg-blue-700"
               >
-                Send
+                ➢
               </button>
-            </div>
+            </form>
+
+
           </div>
         </div>
 
@@ -312,39 +365,57 @@ const AssignmentView = () => {
               {assignment && assignment.files.map((file, index) => (
                 <div key={index} className="relative">
                   <div
-                    className={`flex items-center justify-between p-2 rounded border ${file.fileUrl
+                    className={`flex flex-col p-2 rounded border ${file.fileUrl
                       ? "bg-white border-gray-200"
-                      : "bg-gray-100 border-gray-300 "
+                      : "bg-gray-100 border-gray-300"
                       }`}
                   >
-                    <div className="flex items-center space-x-2">
-                      <FolderIcon className="h-5 w-5 text-yellow-500" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-700">
-                          {file.fileName}
-                        </p>
-                        <p className="text-xs text-gray-500">{file.fileSize}</p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <FolderIcon className="h-5 w-5 text-yellow-500" />
+                        <div>
+                          <p className="text-sm font-medium text-gray-700">
+                            {file.fileName}
+                          </p>
+                          <p className="text-xs text-gray-500">{file.fileSize}</p>
+                        </div>
                       </div>
-                    </div>
-                    {file.fileUrl && (
                       <button
                         className="focus:outline-none"
                         onClick={() => handleDownload(file.fileUrl, file.fileName)}
                         disabled={downloadingFiles[new URL(file.fileUrl).searchParams.get("id")]}
                       >
                         {downloadingFiles[new URL(file.fileUrl).searchParams.get("id")] ? (
-                          <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
+                          <div className="flex flex-col items-end">
+
+                            <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
+                          </div>
                         ) : (
                           <Download className="w-4 h-4 text-gray-500 hover:cursor-pointer" />
                         )}
                       </button>
+                    </div>
+                    {file.fileUrl && downloadingFiles[new URL(file.fileUrl).searchParams.get("id")] && (
+                      <div className="mt-2 ml-7">
+                        <div className="text-xs text-gray-500 mb-1">
+                          {downloadingFiles[new URL(file.fileUrl).searchParams.get("id")].progress}% • {downloadingFiles[new URL(file.fileUrl).searchParams.get("id")].timeRemaining}
+                        </div>
+                        <div className="w-full h-2 bg-gray-200 rounded-full">
+                          <div
+                            className="h-2 bg-blue-500 rounded-full"
+                            style={{
+                              width: `${downloadingFiles[new URL(file.fileUrl).searchParams.get("id")].progress}%`,
+                            }}
+                          ></div>
+                        </div>
+                      </div>
                     )}
                   </div>
 
                   {/* Overlay for blur and loader */}
                   {!file.fileUrl && (
                     <div className="absolute inset-0 bg-white/5 opacity-85 backdrop-blur flex items-center justify-center rounded">
-                      <Loader className="w-5 h-5 text-gray-500  animate-spin" />
+                      <Loader className="w-5 h-5 text-gray-500 animate-spin" />
                     </div>
                   )}
                 </div>

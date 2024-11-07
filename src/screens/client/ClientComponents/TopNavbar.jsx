@@ -42,6 +42,7 @@ const TopNavbar = ({ notificationCount = 0, userName = localStorage.getItem("fir
       <div className="flex items-center space-x-4">
         <div className="relative w-auto h-auto p-1 rounded-2xl bg-yellow-100">
           <button
+          onClick={()=>navigate("/client/reminders")}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors">
             <MdOutlineNotifications className="h-5 w-5 text-yellow-600" />
             {notificationCount > 0 && (

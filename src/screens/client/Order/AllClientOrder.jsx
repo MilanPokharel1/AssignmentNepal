@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import AssignmentCard from "./components/AssignmentCard";
 import FilterButtons from "./components/FilterButtons";
 import profileIcon from "../ClientComponents/profileIcon.jpg";
@@ -8,16 +9,18 @@ import ClientOrderPopup from "./Components/ClientOrderPopup";
 import { get_orders } from "../../../api/Api";
 
 const AllClientOrder = () => {
-  const [activeFilter, setActiveFilter] = useState("All");
+  const [activeFilter, setActiveFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("Newest");
   const [showOptions, setShowOptions] = useState(false);
   const [orderPopup, setorderPopup] = useState(false);
   const [assignments, setAssignments] = useState([])
+  const [isLoading, setIsLoading] = useState(false);
 
 
   useEffect(() => {
     const fetchOrders = async () => {
+      setIsLoading(true);
       try {
         const token = localStorage.getItem("token"); // Replace with the actual token
 
@@ -38,79 +41,14 @@ const AllClientOrder = () => {
       } catch (error) {
         console.error("Error fetching orders:", error);
       }
+      finally {
+        setIsLoading(false);
+      }
     };
 
     fetchOrders();
 
   }, []);
-
-  // const assignments = [
-  //   {
-  //     id: 2,
-  //     assignmentTitle: "Regarding project management of my homework",
-  //     description:
-  //       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fugiat iure ipsum unde doloribus accusamus odit quaerat aperiam commodi, quidem, magni nisi in ullam velit id nulla earum illo ab libero dicta vitae labore? Debitis fuga facere blanditiis explicabo voluptatibus!",
-  //     status: "Pending",
-  //     totalAmount: "Rs 5000",
-  //     paidAmount: "Rs 1000",
-  //     writerId: "6716d1646d39e6063a8b93db",
-  //     deadline: "Oct 9",
-  //     writerName: "Milan Pokharel",
-  //     writerPic: "https://lh3.googleusercontent.com/a/ACg8ocIdT0rdyEnHM8nKwi_phWYzfPbEj3NdK-PVmBMg5Y2TxyF0rJ-T=s96-c"
-  //   },
-  //   {
-  //     id: 1,
-  //     assignmentTitle: "Regarding project management of my homework",
-  //     description:
-  //       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fugiat iure ipsum unde doloribus accusamus odit quaerat aperiam commodi, quidem, magni nisi in ullam velit id nulla earum illo ab libero dicta vitae labore? Debitis fuga facere blanditiis explicabo voluptatibus!",
-  //     status: "Ongoing",
-  //     totalAmount: "NRs 5000",
-  //     paidAmount: "NRs 3000",
-  //     writerId: "6716d1646d39e6063a8b93db",
-  //     deadline: "Oct 5",
-  //     writerName: "Milan Pokharel",
-  //     writerPic: "https://lh3.googleusercontent.com/a/ACg8ocIdT0rdyEnHM8nKwi_phWYzfPbEj3NdK-PVmBMg5Y2TxyF0rJ-T=s96-c"
-  //   },
-  //   {
-  //     id: 4,
-  //     assignmentTitle: "Regarding project management of my homework",
-  //     description:
-  //       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fugiat iure ipsum unde doloribus accusamus odit quaerat aperiam commodi, quidem, magni nisi in ullam velit id nulla earum illo ab libero dicta vitae labore? Debitis fuga facere blanditiis explicabo voluptatibus!",
-  //     status: "Submitted",
-  //     totalAmount: "Rs 5000",
-  //     paidAmount: "Rs 450",
-  //     writerId: "6716d1646d39e6063a8b93db",
-  //     deadline: "Oct 8",
-  //     writerName: "Milan Pokharel",
-  //     writerPic: "https://lh3.googleusercontent.com/a/ACg8ocIdT0rdyEnHM8nKwi_phWYzfPbEj3NdK-PVmBMg5Y2TxyF0rJ-T=s96-c"
-
-  //   },
-  //   {
-  //     id: 6,
-  //     assignmentTitle: "Regarding project management of my homework",
-  //     description:
-  //       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fugiat iure ipsum unde doloribus accusamus odit quaerat aperiam commodi, quidem, magni nisi in ullam velit id nulla earum illo ab libero dicta vitae labore? Debitis fuga facere blanditiis explicabo voluptatibus!",
-  //     status: "Approved",
-  //     totalAmount: "Rs 5000",
-  //     paidAmount: "Rs 2500",
-  //     deadline: "Oct 8",
-  //     writerId: "6716d1646d39e6063a8b93db",
-  //     writerName: "Milan Pokharel",
-  //     writerPic: "https://lh3.googleusercontent.com/a/ACg8ocIdT0rdyEnHM8nKwi_phWYzfPbEj3NdK-PVmBMg5Y2TxyF0rJ-T=s96-c"
-
-  //   },
-  //   {
-  //     id: 9,
-  //     assignmentTitle: "Regarding project management of my homework",
-  //     description:
-  //       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti fugiat iure ipsum unde doloribus accusamus odit quaerat aperiam commodi, quidem, magni nisi in ullam velit id nulla earum illo ab libero dicta vitae labore? Debitis fuga facere blanditiis explicabo voluptatibus!",
-  //     status: "Completed",
-  //     totalAmount: "Rs 5000",
-  //     paidAmount: "Rs 5000",
-  //     deadline: "Oct 8",
-
-  //   },
-  // ];
 
   const handleFilterChange = (filter) => {
     setActiveFilter(filter);
@@ -158,7 +96,7 @@ const AllClientOrder = () => {
 
   const filteredAssignments = assignments
     .filter((assignment) => {
-      if (activeFilter === "All") return true;
+      if (activeFilter === "all") return true;
       return assignment.status === activeFilter;
     })
     .filter((assignment) => {
@@ -171,11 +109,14 @@ const AllClientOrder = () => {
     });
 
   const sortedAssignments = [...filteredAssignments].sort((a, b) => {
+    const dateA = new Date(a.createdAt);
+    const dateB = new Date(b.createdAt);
+
     switch (sortOrder) {
       case "Newest":
-        return b._id - a._id;
+        return dateB - dateA;
       case "Oldest":
-        return a._id - b._id;
+        return dateA - dateB;
       default:
         return 0;
     }
@@ -185,6 +126,11 @@ const AllClientOrder = () => {
 
   return (
     <div className="flex-1 p-6">
+      {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
+          <CircularProgress />
+        </div>
+      )}
       <div className="flex flex-row-reverse px-4 mt-5 max-w-[85%]">
         <div className="flex justify-between items-center mr-5 gap-3">
           <div className="relative">
@@ -241,8 +187,8 @@ const AllClientOrder = () => {
           {orderPopup && <ClientOrderPopup setorderPopup={setorderPopup} />}
         </div>
 
-        <div className="flex flex-wrap gap-4 mt-4">
-          {sortedAssignments.length > 0 ? (
+        <div className="flex flex-wrap items-center gap-4 mt-4">
+          {isLoading == true || sortedAssignments.length > 0 ? (
             sortedAssignments.map((assignment) => (
               <AssignmentCard
                 key={assignment._id}
@@ -254,7 +200,9 @@ const AllClientOrder = () => {
               />
             ))
           ) : (
+            <div className="flex mx-auto w-[50%] items-center">
             <NoDataFound />
+            </div>
           )}
         </div>
       </div>

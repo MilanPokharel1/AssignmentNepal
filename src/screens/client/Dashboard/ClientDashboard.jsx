@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { IoBookSharp, IoCheckmarkSharp } from "react-icons/io5";
 import { MdShoppingCart } from "react-icons/md";
 import Card from "./components/Card";
-import AssignmentCard from "../Order/Components/AssignmentCard";
+import AssignmentCard from "../Order/components/AssignmentCard.jsx";
 import FilterButtons from "./components/FilterButtons";
 import profileIcon from "../ClientComponents/profileIcon.jpg";
 import { HiArrowRight } from "react-icons/hi";
@@ -10,25 +11,44 @@ import PaymentCard from "../Payments/Components/PaymentCard";
 import ClientOrderPopup from "../Order/Components/ClientOrderPopup.jsx";
 
 const Dashboard = () => {
-  const [activeFilter, setActiveFilter] = useState("All");
+  const [activeFilter, setActiveFilter] = useState("all");
   const [orderPopup, setorderPopup] = useState(false);
+  const navigate = useNavigate();
 
   const assignments = [
     {
       id: 3,
-      title: "Regarding project management of my homework",
-      status: "Pending",
-      totalAmount: "Rs 5000",
-      paidAmount: "Rs 1000",
+      assignmentTitle: "Regarding project management of my homework",
+      status: "pending",
+      totalAmount: "5000",
+      paidAmount: "1800",
       dueDate: "Oct 8",
       writer: { name: "Not Assigned", avatar: profileIcon },
     },
     {
       id: 1,
-      title: "Regarding project management of my homework",
-      status: "Ongoing",
-      totalAmount: "NRs 5000",
-      paidAmount: "NRs 3000",
+      assignmentTitle: "Regarding project management of my homework",
+      status: "submitted",
+      totalAmount: "5000",
+      paidAmount: "3000",
+      dueDate: "Oct 8",
+      writer: { name: "Jane Cooper", avatar: profileIcon },
+    },
+    {
+      id: 3,
+      assignmentTitle: "Regarding project management of my homework",
+      status: "approved",
+      totalAmount: "5000",
+      paidAmount: "1000",
+      dueDate: "Oct 8",
+      writer: { name: "Not Assigned", avatar: profileIcon },
+    },
+    {
+      id: 1,
+      assignmentTitle: "Regarding project management of my homework",
+      status: "ongoing",
+      totalAmount: "5000",
+      paidAmount: "2400",
       dueDate: "Oct 8",
       writer: { name: "Jane Cooper", avatar: profileIcon },
     },
@@ -36,7 +56,7 @@ const Dashboard = () => {
 
   const paymentData = [
     {
-      title:
+      assignmentTitle:
         "This is my second assignment submission eqwnjkdewnudnqewdnoiqenoandlaskndkaslndkasndklasndlkkasdasnlxnasxlasxnsa",
       date: "20/02/2024",
       method: "Fonepay",
@@ -45,8 +65,8 @@ const Dashboard = () => {
       amount: 8000,
     },
     {
-      title:
-        "This is my second assignment submission sndiasncasnclkasncoisdacwslkdcnoisdancosdancosc",
+      assignmentTitle:
+        "This is my second assignment submission sndiasncas nclkasncois dacwslkdcnois dancosdancosc",
       date: "20/01/2024",
       method: "Fonepay",
       currency: "NPR",
@@ -54,7 +74,7 @@ const Dashboard = () => {
       amount: 7000,
     },
     {
-      title:
+      assignmentTitle:
         "It should be relatively short, but still anxcoilasncxoilasndcxoliasnxnlzkm",
       date: "20/01/2024",
       method: "Fonepay",
@@ -68,7 +88,7 @@ const Dashboard = () => {
   };
 
   const filteredAssignments =
-    activeFilter === "All"
+    activeFilter === "all"
       ? assignments
       : assignments.filter((a) => a.status === activeFilter);
 
@@ -114,14 +134,16 @@ const Dashboard = () => {
         {orderPopup && <ClientOrderPopup setorderPopup={setorderPopup} />}
       </div>
       <div className="flex flex-wrap gap-4 mt-4">
-        {filteredAssignments.map((assignment, index) => (
+        {filteredAssignments.slice(0, 2).map((assignment, index) => (
           <AssignmentCard key={index} {...assignment} />
         ))}
       </div>
       <div>
         <div className="flex justify-between items-center w-[81%] mt-12 px-4">
           <h1 className="font-semibold">Transactions</h1>
-          <div className="flex items-center gap-1 cursor-pointer hover:text-blue-600">
+          <div
+            onClick={() => navigate("/client/payments")}
+            className="flex items-center gap-1 cursor-pointer hover:text-blue-600">
             View all
             <HiArrowRight className="text-lg" />
           </div>

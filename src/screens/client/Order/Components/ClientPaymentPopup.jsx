@@ -30,7 +30,7 @@ const PaymentPopup = ({ onClose, assignment }) => {
             <div>
               <label className="text-sm text-gray-500">Assignment Title:</label>
               <div className="mt-1 px-2 bg-gray-50 rounded-md text-sm line-clamp-2 overflow-hidden">
-                {assignment.title} {/* Display assignment title */}
+                {assignment.assignmentTitle} {/* Display assignment title */}
               </div>
             </div>
 
