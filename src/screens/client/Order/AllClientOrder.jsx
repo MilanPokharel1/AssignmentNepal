@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import AssignmentCard from "./Components/AssignmentCard";
-import FilterButtons from "./components/FilterButtons";
+import FilterButtons from "./Components/FilterButtons";
 import { ImSearch } from "react-icons/im";
 import { FaChevronDown } from "react-icons/fa";
 import ClientOrderPopup from "./Components/ClientOrderPopup";
