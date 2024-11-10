@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Download, Loader, Loader2 } from "lucide-react";
 import { FolderIcon } from "@heroicons/react/solid";
-import profileIcon from "../ClientComponents/profileIcon.jpg";
-import profilePictureClient from "../ClientComponents/profile-picture.jpeg";
 import { download_file, get_orderById, send_comment } from "../../../api/Api";
 import { useParams } from "react-router-dom";
 
@@ -233,13 +231,7 @@ const AssignmentView = () => {
     return description.slice(0, maxLength) + "...";
   };
 
-  // const files = [
-  //   { name: "theprojekts-design-tokens.zip", size: "5.3MB", url: "exampleURL" },
-  //   { name: "project-requirements.pdf", size: "2.1MB", url: "exampleURL" },
-  //   { name: "research-data.xlsx", size: "1.8MB", url: "" },
-  // ];
-
-  // Sample data for downloadable files
+ 
   const downloadableFiles = [
     { name: "finalaccounting.zip", size: "5.3MB", status: "pending" },
     { name: "completed-analysis.pdf", size: "3.2MB", status: "approved " },
@@ -310,10 +302,12 @@ const AssignmentView = () => {
                         <span className="text-sm font-medium ">
                           {comment.name}
                         </span>
-                        <span className="text-xs text-gray-500">
-                          {formatDate(comment.createdAt)}
+                        <span className="text-xs text-gray-500 ml-1">
+                          {comment.createdAt ?
+                            formatDate(comment.createdAt) : "Just Now"
+                          }
                         </span>
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-gray-500 ml-1">
                           {comment.createdTime}
                         </span>
                       </div>
