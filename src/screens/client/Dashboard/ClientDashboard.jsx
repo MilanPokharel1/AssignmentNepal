@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { IoBookSharp, IoCheckmarkSharp } from "react-icons/io5";
 import { MdShoppingCart } from "react-icons/md";
 import Card from "./components/Card";
-import AssignmentCard from "../Order/components/AssignmentCard.jsx";
+import AssignmentCard from "../Order/Components/AssignmentCard.jsx";
 import FilterButtons from "./components/FilterButtons";
 import profileIcon from "../ClientComponents/profileIcon.jpg";
 import { HiArrowRight } from "react-icons/hi";
