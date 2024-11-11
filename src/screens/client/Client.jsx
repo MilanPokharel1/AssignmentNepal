@@ -4,11 +4,11 @@ import SideNavbar from "./ClientComponents/SideNavbar";
 import TopNavbar from "./ClientComponents/TopNavbar";
 const Client = () => {
   return (
-    <div className="min-h-screen flex gap-2">
-      <div className="w-[19%] h-screen bg-gray-50 fixed">
+    <div className="min-h-screen flex gap-2 bg-white">
+      <div className="SideNavHide:w-[19%] SideNavHide:h-screen SideNavHide:bg-gray-50 SideNavHide:fixed hidden SideNavHide:block">
         <SideNavbar />
       </div>
-      <div className="flex flex-1 flex-col ml-[20%]">
+      <div className="flex flex-1 flex-col w-full ">
         <div className="h-[4rem]">
           <TopNavbar notificationCount={19} />
         </div>
