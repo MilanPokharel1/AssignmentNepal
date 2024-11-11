@@ -9,11 +9,13 @@ import profileIcon from "../ClientComponents/profileIcon.jpg";
 import { HiArrowRight } from "react-icons/hi";
 import PaymentCard from "../Payments/Components/PaymentCard";
 import ClientOrderPopup from "../Order/Components/ClientOrderPopup.jsx";
-
+import { useTheme } from "../../../contexts/ThemeContext/UseTheme.js";
 const Dashboard = () => {
   const [activeFilter, setActiveFilter] = useState("all");
   const [orderPopup, setorderPopup] = useState(false);
   const navigate = useNavigate();
+  const { currentTheme, themes } = useTheme();
+  const theme = themes[currentTheme];
 
   const assignments = [
     {
@@ -143,7 +145,8 @@ const Dashboard = () => {
           <h1 className="font-semibold">Transactions</h1>
           <div
             onClick={() => navigate("/client/payments")}
-            className="flex items-center gap-1 cursor-pointer hover:text-blue-600">
+            className={`flex items-center gap-1 cursor-pointer hover:text-blue-600 `}
+          >
             View all
             <HiArrowRight className="text-lg" />
           </div>
