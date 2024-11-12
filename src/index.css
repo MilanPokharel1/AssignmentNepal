@@ -9,23 +9,23 @@
 
 @media (min-width: 1200px) and (max-width: 1500px) {
   html {
-    font-size: 14px !important;
+    font-size: 15px !important;
   }
 }
 @media (min-width: 800px) and (max-width: 1199px) {
   html {
-    font-size: 12px !important;
+    font-size: 13px !important;
   }
   .filterbtn{
-    font-size: 9px !important;
+    font-size: 10px !important;
   }
 }
 
 @media only screen and (max-width: 800px) {
   html {
-    font-size: 10px !important;
+    font-size: 11px !important;
   }
   .filterbtn{
-    font-size: 9px !important;
+    font-size: 10px !important;
   }
 }

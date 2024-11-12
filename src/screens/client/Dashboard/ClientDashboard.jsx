@@ -11,7 +11,6 @@ import PaymentCard from "../Payments/Components/PaymentCard";
 import ClientOrderPopup from "../Order/Components/ClientOrderPopup.jsx";
 import { UseTheme } from "../../../contexts/ThemeContext/UseTheme.js";
 
-
 const Dashboard = () => {
   const [activeFilter, setActiveFilter] = useState("all");
   const [orderPopup, setorderPopup] = useState(false);
@@ -143,7 +142,7 @@ const Dashboard = () => {
         ))}
       </div>
       <div>
-        <div className="flex justify-between items-center w-full md:w-[81%] mt-12 px-4">
+        <div className="flex justify-between items-center w-full md:w-[81%] mt-12 px-4 mb-3">
           <h1 className="font-semibold">Transactions</h1>
           <div
             onClick={() => navigate("/client/payments")}
