@@ -22,9 +22,14 @@ const FacebookLoginComponent = () => {
       scope="ads_read,ads_management"
       callback={responseFacebook}
       onFailure={handleFailure}
-      cssClass="flex items-center mb-4 p-2 justify-center px-4  w-full h-14 rounded-md bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700 transition-colors"
-      textButton="Login with Facebook"
-      icon={<FaFacebook className="text-2xl mr-2" />}
+      cssClass="flex items-center mb-4 p-2 w-full h-14 rounded-md bg-blue-600 text-white font-semibold shadow-md hover:bg-blue-700 transition-colors"
+      textButton=""
+      icon={
+        <div className="flex w-full items-center">
+          <FaFacebook className="text-2xl mr-2 ml-3" /> {/* Facebook icon */}
+          <span className="flex-grow font-normal text-[13px] text-center">Login with Facebook</span> {/* Centered text */}
+        </div>
+      }
     />
   );
 };
