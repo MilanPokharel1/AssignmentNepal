@@ -9,7 +9,7 @@ const Client = () => {
 
   useEffect(() => {
     const checkSideNavVisibility = () => {
-      const mediaQuery = window.matchMedia("(min-width: 1000px)"); 
+      const mediaQuery = window.matchMedia("(min-width: 1000px)");
       setIsSideNavVisible(mediaQuery.matches);
     };
 
@@ -47,7 +47,7 @@ const Client = () => {
         </div>
       )}
 
-      <div className="flex flex-1 flex-col SideNavHide:ml-[20%] ml-[4vw]">
+      <div className="flex flex-1 flex-col SideNavHide:ml-[20%] ">
         <div className="h-[4rem]">
           <TopNavbar
             notificationCount={19}
