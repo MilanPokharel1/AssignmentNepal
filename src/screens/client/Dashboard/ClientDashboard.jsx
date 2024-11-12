@@ -10,6 +10,7 @@ import { HiArrowRight } from "react-icons/hi";
 import PaymentCard from "../Payments/Components/PaymentCard";
 import ClientOrderPopup from "../Order/Components/ClientOrderPopup.jsx";
 import { useTheme } from "../../../contexts/ThemeContext/UseTheme.js";
+
 const Dashboard = () => {
   const [activeFilter, setActiveFilter] = useState("all");
   const [orderPopup, setorderPopup] = useState(false);
