@@ -24,7 +24,7 @@ const FilterButtons = ({ activeFilter, onFilterChange }) => {
     <div>
       {isMobile ? (
         <div className="flex items-center gap-2 mt-4">
-          <span className="text-gray-700">Sort by:</span>
+          <span className="text-gray-700">Find by:</span>
           <select
             className="px-4 py-2 rounded-lg capitalize bg-gray-100 text-gray-700"
             value={activeFilter}
