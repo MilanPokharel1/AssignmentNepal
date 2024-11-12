@@ -10,12 +10,14 @@ const AssignmentCard = ({
   status,
   totalAmount,
   paidAmount = 400,
+  payments,
   deadline,
   writerName = "Not Assigned",
   writerPic = profileIcon,
   writerId = "",
 }) => {
   const navigate = useNavigate();
+  paidAmount = payments[0].paidAmount
 
   const handleView = () => {
     navigate(`/client/orders/view/${_id}`);
@@ -94,9 +96,8 @@ const AssignmentCard = ({
           </span>
         </div>
         <div
-          className={`px-2 py-1 rounded-full text-sm capitalize ${
-            statusColors[status.toLowerCase()]
-          }`}
+          className={`px-2 py-1 rounded-full text-sm capitalize ${statusColors[status.toLowerCase()]
+            }`}
         >
           {status}
         </div>
