@@ -3,6 +3,8 @@ import { Download, Loader, Loader2 } from "lucide-react";
 import { FolderIcon } from "@heroicons/react/solid";
 import { download_file, get_orderById, send_comment } from "../../../api/Api";
 import { useParams } from "react-router-dom";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
 
 const AssignmentView = () => {
   const [comments, setComments] = useState("");
@@ -20,6 +22,8 @@ const AssignmentView = () => {
   const [newComment, setNewComment] = useState("");
   const commentsContainerRef = useRef(null);
   const { orderId } = useParams(); // Get orderId from the URL
+  const [isLoading, setIsLoading] = useState(true);
+
 
   const scrollToBottom = () => {
     commentsContainerRef.current.scrollTop =
@@ -35,32 +39,36 @@ const AssignmentView = () => {
   }, [comments]);
 
   useEffect(() => {
+    const fetchOrderById = async () => {
+      setIsLoading(true);
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
+        const response = await fetch(get_orderById, {
+          method: "POST",
+          body: JSON.stringify({ orderId }), // Convert body to JSON string
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch orders");
+        }
+
+        const data = await response.json();
+        setAssignment(data);
+        setComments(data.comments);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
     fetchOrderById();
   }, []);
 
-  const fetchOrderById = async () => {
-    try {
-      const token = localStorage.getItem("token"); // Replace with the actual token
-      const response = await fetch(get_orderById, {
-        method: "POST",
-        body: JSON.stringify({ orderId }), // Convert body to JSON string
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch orders");
-      }
-
-      const data = await response.json();
-      setAssignment(data);
-      setComments(data.comments);
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-    }
-  };
 
   const handleAddComment = async (e) => {
     e.preventDefault();
@@ -239,6 +247,11 @@ const AssignmentView = () => {
 
   return (
     <div className="w-full mx-auto p-6 bg-[#fafbfc] rounded-lg pb-10">
+      {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
+          <CircularProgress />
+        </div>
+      )}
       <h2 className="text-2xl font-bold mb-6">Assignment</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-8 gap-0 md:gap-6">
@@ -357,11 +370,10 @@ const AssignmentView = () => {
                 assignment.files.map((file, index) => (
                   <div key={index} className="relative">
                     <div
-                      className={`flex flex-col p-2 rounded border ${
-                        file.fileUrl
+                      className={`flex flex-col p-2 rounded border ${file.fileUrl
                           ? "bg-white border-gray-200"
                           : "bg-gray-100 border-gray-300"
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-2">
@@ -382,7 +394,7 @@ const AssignmentView = () => {
                           }
                           disabled={
                             downloadingFiles[
-                              new URL(file.fileUrl).searchParams.get("id")
+                            new URL(file.fileUrl).searchParams.get("id")
                             ]
                           }
                         >
@@ -399,7 +411,7 @@ const AssignmentView = () => {
                       </div>
                       {file.fileUrl &&
                         downloadingFiles[
-                          new URL(file.fileUrl).searchParams.get("id")
+                        new URL(file.fileUrl).searchParams.get("id")
                         ] && (
                           <div className="mt-2 ml-7">
                             <div className="text-xs text-gray-500 mb-1">
@@ -419,13 +431,12 @@ const AssignmentView = () => {
                               <div
                                 className="h-2 bg-blue-500 rounded-full"
                                 style={{
-                                  width: `${
-                                    downloadingFiles[
+                                  width: `${downloadingFiles[
                                       new URL(file.fileUrl).searchParams.get(
                                         "id"
                                       )
                                     ].progress
-                                  }%`,
+                                    }%`,
                                 }}
                               ></div>
                             </div>
