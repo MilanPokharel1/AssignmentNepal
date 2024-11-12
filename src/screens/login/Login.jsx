@@ -96,7 +96,7 @@ const Login = () => {
             />
             <span
               onClick={togglePasswordVisibility}
-              className="absolute right-4 top-3 cursor-pointer text-xl"
+              className="absolute right-4 top-4 cursor-pointer text-xl"
             >
               {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
             </span>
