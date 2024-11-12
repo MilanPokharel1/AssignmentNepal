@@ -48,7 +48,7 @@ const Client = () => {
       )}
 
       <div className="flex flex-1 flex-col SideNavHide:ml-[20%] ">
-        <div className="h-[8rem] md:h-[4rem]">
+        <div className="h-[6rem] md:h-[4rem]">
           <TopNavbar
             notificationCount={19}
             isSideNavVisible={isSideNavVisible}
