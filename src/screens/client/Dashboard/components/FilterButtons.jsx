@@ -26,7 +26,7 @@ const FilterButtons = ({ activeFilter, onFilterChange }) => {
         <div className="flex items-center gap-2 mt-4">
           <span className="text-gray-700">Find by:</span>
           <select
-            className="px-4 py-2 rounded-lg capitalize bg-gray-100 text-gray-700"
+            className="px-4 py-2 outline-none rounded-lg capitalize bg-gray-100 text-gray-700"
             value={activeFilter}
             onChange={(e) => onFilterChange(e.target.value)}
           >
