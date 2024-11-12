@@ -33,7 +33,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
   };
 
   return (
-    <div className="h-full w-full bg-white flex flex-col p-6 shadow-xl drop-shadow-lg relative text-md">
+    <div className="h-full w-full bg-white flex flex-col p-6 shadow-xl drop-shadow-lg relative">
       {isMobile && (
         <button
           onClick={onClose}
@@ -58,7 +58,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
             onClick={() => isMobile && onClose?.()}
           >
             <RiPieChart2Fill className="w-5 h-5" />
-            <span>Dashboard</span>
+            <span className="text-md">Dashboard</span>
           </NavLink>
         </div>
         <div className="flex flex-col gap-2">
