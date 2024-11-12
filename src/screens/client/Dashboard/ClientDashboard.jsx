@@ -112,7 +112,7 @@ const Dashboard = () => {
         />
         <Card
           Icon={IoCheckmarkSharp}
-          heading="Completed Assignment"
+          heading="Completed"
           number="8"
           theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
         />
