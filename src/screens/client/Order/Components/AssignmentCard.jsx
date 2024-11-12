@@ -3,8 +3,6 @@ import PaymentPopup from "./ClientPaymentPopup";
 import { useNavigate } from "react-router-dom";
 import profileIcon from "../../ClientComponents/profileIcon.jpg";
 
-
-
 const AssignmentCard = ({
   _id,
   assignmentTitle,
@@ -15,7 +13,7 @@ const AssignmentCard = ({
   deadline,
   writerName = "Not Assigned",
   writerPic = profileIcon,
-  writerId = ""
+  writerId = "",
 }) => {
   const navigate = useNavigate();
 
@@ -76,7 +74,7 @@ const AssignmentCard = ({
   const progressClasses = getProgressClasses();
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-2xl w-[40%] drop-shadow-2x2">
+    <div className="p-4 bg-white rounded-lg shadow-2xl w-full lg:w-[40%] sm:max-lg:w-full drop-shadow-2x2">
       {/* assignmentTitle and Status */}
       <div className="mb-4 flex justify-between items-start">
         <div className="flex items-start">
@@ -96,8 +94,9 @@ const AssignmentCard = ({
           </span>
         </div>
         <div
-          className={`px-2 py-1 rounded-full text-sm capitalize ${statusColors[status.toLowerCase()]
-            }`}
+          className={`px-2 py-1 rounded-full text-sm capitalize ${
+            statusColors[status.toLowerCase()]
+          }`}
         >
           {status}
         </div>

@@ -3,16 +3,18 @@ import React from "react";
 const Card = ({ Icon, heading, number, theme }) => {
   return (
     <div
-      className={`flex items-center ${theme.bgColor} p-4 rounded-lg w-[24%] shadow-md h-36`}
+      className={`flex items-center ${theme.bgColor} p-4 rounded-lg shadow-md w-full  h-36 sm:h-32 lg:h-36 mb-4 sm:mb-0 sm:w-[20rem] `}
     >
       {/* Icon with background */}
       <div className={`${theme.iconBgColor} p-2 rounded-full`}>
-        <Icon className="text-white text-4xl" />
+        <Icon className="text-white SideNavHide:text-2xl text-xl" />
       </div>
       {/* Text content */}
       <div className="ml-4">
-        <p className="text-xl text-gray-600 font-medium">{heading}</p>
-        <p className="text-2xl font-bold">{number}</p>
+        <p className="SideNavHide:text-lg  text-gray-600 font-medium">
+          {heading}
+        </p>
+        <p className="SideNavHide:text-xl text-lg font-bold">{number}</p>
       </div>
     </div>
   );

@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-
 import {
   FaClipboardList,
   FaWallet,
@@ -17,28 +15,25 @@ const SideNavbar = () => {
   const navigate = useNavigate();
 
   const linkStyles =
-    "flex items-center space-x-4 pl-6 text-gray-600 transition-all duration-300 ease-in-out py-2"; // Base link styles
-  const activeLinkStyles = "bg-[#5d5fef] text-white rounded-md py-2"; // Styles for active link without enlargement
+    "flex items-center space-x-4 pl-6 text-gray-600 transition-all duration-300 ease-in-out py-2";
+  const activeLinkStyles = "bg-[#5d5fef] text-white rounded-md py-2";
   const dashboardActiveStyles =
-    "bg-[#5d5fef] text-white font-medium rounded-md py-2 text-xl transform scale-105"; // Enlarged style for Dashboard only
+    "bg-[#5d5fef] text-white font-medium rounded-md py-2 text-sm dashboardActiveheight:text-xl transform scale-105 ";
 
   const handleLogout = () => {
-    // Clear the token from local storage
     localStorage.removeItem("token");
     localStorage.removeItem("firstName");
     localStorage.removeItem("lastName");
     localStorage.removeItem("picture");
-    // Navigate back to the login page
     navigate("/");
   };
+
   return (
     <div className="h-full w-full bg-white flex flex-col p-6 shadow-xl drop-shadow-lg">
-      {/* Logo Section */}
       <div className="w-44 h-22 overflow-hidden mx-auto mb-10">
         <img src={logo} className="w-full object-cover" alt="logo" />
       </div>
 
-      {/* Navigation Links */}
       <div className="w-[74%] mx-auto space-y-4 flex-col flex h-[50%] justify-between">
         <div>
           <NavLink
@@ -52,7 +47,7 @@ const SideNavbar = () => {
             <span>Dashboard</span>
           </NavLink>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 ">
           <div>
             <NavLink
               to="/client/orders"

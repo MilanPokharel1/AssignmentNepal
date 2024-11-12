@@ -9,13 +9,13 @@ import profileIcon from "../ClientComponents/profileIcon.jpg";
 import { HiArrowRight } from "react-icons/hi";
 import PaymentCard from "../Payments/Components/PaymentCard";
 import ClientOrderPopup from "../Order/Components/ClientOrderPopup.jsx";
-import { useTheme } from "../../../contexts/ThemeContext/UseTheme.js";
+import { UseTheme } from "../../../contexts/ThemeContext/UseTheme.js";
 
 const Dashboard = () => {
   const [activeFilter, setActiveFilter] = useState("all");
   const [orderPopup, setorderPopup] = useState(false);
   const navigate = useNavigate();
-  const { currentTheme, themes } = useTheme();
+  const { currentTheme, themes } = UseTheme();
   const theme = themes[currentTheme];
 
   const assignments = [
@@ -97,7 +97,7 @@ const Dashboard = () => {
 
   return (
     <div className="flex-1 p-6 bg-[#fafbfc]">
-      <div className="flex gap-4">
+      <div className="flex flex-wrap gap-4 items-center justify-center sm:justify-start max-w-[100%] lg:max-w-[90%] ">
         <Card
           Icon={IoBookSharp}
           heading="Total Assignment"

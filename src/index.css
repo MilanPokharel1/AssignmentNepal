@@ -2,8 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
-
 *::-webkit-scrollbar {
   display: none;
   /* Chrome, Safari, Edge */
+}
+
+@media (min-width: 1200px) and (max-width: 1500px) {
+  html {
+    font-size: 14px !important;
+  }
+}
+@media (min-width: 800px) and (max-width: 1199px) {
+  html {
+    font-size: 12px !important;
+  }
+  .filterbtn{
+    font-size: 9px !important;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  html {
+    font-size: 10px !important;
+  }
+  .filterbtn{
+    font-size: 9px !important;
+  }
 }

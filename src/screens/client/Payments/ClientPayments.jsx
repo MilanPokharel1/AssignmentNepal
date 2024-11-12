@@ -127,7 +127,7 @@ const ClientPayments = () => {
             <input
               type="text"
               placeholder="Search here..."
-              className="p-2 px-4 pl-10 border-none rounded-2xl bg-[#dbedff] w-64 focus:border-none  outline-none focus:ring-2 focus:ring-blue-300 focus:bg-[#dbedff]"
+              className="p-2 px-4 pl-10 border-none rounded-2xl bg-[#dbedff] md:w-64  w-44 focus:border-none  outline-none focus:ring-2 focus:ring-blue-300 focus:bg-[#dbedff]"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
