@@ -16,7 +16,7 @@
   html {
     font-size: 13px !important;
   }
-  .filterbtn{
+  .filterbtn {
     font-size: 10px !important;
   }
 }
@@ -25,7 +25,10 @@
   html {
     font-size: 11px !important;
   }
-  .filterbtn{
+  .filterbtn {
     font-size: 10px !important;
+  }
+  .navbarClass {
+    font-size: 13px !important;
   }
 }

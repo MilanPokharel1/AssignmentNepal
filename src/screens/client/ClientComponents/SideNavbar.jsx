@@ -47,7 +47,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
         <img src={logo} className="w-full object-cover" alt="logo" />
       </div>
 
-      <div className="w-[74%] mx-auto space-y-4 flex-col flex h-[50%] justify-between">
+      <div className="w-[74%] mx-auto space-y-4 flex-col flex h-[50%] justify-between navbarClass">
         <div>
           <NavLink
             to="/client"
@@ -58,7 +58,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
             onClick={() => isMobile && onClose?.()}
           >
             <RiPieChart2Fill className="w-5 h-5" />
-            <span className="text-md">Dashboard</span>
+            <span>Dashboard</span>
           </NavLink>
         </div>
         <div className="flex flex-col gap-2">
