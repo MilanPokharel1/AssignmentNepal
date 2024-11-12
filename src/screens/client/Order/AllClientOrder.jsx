@@ -13,9 +13,8 @@ const AllClientOrder = () => {
   const [sortOrder, setSortOrder] = useState("Newest");
   const [showOptions, setShowOptions] = useState(false);
   const [orderPopup, setorderPopup] = useState(false);
-  const [assignments, setAssignments] = useState([])
+  const [assignments, setAssignments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -26,7 +25,7 @@ const AllClientOrder = () => {
         const response = await fetch(get_orders, {
           method: "GET",
           headers: {
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -39,14 +38,12 @@ const AllClientOrder = () => {
         console.log(data);
       } catch (error) {
         console.error("Error fetching orders:", error);
-      }
-      finally {
+      } finally {
         setIsLoading(false);
       }
     };
 
     fetchOrders();
-
   }, []);
 
   const handleFilterChange = (filter) => {
@@ -103,7 +100,8 @@ const AllClientOrder = () => {
       return (
         normalizeText(assignment.assignmentTitle).includes(search) ||
         normalizeText(assignment.deadline).includes(search) ||
-        (assignment.writerName && normalizeText(assignment.writerName).includes(search))
+        (assignment.writerName &&
+          normalizeText(assignment.writerName).includes(search))
       );
     });
 
@@ -130,13 +128,13 @@ const AllClientOrder = () => {
           <CircularProgress />
         </div>
       )}
-      <div className="flex flex-row-reverse px-4 mt-5 max-w-[85%]">
+      <div className="flex flex-row-reverse px-4 mt-5 w-full md:w-[85%]">
         <div className="flex justify-between items-center mr-5 gap-3">
           <div className="relative">
             <input
               type="text"
               placeholder="Search here..."
-              className="p-2 px-4 pl-10 border-none rounded-2xl bg-[#dbedff] w-64 focus:border-none outline-none focus:ring-2 focus:ring-blue-300 focus:bg-[#dbedff]"
+              className="p-2 px-4 pl-10 border-none rounded-2xl bg-[#dbedff] w-56 md:w-64 focus:border-none outline-none focus:ring-2 focus:ring-blue-300 focus:bg-[#dbedff]"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -144,7 +142,7 @@ const AllClientOrder = () => {
           </div>
           <div className="relative text-sm">
             <button
-              className="p-2 border border-gray-300 rounded-lg bg-[#dbedff] flex items-center gap-2 w-64"
+              className="p-2 border border-gray-300 rounded-lg bg-[#dbedff] flex items-center gap-2 w-56 md:w-64"
               onClick={() => setShowOptions(!showOptions)}
             >
               <div className="flex-1 font-medium">
@@ -173,14 +171,15 @@ const AllClientOrder = () => {
         </div>
       </div>
       <div className="mt-5">
-        <div className="flex justify-between w-[81%]">
+        <div className="flex justify-between w-full md:w-[81%]">
           <FilterButtons
             activeFilter={activeFilter}
             onFilterChange={handleFilterChange}
           />
           <button
             onClick={() => setorderPopup(true)}
-            className="px-4 py-2 rounded-lg text-sm mt-4 text-white bg-[#5d5fef] hover:bg-purple-600 transition-colors">
+            className="px-4 py-2 rounded-lg text-sm mt-4 text-white bg-[#5d5fef] hover:bg-purple-600 transition-colors"
+          >
             +Create Order
           </button>
           {orderPopup && <ClientOrderPopup setorderPopup={setorderPopup} />}
@@ -192,15 +191,21 @@ const AllClientOrder = () => {
               <AssignmentCard
                 key={assignment._id}
                 {...assignment}
-                assignmentTitle={highlightText(assignment.assignmentTitle, searchTerm)}
-                writerName={assignment.writerName ? highlightText(assignment.writerName, searchTerm) : "Not Assigned"}
-
+                assignmentTitle={highlightText(
+                  assignment.assignmentTitle,
+                  searchTerm
+                )}
+                writerName={
+                  assignment.writerName
+                    ? highlightText(assignment.writerName, searchTerm)
+                    : "Not Assigned"
+                }
                 deadline={highlightText(assignment.deadline, searchTerm)}
               />
             ))
           ) : (
             <div className="flex mx-auto w-[50%] items-center">
-            <NoDataFound />
+              <NoDataFound />
             </div>
           )}
         </div>

@@ -97,7 +97,7 @@ const Dashboard = () => {
 
   return (
     <div className="flex-1 p-6 bg-[#fafbfc]">
-      <div className="flex flex-wrap gap-4 items-center justify-center sm:justify-start max-w-[100%] lg:max-w-[90%] ">
+      <div className="flex flex-wrap gap-4 items-center justify-center sm:justify-start  ">
         <Card
           Icon={IoBookSharp}
           heading="Total Assignment"
@@ -123,7 +123,7 @@ const Dashboard = () => {
           theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
         />
       </div>
-      <div className="flex justify-between w-[81%] my-5">
+      <div className="flex justify-between w-full md:w-[81%] my-5">
         <FilterButtons
           activeFilter={activeFilter}
           onFilterChange={handleFilterChange}
@@ -142,7 +142,7 @@ const Dashboard = () => {
         ))}
       </div>
       <div>
-        <div className="flex justify-between items-center w-[81%] mt-12 px-4">
+        <div className="flex justify-between items-center w-full md:w-[81%] mt-12 px-4">
           <h1 className="font-semibold">Transactions</h1>
           <div
             onClick={() => navigate("/client/payments")}
@@ -152,7 +152,7 @@ const Dashboard = () => {
             <HiArrowRight className="text-lg" />
           </div>
         </div>
-        <div className="w-[81%]">
+        <div className="w-full md:w-[81%]">
           {paymentData.length > 0 &&
             paymentData.map((payment, index) => (
               <PaymentCard

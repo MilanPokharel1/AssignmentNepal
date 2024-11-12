@@ -120,7 +120,7 @@ const ClientPayments = () => {
   );
 
   return (
-    <div className="p-6 flex-1 bg-[#fafbfc] max-w-[85%]">
+    <div className="p-6 flex-1 bg-[#fafbfc] w-full md:w-[85%]">
       <div className="flex justify-between items-center flex-row-reverse">
         <div className="flex justify-between items-center mb-4 gap-3">
           <div className="relative">
@@ -135,7 +135,7 @@ const ClientPayments = () => {
           </div>
           <div className="relative text-sm">
             <button
-              className="p-2 border border-gray-300 rounded-lg bg-[#dbedff] flex items-center gap-2 w-64"
+              className="p-2 border border-gray-300 rounded-lg bg-[#dbedff] flex items-center gap-2  w-56 md:w-64"
               onClick={() => setShowOptions(!showOptions)}
             >
               <div className="flex-1 font-medium">
