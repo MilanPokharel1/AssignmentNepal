@@ -19,7 +19,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
     "flex items-center space-x-4 pl-6 text-gray-600 transition-all duration-300 ease-in-out py-2";
   const activeLinkStyles = "bg-[#5d5fef] text-white rounded-md py-2";
   const dashboardActiveStyles =
-    "bg-[#5d5fef] text-white font-medium rounded-md py-2 text-sm dashboardActiveheight:text-xl transform scale-105";
+    "bg-[#5d5fef] text-white font-medium rounded-md py-2  dashboardActiveheight:text-xl transform scale-105";
 
   const handleLogout = () => {
     localStorage.removeItem("token");
