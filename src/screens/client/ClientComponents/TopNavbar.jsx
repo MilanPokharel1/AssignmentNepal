@@ -45,7 +45,7 @@ const TopNavbar = ({
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             onClick={onMenuClick}
           >
-            <MdMenu className="h-8 w-8 text-gray-600" />
+            <MdMenu className="h-11 w-11 text-gray-600" />
           </button>
         )}
         <div className="text-xl font-semibold">{headerTitle}</div>
