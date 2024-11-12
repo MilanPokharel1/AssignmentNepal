@@ -60,7 +60,7 @@ const GoogleLoginComponent = () => {
           <button
             onClick={renderProps.onClick}
             disabled={renderProps.disabled}
-            className="flex items-center justify-center w-full h-15 rounded-md bg-white border border-gray-300 shadow-md font-semibold text-gray-700 hover:bg-gray-100 transition-colors"
+            className="flex items-center justify-center w-[100%] h-15 rounded-md bg-white border border-gray-300 shadow-md font-semibold text-gray-700 hover:bg-gray-100 transition-colors"
           >
             <FcGoogle className="text-2xl mr-2" /> {/* Google icon */}
           </button>
