@@ -97,7 +97,7 @@ const Dashboard = () => {
 
   return (
     <div className="flex-1 p-6 bg-[#fafbfc]">
-      <div className="flex flex-wrap gap-4  justify-center sm:justify-start  ">
+      <div className="flex flex-wrap gap-4 justify-center sm:justify-start">
         <Card
           Icon={IoBookSharp}
           heading="Total Assignment"
