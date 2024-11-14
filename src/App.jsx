@@ -10,6 +10,16 @@ import ClientReminders from "./screens/client/Reminders/ClientReminders";
 import HelpSupport from "./screens/client/HelpSupport/HelpSupport";
 import Admin from "./screens/admin/admin";
 import { ThemeProvider } from "../src/contexts/ThemeContext/ThemeProvider";
+import CustomerService from "./screens/customerService/CustomerService";
+import CSdashboard from "./screens/customerService/csDashboard/CSdashboard";
+import OrderManagement from "./screens/customerService/OrderManagement/OrderManagement";
+import CsAssignWriter from "./screens/customerService/CsAssignWriter/CsAssignWriter";
+import CSUserManagement from "./screens/customerService/CsUserManagement/CSUserManagement";
+import CsAssignmentRequest from "./screens/customerService/CsAssignmentRequest/CsAssignmentRequest";
+import CsWithdrawlRequest from "./screens/customerService/CsWithdrawlRequest/CsWithdrawlRequest";
+import CsRemainders from "./screens/customerService/CsRemainders/CsRemainders";
+import CsPayments from "./screens/customerService/CsPayments/CsPayments";
+
 function App() {
   return (
     <ThemeProvider>
@@ -27,6 +37,16 @@ function App() {
             <Route path="helpsupport" element={<HelpSupport />} />
           </Route>
           <Route path="/admin" element={<Admin />} />
+          <Route path="/cs" element={<CustomerService />}>
+            <Route index element={<CSdashboard />} />
+            <Route path="ordermanagement" element={<OrderManagement />} />
+            <Route path="assignwriter" element={<CsAssignWriter />} />
+            <Route path="usermanagement" element={<CSUserManagement />} />
+            <Route path="assignmentrequest" element={<CsAssignmentRequest />} />
+            <Route path="withdrawlrequest" element={<CsWithdrawlRequest />} />
+            <Route path="reminders" element={<CsRemainders />} />
+            <Route path="payments" element={<CsPayments />} />
+          </Route>
         </Routes>
       </Router>
     </ThemeProvider>

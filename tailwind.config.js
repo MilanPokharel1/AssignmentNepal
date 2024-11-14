@@ -8,6 +8,7 @@ export default {
       },
       screens: {
         SideNavHide: "1000px",
+        SideNavHide2: "1159px",
         dashboardActiveheight:"1537px",
       },
     },
