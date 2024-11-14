@@ -58,12 +58,12 @@ const Login = () => {
           <CircularProgress />
         </div>
       )}
-      <div className="h-[70vh] w-[60%] bg-white rounded-lg shadow-lg flex p-5">
+      <div className="h-[70vh] w-[60%] bg-white rounded-lg shadow-lg flex p-5 loginStyle">
 
         {/* Social Login Section */}
-        <div className="w-1/2 flex flex-col items-center justify-center space-y-4 border-r border-gray-200 px-6">
+        <div className="w-1/2 loginStyleDiv flex flex-col items-center justify-center space-y-4 border-r border-gray-200 px-6">
 
-          <div className="w-[55%]">
+          <div className="w-[74%]">
             <FacebookLoginComponent />
             <GoogleLoginComponent />
           </div>
@@ -72,7 +72,7 @@ const Login = () => {
         </div>
 
         {/* Email Login Section */}
-        <div className="w-1/2 flex flex-col justify-center items-center space-y-4 px-10">
+        <div className="w-1/2 loginStyleDiv flex flex-col justify-center items-center space-y-4 px-10">
           <div className="flex justify-center items-center w-full">
             <SlLogin className="text-4xl text-gray-600" />
           </div>
@@ -96,7 +96,7 @@ const Login = () => {
             />
             <span
               onClick={togglePasswordVisibility}
-              className="absolute right-4 top-3 cursor-pointer text-xl"
+              className="absolute right-4 top-4 cursor-pointer text-xl"
             >
               {showPassword ? <AiFillEyeInvisible /> : <AiFillEye />}
             </span>

@@ -31,4 +31,16 @@
   .navbarClass {
     font-size: 16px !important;
   }
+  .loginStyle{
+    display: flex;
+    flex-direction: column-reverse;
+    width: 95%;
+    height: 100vh;
+    justify-content: center;
+    font-size: 15px;
+  }
+  .loginStyleDiv{
+    width: 100%;
+    margin-bottom: 3rem;
+  }
 }
