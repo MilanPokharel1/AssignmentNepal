@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 
-const AssignmentCard = ({
+const OrderCard = ({
   _id,
   assignmentTitle,
   description,
@@ -163,4 +163,4 @@ const AssignmentCard = ({
   );
 };
 
-export default AssignmentCard;
+export default OrderCard;
