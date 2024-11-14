@@ -6,7 +6,7 @@ import { MdShoppingCart } from "react-icons/md";
 import Card from "./components/Card";
 import AssignmentCard from "../Order/Components/AssignmentCard.jsx";
 import FilterButtons from "./components/FilterButtons";
-import profileIcon from "../ClientComponents/profileIcon.jpg";
+
 import { HiArrowRight } from "react-icons/hi";
 import PaymentCard from "../Payments/Components/PaymentCard";
 import ClientOrderPopup from "../Order/Components/ClientOrderPopup.jsx";
