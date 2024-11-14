@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import PaymentPopup from "./ClientPaymentPopup";
+
 import { useNavigate } from "react-router-dom";
-import profileIcon from "../../ClientComponents/profileIcon.jpg";
 
 const AssignmentCard = ({
   _id,
@@ -67,17 +66,39 @@ const AssignmentCard = ({
     approved: "bg-gray-300 text-gray-600",
   };
 
-  const [showPaymentPopup, setShowPaymentPopup] = useState(false);
-
-  const handlePay = () => {
-    setShowPaymentPopup(true);
-  };
-
   const progressClasses = getProgressClasses();
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-2xl w-full lg:w-[40%] sm:max-lg:w-full drop-shadow-2x2">
       {/* assignmentTitle and Status */}
+      <div className="flex justify-between items-center mt-4">
+        <div className="flex items-center gap-2">
+          <img
+            src={writerPic}
+            alt={writerPic}
+            className="w-8 h-8 rounded-full object-cover"
+          />
+          <div className="flex flex-col gap-1">
+            <span className="text-sm font-medium text-gray-900">
+              {writerName}
+            </span>
+            <span className="text-xs text-gray-500">writer</span>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex gap-2">
+          <button
+            className="px-3 py-1 text-sm text-white bg-[#9E9FEE] hover:bg-purple-400 rounded-md transition-colors"
+            onClick={handleView}
+          >
+            View
+          </button>
+          <button className="px-3 py-1 text-sm text-white bg-[#5d5fef] hover:bg-[#4a4cef] rounded-md transition-colors">
+            Pay
+          </button>
+        </div>
+      </div>
       <div className="mb-4 flex justify-between items-start">
         <div className="flex items-start">
           <div className="text-sm font-medium text-gray-700 flex-shrink-0">
@@ -124,51 +145,6 @@ const AssignmentCard = ({
       </div>
 
       {/* Writer Info */}
-      <div className="flex justify-between items-center mt-4">
-        <div className="flex items-center gap-2">
-          <img
-            src={writerPic}
-            alt={writerPic}
-            className="w-8 h-8 rounded-full object-cover"
-          />
-          <div className="flex flex-col gap-1">
-            <span className="text-sm font-medium text-gray-900">
-              {writerName}
-            </span>
-            <span className="text-xs text-gray-500">writer</span>
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex gap-2">
-          <button
-            className="px-3 py-1 text-sm text-white bg-[#9E9FEE] hover:bg-purple-400 rounded-md transition-colors"
-            onClick={handleView}
-          >
-            View
-          </button>
-          <button
-            className="px-3 py-1 text-sm text-white bg-[#5d5fef] hover:bg-[#4a4cef] rounded-md transition-colors"
-            onClick={handlePay}
-          >
-            Pay
-          </button>
-        </div>
-      </div>
-      {showPaymentPopup && (
-        <PaymentPopup
-          onClose={() => setShowPaymentPopup(false)}
-          assignment={{
-            _id,
-            assignmentTitle,
-            description,
-            status,
-            totalAmount,
-            paidAmount,
-            deadline,
-          }}
-        />
-      )}
     </div>
   );
 };
