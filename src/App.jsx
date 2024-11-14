@@ -19,6 +19,10 @@ import CsAssignmentRequest from "./screens/customerService/CsAssignmentRequest/C
 import CsWithdrawlRequest from "./screens/customerService/CsWithdrawlRequest/CsWithdrawlRequest";
 import CsRemainders from "./screens/customerService/CsRemainders/CsRemainders";
 import CsPayments from "./screens/customerService/CsPayments/CsPayments";
+import AdminDashboard from "./screens/admin/Dashboard/AdminDashboard";
+import AdminOrderManagement from "./screens/admin/OrderManagement/AdminOrderManagement";
+import AdminUserManagement from "./screens/admin/UserManagement/AdminUserManagement";
+import AdminWritersManagement from "./screens/admin/writers/AdminWritersManagement";
 
 function App() {
   return (
@@ -36,7 +40,22 @@ function App() {
             <Route path="reminders" element={<ClientReminders />} />
             <Route path="helpsupport" element={<HelpSupport />} />
           </Route>
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin" element={<Admin />}>
+            <Route index element={<AdminDashboard />} />
+            <Route
+              path="adminordermanagement"
+              element={<AdminOrderManagement />}
+            />
+            <Route path="assignwriter" element={<CsAssignWriter />} />
+            <Route
+              path="adminusermanagement"
+              element={<AdminUserManagement />}
+            />
+            <Route
+              path="adminwritermanagement"
+              element={<AdminWritersManagement />}
+            />
+          </Route>
           <Route path="/cs" element={<CustomerService />}>
             <Route index element={<CSdashboard />} />
             <Route path="ordermanagement" element={<OrderManagement />} />
