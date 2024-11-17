@@ -23,6 +23,8 @@ import AdminDashboard from "./screens/admin/Dashboard/AdminDashboard";
 import AdminOrderManagement from "./screens/admin/OrderManagement/AdminOrderManagement";
 import AdminUserManagement from "./screens/admin/UserManagement/AdminUserManagement";
 import AdminWritersManagement from "./screens/admin/writers/AdminWritersManagement";
+import Writer from "./screens/writer/Writer";
+import WriterDashboard from "./screens/writer/WriterDashboard/WriterDashboard";
 
 function App() {
   return (
@@ -65,6 +67,9 @@ function App() {
             <Route path="withdrawlrequest" element={<CsWithdrawlRequest />} />
             <Route path="reminders" element={<CsRemainders />} />
             <Route path="payments" element={<CsPayments />} />
+          </Route>
+          <Route path="/writter" element={<Writer />}>
+            <Route index element={<WriterDashboard />} />
           </Route>
         </Routes>
       </Router>
