@@ -57,7 +57,7 @@ const taskData = [
   {
     id: 3,
     title: "Another task that is done",
-    status: "done",
+    status: "completed",
     dueDate: "Oct 8",
     amount: "Rs 6000",
     assignee: {
@@ -83,15 +83,19 @@ const FilterButton = ({ label, active, onClick }) => (
 );
 
 const WriterDashboard = () => {
-  const [activeFilter, setActiveFilter] = useState("in-process");
+  const [activeFilter, setActiveFilter] = useState("all");
+
   const filters = [
+    { id: "all", label: "All" },
     { id: "in-process", label: "In process" },
-    { id: "done", label: "Done" },
     { id: "completed", label: "Completed" },
   ];
 
-  // Filter tasks based on active filter
-  const filteredTasks = taskData.filter((task) => task.status === activeFilter);
+  // Modified filter logic to handle "all" case
+  const filteredTasks =
+    activeFilter === "all"
+      ? taskData
+      : taskData.filter((task) => task.status === activeFilter);
 
   return (
     <div className="w-full min-h-screen p-6 bg-gray-50">
@@ -127,7 +131,7 @@ const WriterDashboard = () => {
 
       <div className="mt-6">
         <h2 className="text-2xl font-semibold mt-3">Current Tasks</h2>
-        <div className="max-w-2xl p-6">
+        <div className="p-6">
           <div className="mb-6 space-x-2">
             {filters.map((filter) => (
               <FilterButton
@@ -139,7 +143,7 @@ const WriterDashboard = () => {
             ))}
           </div>
 
-          <div className="space-y-4">
+          <div className="flex gap-4 flex-wrap">
             {filteredTasks.map((task) => (
               <TaskCard key={task.id} task={task} />
             ))}

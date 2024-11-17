@@ -12,28 +12,25 @@ const TaskCard = ({ task }) => {
     assignee,
     payments = [{ paidAmount: 400 }],
     totalAmount = amount ? parseInt(amount.replace("Rs ", "")) : 5000,
-    writer
+    writer,
   } = task;
 
-  const paidAmount = payments[0].paidAmount;
-
   const statusColors = {
-    "in-process": "bg-yellow-200 text-yellow-700",
-    done: "bg-purple-100 text-purple-600",
+    "in-process": "bg-purple-100 text-purple-600",
     completed: "bg-green-100 text-green-600",
-    pending: "bg-orange-100 text-orange-600",
   };
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-2xl w-full drop-shadow-2xl">
+    <div className="p-4 bg-white rounded-lg shadow-2xl w-full lg:w-[40%] sm:max-lg:w-full drop-shadow-2x2">
       <div className="flex justify-between items-center mt-4 border-b-2 pb-3 mb-2">
         <div className="flex items-center gap-2">
           <img
             src="https://static.vecteezy.com/system/resources/previews/025/220/125/non_2x/picture-a-captivating-scene-of-a-tranquil-lake-at-sunset-ai-generative-photo.jpg"
             className="w-8 h-8 rounded-full object-cover"
+            alt="Profile"
           />
           <div className="flex flex-col gap-0">
-            <span className="text-base font-medium text-gray-900">
+            <span className="text-base font-medium text-gray-900 truncate max-w-[120px] sm:max-w-[200px]">
               {assignee.name}
             </span>
           </div>
@@ -49,11 +46,11 @@ const TaskCard = ({ task }) => {
 
       <div className="border-b-2 mb-2">
         <div className="mb-4 flex justify-between items-start">
-          <div className="flex items-start">
+          <div className="flex items-start flex-col sm:flex-row">
             <div className="text-sm font-medium text-gray-700 flex-shrink-0">
               Assignment title:
             </div>
-            <span className="text-gray-900 ml-2 truncate w-72 inline-block overflow-hidden whitespace-nowrap text-ellipsis">
+            <span className="text-gray-900 sm:ml-2 truncate w-64 sm:w-64 inline-block overflow-hidden whitespace-nowrap text-ellipsis">
               {title}
             </span>
           </div>
@@ -73,9 +70,10 @@ const TaskCard = ({ task }) => {
           <img
             src="https://static.vecteezy.com/system/resources/previews/025/220/125/non_2x/picture-a-captivating-scene-of-a-tranquil-lake-at-sunset-ai-generative-photo.jpg"
             className="w-8 h-8 rounded-full object-cover"
+            alt="Writer"
           />
           <div className="flex flex-col gap-0">
-            <span className="text-base font-medium text-gray-900">
+            <span className="text-base font-medium text-gray-900 truncate max-w-[120px] sm:max-w-[200px]">
               {writer}
             </span>
             <span className="text-sm text-gray-600">Writer</span>
