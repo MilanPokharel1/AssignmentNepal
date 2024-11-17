@@ -106,7 +106,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
         </div>
         <div>
           <NavLink
-            to="/cs/withdrawlrequest"
+            to="/writter/writerwithdrawl"
             className={({ isActive }) =>
               `${linkStyles} ${isActive ? activeLinkStyles : ""}`
             }

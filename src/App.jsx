@@ -25,6 +25,7 @@ import AdminUserManagement from "./screens/admin/UserManagement/AdminUserManagem
 import AdminWritersManagement from "./screens/admin/writers/AdminWritersManagement";
 import Writer from "./screens/writer/Writer";
 import WriterDashboard from "./screens/writer/WriterDashboard/WriterDashboard";
+import WriterWithdrawl from "./screens/writer/WriterWithdrawl/WriterWithdrawl";
 
 function App() {
   return (
@@ -70,6 +71,7 @@ function App() {
           </Route>
           <Route path="/writter" element={<Writer />}>
             <Route index element={<WriterDashboard />} />
+            <Route path="writerwithdrawl" element={<WriterWithdrawl />} />
           </Route>
         </Routes>
       </Router>

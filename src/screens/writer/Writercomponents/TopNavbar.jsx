@@ -8,7 +8,7 @@ const pathToTitleMap = {
   "/cs/assignwriter": "Assign Writers",
   "/cs/usermanagement": "User Management",
   "/cs/assignmentrequest": "Assignment Request",
-  "/cs/withdrawlrequest": "Withdrawl Request",
+  "/writter/writerwithdrawl": "Withdrawl",
   "/cs/reminders": "Reminders",
   "/cs/payments": "Payments",
 };
