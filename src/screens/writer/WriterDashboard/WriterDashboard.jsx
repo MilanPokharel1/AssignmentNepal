@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { RiBookOpenFill } from "react-icons/ri";
 import { FaMoneyBillWave } from "react-icons/fa";
 import Card from "./components/Card";
-import WriterCard from "./components/writerCard";
+import WriterCard from "./components/WriterCard";
 import TaskCard from "./components/TaskCard";
 
 const assignments = [
