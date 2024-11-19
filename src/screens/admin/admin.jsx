@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import SideNavbar from "./Admincomponents/SideNavbar";
+import SideNavbar from "./AdminComponents/SideNavbar";
 import TopNavbar from "./Admincomponents/TopNavbar";
 
 const Admin = () => {
