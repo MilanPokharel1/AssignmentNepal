@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import SideNavbar from "./CScomponents/SideNavbar";
-import TopNavbar from "./Cscomponents/TopNavbar";
+import TopNavbar from "./CScomponents/TopNavbar";
 
 const Client = () => {
   const [isSideNavVisible, setIsSideNavVisible] = useState(true);
