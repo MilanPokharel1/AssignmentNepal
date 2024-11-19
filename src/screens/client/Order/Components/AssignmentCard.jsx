@@ -17,7 +17,7 @@ const AssignmentCard = ({
   writerId = "",
 }) => {
   const navigate = useNavigate();
-  paidAmount = payments[0].paidAmount
+  paidAmount = payments[0].paidAmount;
 
   const handleView = () => {
     navigate(`/client/orders/view/${_id}`);
@@ -83,21 +83,14 @@ const AssignmentCard = ({
           <div className="text-sm font-medium text-gray-700 flex-shrink-0">
             Assignment title:
           </div>
-          <span
-            className="text-gray-900 ml-2 line-clamp-2 overflow-hidden"
-            style={{
-              display: "-webkit-box",
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-            }}
-          >
+          <span className="text-gray-900 ml-2 truncate w-60 inline-block overflow-hidden whitespace-nowrap text-ellipsis">
             {assignmentTitle}
           </span>
         </div>
         <div
-          className={`px-2 py-1 rounded-full text-sm capitalize ${statusColors[status.toLowerCase()]
-            }`}
+          className={`px-2 py-1 rounded-full text-sm capitalize ${
+            statusColors[status.toLowerCase()]
+          }`}
         >
           {status}
         </div>

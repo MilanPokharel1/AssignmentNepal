@@ -10,6 +10,23 @@ import ClientReminders from "./screens/client/Reminders/ClientReminders";
 import HelpSupport from "./screens/client/HelpSupport/HelpSupport";
 import Admin from "./screens/admin/admin";
 import { ThemeProvider } from "../src/contexts/ThemeContext/ThemeProvider";
+import CustomerService from "./screens/customerService/CustomerService";
+import CSdashboard from "./screens/customerService/csDashboard/CSdashboard";
+import OrderManagement from "./screens/customerService/OrderManagement/OrderManagement";
+import CsAssignWriter from "./screens/customerService/CsAssignWriter/CsAssignWriter";
+import CSUserManagement from "./screens/customerService/CsUserManagement/CSUserManagement";
+import CsAssignmentRequest from "./screens/customerService/CsAssignmentRequest/CsAssignmentRequest";
+import CsWithdrawlRequest from "./screens/customerService/CsWithdrawlRequest/CsWithdrawlRequest";
+import CsRemainders from "./screens/customerService/CsRemainders/CsRemainders";
+import CsPayments from "./screens/customerService/CsPayments/CsPayments";
+import AdminDashboard from "./screens/admin/Dashboard/AdminDashboard";
+import AdminOrderManagement from "./screens/admin/OrderManagement/AdminOrderManagement";
+import AdminUserManagement from "./screens/admin/UserManagement/AdminUserManagement";
+import AdminWritersManagement from "./screens/admin/writers/AdminWritersManagement";
+import Writer from "./screens/writer/Writer";
+import WriterDashboard from "./screens/writer/WriterDashboard/WriterDashboard";
+import WriterWithdrawl from "./screens/writer/WriterWithdrawl/WriterWithdrawl";
+
 function App() {
   return (
     <ThemeProvider>
@@ -26,7 +43,36 @@ function App() {
             <Route path="reminders" element={<ClientReminders />} />
             <Route path="helpsupport" element={<HelpSupport />} />
           </Route>
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin" element={<Admin />}>
+            <Route index element={<AdminDashboard />} />
+            <Route
+              path="adminordermanagement"
+              element={<AdminOrderManagement />}
+            />
+            <Route path="assignwriter" element={<CsAssignWriter />} />
+            <Route
+              path="adminusermanagement"
+              element={<AdminUserManagement />}
+            />
+            <Route
+              path="adminwritermanagement"
+              element={<AdminWritersManagement />}
+            />
+          </Route>
+          <Route path="/cs" element={<CustomerService />}>
+            <Route index element={<CSdashboard />} />
+            <Route path="ordermanagement" element={<OrderManagement />} />
+            <Route path="assignwriter" element={<CsAssignWriter />} />
+            <Route path="usermanagement" element={<CSUserManagement />} />
+            <Route path="assignmentrequest" element={<CsAssignmentRequest />} />
+            <Route path="withdrawlrequest" element={<CsWithdrawlRequest />} />
+            <Route path="reminders" element={<CsRemainders />} />
+            <Route path="payments" element={<CsPayments />} />
+          </Route>
+          <Route path="/writter" element={<Writer />}>
+            <Route index element={<WriterDashboard />} />
+            <Route path="writerwithdrawl" element={<WriterWithdrawl />} />
+          </Route>
         </Routes>
       </Router>
     </ThemeProvider>

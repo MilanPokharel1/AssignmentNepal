@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import SideNavbar from "./Admincomponents/SideNavbar";
-import TopNavbar from "./Admincomponents/TopNavbar";
+import SideNavbar from "./Cscomponents/SideNavbar";
+import TopNavbar from "./Cscomponents/TopNavbar";
 
-const Admin = () => {
+const Client = () => {
   const [isSideNavVisible, setIsSideNavVisible] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -24,10 +24,12 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen flex gap-2 bg-white">
+
       <div className="w-0 SideNavHide2:w-[19%] h-screen bg-gray-50 fixed invisible SideNavHide2:visible">
         <SideNavbar />
       </div>
 
+      
       {!isSideNavVisible && isMobileMenuOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40"
@@ -59,4 +61,4 @@ const Admin = () => {
   );
 };
 
-export default Admin;
+export default Client;

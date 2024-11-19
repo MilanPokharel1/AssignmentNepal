@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import SideNavbar from "./Admincomponents/SideNavbar";
-import TopNavbar from "./Admincomponents/TopNavbar";
+import SideNavbar from "./Writercomponents/SideNavbar";
+import TopNavbar from "./Writercomponents/TopNavbar";
 
-const Admin = () => {
+const Writer = () => {
   const [isSideNavVisible, setIsSideNavVisible] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -59,4 +59,4 @@ const Admin = () => {
   );
 };
 
-export default Admin;
+export default Writer;
