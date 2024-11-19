@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import SideNavbar from "./Cscomponents/SideNavbar";
+import SideNavbar from "./CScomponents/SideNavbar";
 import TopNavbar from "./Cscomponents/TopNavbar";
 
 const Client = () => {
