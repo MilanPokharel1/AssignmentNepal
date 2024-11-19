@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import SideNavbar from "./Writercomponents/SideNavbar";
 import TopNavbar from "./Writercomponents/TopNavbar";
 
+
 const Writer = () => {
   const [isSideNavVisible, setIsSideNavVisible] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
