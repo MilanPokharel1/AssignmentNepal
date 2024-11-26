@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import SideNavbar from "./Admincomponents/SideNavbar";
-import TopNavbar from "./Admincomponents/TopNavbar";
+import SideNavbar from "./AdminComponents/SideNavbar";
+import TopNavbar from "./AdminComponents/TopNavbar";
 
 const Admin = () => {
   const [isSideNavVisible, setIsSideNavVisible] = useState(true);
