@@ -5,7 +5,6 @@ import { Download } from "lucide-react";
 const OrderCard = ({
   _id,
   assignmentTitle,
-  description,
   status,
   totalAmount,
   paidAmount = 400,
@@ -13,7 +12,7 @@ const OrderCard = ({
   deadline,
   writerName = "Not Assigned",
   writerPic = "https://unsplash.com/photos/a-close-up-of-a-motherboard-and-a-pen-on-a-table-boMKfQkphro",
-  writerId = "",
+
   folderName,
 }) => {
   const navigate = useNavigate();

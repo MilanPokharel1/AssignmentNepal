@@ -58,7 +58,7 @@ const CsFileTransfer = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("Newest");
   const [showOptions, setShowOptions] = useState(false);
-  const [orderPopup, setorderPopup] = useState(false);
+
   const handleFilterChange = (filter) => {
     setActiveFilter(filter);
   };
@@ -198,6 +198,7 @@ const CsFileTransfer = () => {
                   : "Not Assigned"
               }
               deadline={highlightText(assignment.deadline, searchTerm)}
+              folderName={highlightText(assignment.folderName, searchTerm)}
             />
           ))
         ) : (
