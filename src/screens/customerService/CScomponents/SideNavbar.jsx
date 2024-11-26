@@ -8,6 +8,7 @@ import { MdShoppingCart } from "react-icons/md";
 import { FaUser, FaUsers } from "react-icons/fa";
 import { FaMoneyBillWave } from "react-icons/fa6";
 import { GiOpenBook } from "react-icons/gi";
+import { FaFolder } from "react-icons/fa";
 const SideNavbar = ({ onClose, isMobile }) => {
   const navigate = useNavigate();
 
@@ -92,16 +93,17 @@ const SideNavbar = ({ onClose, isMobile }) => {
             <span>User Management</span>
           </NavLink>
         </div>
+
         <div>
           <NavLink
-            to="/cs/assignmentrequest"
+            to="/cs/filetransfer"
             className={({ isActive }) =>
               `${linkStyles} ${isActive ? activeLinkStyles : ""}`
             }
             onClick={() => isMobile && onClose?.()}
           >
-            <GiOpenBook className="w-5 h-5" />
-            <span>Assignment Request</span>
+            <FaFolder className="w-5 h-5" />
+            <span>File Transfer</span>
           </NavLink>
         </div>
         <div>
@@ -140,6 +142,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
             <span>Payments</span>
           </NavLink>
         </div>
+   
         <div className="mt-9 pl-7">
           <button className="flex items-center space-x-4 text-gray-700 hover:text-red-600 transition">
             <FaSignOutAlt className="w-5 h-5" />

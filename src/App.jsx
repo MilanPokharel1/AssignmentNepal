@@ -15,7 +15,7 @@ import CSdashboard from "./screens/customerService/csDashboard/CSdashboard";
 import OrderManagement from "./screens/customerService/OrderManagement/OrderManagement";
 import CsAssignWriter from "./screens/customerService/CsAssignWriter/CsAssignWriter";
 import CSUserManagement from "./screens/customerService/CsUserManagement/CSUserManagement";
-import CsAssignmentRequest from "./screens/customerService/CsAssignmentRequest/CsAssignmentRequest";
+
 import CsWithdrawlRequest from "./screens/customerService/CsWithdrawlRequest/CsWithdrawlRequest";
 import CsRemainders from "./screens/customerService/CsRemainders/CsRemainders";
 import CsPayments from "./screens/customerService/CsPayments/CsPayments";
@@ -26,6 +26,7 @@ import AdminWritersManagement from "./screens/admin/writers/AdminWritersManageme
 import Writer from "./screens/writer/Writer";
 import WriterDashboard from "./screens/writer/WriterDashboard/WriterDashboard";
 import WriterWithdrawl from "./screens/writer/WriterWithdrawl/WriterWithdrawl";
+import CsFileTransfer from "./screens/customerService/CSFileTransfer/CsFileTransfer";
 
 function App() {
   return (
@@ -64,10 +65,11 @@ function App() {
             <Route path="ordermanagement" element={<OrderManagement />} />
             <Route path="assignwriter" element={<CsAssignWriter />} />
             <Route path="usermanagement" element={<CSUserManagement />} />
-            <Route path="assignmentrequest" element={<CsAssignmentRequest />} />
+
             <Route path="withdrawlrequest" element={<CsWithdrawlRequest />} />
             <Route path="reminders" element={<CsRemainders />} />
             <Route path="payments" element={<CsPayments />} />
+            <Route path="filetransfer" element={<CsFileTransfer />} />
           </Route>
           <Route path="/writter" element={<Writer />}>
             <Route index element={<WriterDashboard />} />

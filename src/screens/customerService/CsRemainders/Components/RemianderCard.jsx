@@ -43,8 +43,8 @@ export const ReminderCard = ({
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-4 mb-4">
-      <p className="text-base mt-2 mb-2 mx-4">
-         To Client :{""}
+      <p className="text-base mt-2 mb-2 mx-4 flex gap-1 items-center">
+         <span className="text-gray-600 text-sm">To Client:</span> 
         {clientName}
       </p>
       <div className="flex items-start gap-4">

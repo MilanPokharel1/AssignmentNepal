@@ -7,10 +7,11 @@ const pathToTitleMap = {
   "/cs/ordermanagement": "Order Management",
   "/cs/assignwriter": "Assign Writers",
   "/cs/usermanagement": "User Management",
-  "/cs/assignmentrequest": "Assignment Request",
+
   "/cs/withdrawlrequest": "Withdrawl Request",
   "/cs/reminders": "Reminders",
   "/cs/payments": "Payments",
+  "/cs/filetransfer": "File Transfer",
 };
 
 const TopNavbar = ({

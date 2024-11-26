@@ -8,8 +8,8 @@ import WriterCard from "./components/WriterCard";
 import FilterButtons from "./components/FilterButtons";
 import CsCard from "./components/CsCard";
 import OrderCard from "./components/OrderCard";
-
-// Dummy chart data
+import MainPieChart from "./components/MainPieChart";
+import CircularProgress from "./components/CircularProgress";
 const chartData = [
   { month: "J", thisMonth: 20, lastMonth: 30 },
   { month: "F", thisMonth: 22, lastMonth: 35 },
@@ -21,6 +21,7 @@ const chartData = [
   { month: "A", thisMonth: 30, lastMonth: 25 },
   { month: "S", thisMonth: 27, lastMonth: 23 },
 ];
+
 const assignments = [
   {
     _id: "1",
@@ -134,6 +135,17 @@ const sampleCS = [
   },
 ];
 
+const orderCancelData = [
+  { name: "Order", value: 75 },
+  { name: "Cancel", value: 25 },
+];
+
+const metricsData = [
+  { name: "Amount Comparison", completed: 77 },
+  { name: "Active Writers", completed: 54 },
+  { name: "Orders/Completed", completed: 39 },
+];
+
 const Dashboard = () => {
   const [filter, setFilter] = useState("active");
 
@@ -182,6 +194,20 @@ const Dashboard = () => {
           <div className="h-64">
             <Chart chartData={chartData} />
           </div>
+        </div>
+      </div>
+      <div className="flex flex-col lg:flex-row h-auto lg:h-[45vh] w-full gap-4 rounded-lg mb-5">
+        <div className="h-full w-full lg:w-1/2 bg-white">
+          <MainPieChart orderCancelData={orderCancelData} />
+        </div>
+        <div className="w-full lg:w-[60%] h-full flex  gap-4">
+          {metricsData.map((metric) => (
+            <CircularProgress
+              key={metric.name}
+              value={metric.completed}
+              title={metric.name}
+            />
+          ))}
         </div>
       </div>
       <div className="mb-8">

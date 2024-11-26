@@ -94,7 +94,7 @@ const ClientReminders = () => {
                 className="bg-blue-50 text-sm text-blue-900 py-2 pl-8 pr-4 rounded-md w-60 outline-none focus:border focus:border-blue-700 border border-transparent transition-colors"
               />
               <span className="absolute left-2 top-1/2 -translate-y-1/2">
-                <FaSearch />
+                <FaSearch className="text-blue-900"/>
               </span>
             </div>
             <div className="flex items-center gap-2">
