@@ -58,7 +58,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
 
         <div>
           <NavLink
-            to="/cs/ordermanagement"
+            to="/admin/adminordermanagement"
             className={({ isActive }) =>
               `${linkStyles} ${isActive ? activeLinkStyles : ""}`
             }
@@ -70,7 +70,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
         </div>
         <div>
           <NavLink
-            to="/cs/assignwriter"
+            to="/admin/adminwritermanagement"
             className={({ isActive }) =>
               `${linkStyles} ${isActive ? activeLinkStyles : ""}`
             }
@@ -92,18 +92,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
             <span>User Management</span>
           </NavLink>
         </div>
-        <div>
-          <NavLink
-            to="/cs/assignmentrequest"
-            className={({ isActive }) =>
-              `${linkStyles} ${isActive ? activeLinkStyles : ""}`
-            }
-            onClick={() => isMobile && onClose?.()}
-          >
-            <GiOpenBook className="w-5 h-5" />
-            <span>Assignment Request</span>
-          </NavLink>
-        </div>
+
         <div>
           <NavLink
             to="/cs/withdrawlrequest"
@@ -118,7 +107,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
         </div>
         <div>
           <NavLink
-            to="/cs/reminders"
+            to="/admin/adminreminders"
             className={({ isActive }) =>
               `${linkStyles} ${isActive ? activeLinkStyles : ""}`
             }
@@ -130,7 +119,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
         </div>
         <div>
           <NavLink
-            to="/cs/payments"
+            to="/admin/adminpayments"
             className={({ isActive }) =>
               `${linkStyles} ${isActive ? activeLinkStyles : ""}`
             }

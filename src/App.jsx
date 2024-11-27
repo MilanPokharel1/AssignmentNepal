@@ -27,6 +27,8 @@ import Writer from "./screens/writer/Writer";
 import WriterDashboard from "./screens/writer/WriterDashboard/WriterDashboard";
 import WriterWithdrawl from "./screens/writer/WriterWithdrawl/WriterWithdrawl";
 import CsFileTransfer from "./screens/customerService/CSFileTransfer/CsFileTransfer";
+import AdminReminders from "./screens/admin/AdminRemainders/AdminRemainders";
+import AdminPayments from "./screens/admin/AdminPayments/AdminPayments";
 
 function App() {
   return (
@@ -59,6 +61,8 @@ function App() {
               path="adminwritermanagement"
               element={<AdminWritersManagement />}
             />
+            <Route path="adminreminders" element={<AdminReminders />} />
+            <Route path="adminpayments" element={<AdminPayments />} />
           </Route>
           <Route path="/cs" element={<CustomerService />}>
             <Route index element={<CSdashboard />} />

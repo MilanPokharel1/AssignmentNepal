@@ -58,54 +58,6 @@ const SideNavbar = ({ onClose, isMobile }) => {
 
         <div>
           <NavLink
-            to="/cs/ordermanagement"
-            className={({ isActive }) =>
-              `${linkStyles} ${isActive ? activeLinkStyles : ""}`
-            }
-            onClick={() => isMobile && onClose?.()}
-          >
-            <MdShoppingCart className="w-5 h-5" />
-            <span>Order Management</span>
-          </NavLink>
-        </div>
-        <div>
-          <NavLink
-            to="/cs/assignwriter"
-            className={({ isActive }) =>
-              `${linkStyles} ${isActive ? activeLinkStyles : ""}`
-            }
-            onClick={() => isMobile && onClose?.()}
-          >
-            <FaUser className="w-5 h-5" />
-            <span>Assign Writer</span>
-          </NavLink>
-        </div>
-        <div>
-          <NavLink
-            to="/cs/usermanagement"
-            className={({ isActive }) =>
-              `${linkStyles} ${isActive ? activeLinkStyles : ""}`
-            }
-            onClick={() => isMobile && onClose?.()}
-          >
-            <FaUsers className="w-5 h-5" />
-            <span>User Management</span>
-          </NavLink>
-        </div>
-        <div>
-          <NavLink
-            to="/cs/assignmentrequest"
-            className={({ isActive }) =>
-              `${linkStyles} ${isActive ? activeLinkStyles : ""}`
-            }
-            onClick={() => isMobile && onClose?.()}
-          >
-            <GiOpenBook className="w-5 h-5" />
-            <span>Assignment Request</span>
-          </NavLink>
-        </div>
-        <div>
-          <NavLink
             to="/writter/writerwithdrawl"
             className={({ isActive }) =>
               `${linkStyles} ${isActive ? activeLinkStyles : ""}`
@@ -126,6 +78,18 @@ const SideNavbar = ({ onClose, isMobile }) => {
           >
             <FaBell className="w-5 h-5" />
             <span>Reminders</span>
+          </NavLink>
+        </div>
+        <div>
+          <NavLink
+            to="/cs/payments"
+            className={({ isActive }) =>
+              `${linkStyles} ${isActive ? activeLinkStyles : ""}`
+            }
+            onClick={() => isMobile && onClose?.()}
+          >
+            <FaWallet className="w-5 h-5" />
+            <span>Payments</span>
           </NavLink>
         </div>
         <div>
