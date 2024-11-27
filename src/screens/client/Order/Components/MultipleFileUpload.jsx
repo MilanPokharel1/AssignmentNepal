@@ -27,6 +27,7 @@ const MultiFileUpload = ({ onFilesChange }) => {
   };
 
   const initiateFileRemoval = (file) => {
+    
     setFileToRemove(file);
     setShowConfirmation(true);
   };

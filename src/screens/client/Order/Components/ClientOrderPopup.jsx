@@ -28,7 +28,7 @@ const ClientOrderPopup = ({ setorderPopup }) => {
     // If you need to update formData
     setFormData((prevData) => ({
       ...prevData,
-      file: newFiles, // or handle as needed
+      file: newFiles[0], // or handle as needed
     }));
   };
 
@@ -157,7 +157,7 @@ const ClientOrderPopup = ({ setorderPopup }) => {
           <IoClose size={29} />
         </button>
 
-        <form onSubmit={handleSubmit} className="space-y-10">
+        <form onSubmit={handleSubmit} className="space-y-7">
           <div>
             <div className="flex">
               <div className=" w-[47rem] border-r-[1px] border-r-gray-200 pr-7">
@@ -275,7 +275,7 @@ const ClientOrderPopup = ({ setorderPopup }) => {
                 </div>
 
                 {uploading && (
-                  <div className="flex flex-col items-center w-full">
+                  <div className="flex flex-col items-center w-full mt-7">
                     <div className="relative w-full h-4 bg-gray-200 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-blue-500 rounded-full transition-all duration-300 ease-in-out"
@@ -292,7 +292,7 @@ const ClientOrderPopup = ({ setorderPopup }) => {
                   </div>
                 )}
 
-                {error && <div className="text-red-500">{error}</div>}
+                {error && <div className="text-red-500 mt-5">{error}</div>}
               </div>
               <div className="flex-1 pl-6">
                 <label className="block text-sm mb-2">File Upload</label>
