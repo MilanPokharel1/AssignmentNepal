@@ -23,6 +23,12 @@ const OrdertView = () => {
   const { orderId } = useParams(); // Get orderId from the URL
   const [isLoading, setIsLoading] = useState(true);
   const [status, setStatus] = useState("Ongoing");
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleModal = () => {
+    setIsOpen(!isOpen);
+  };
+
   const scrollToBottom = () => {
     commentsContainerRef.current.scrollTop =
       commentsContainerRef.current.scrollHeight;
@@ -278,7 +284,10 @@ const OrdertView = () => {
           <button className="bg-[#5D5FEF] text-white  px-2 py-1 hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 rounded-lg focus:outline-none">
             Change
           </button>
-          <button className="flex items-center bg-[#5D5FEF] text-white  px-2 py-1 hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 rounded-lg">
+          <button
+            className="flex items-center bg-[#5D5FEF] text-white  px-2 py-1 hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 rounded-lg"
+            onClick={toggleModal}
+          >
             <FiBell className="w-5 h-5 mr-2" />
             Send Reminders
           </button>
@@ -535,15 +544,15 @@ const OrdertView = () => {
             <h2 className="text-2xl font-bold">Payments</h2>
             {dummyData.map((payment, index) => (
               <div key={index} className="bg-white shadow-md rounded-lg p-4 ">
-                <div className="flex justify-between items-center ">
+                <div className="flex items-center gap-2 ">
                   <p className="text-gray-600">Payment Date:</p>
                   <p>{payment.date}</p>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex items-center gap-2 ">
                   <p className="text-gray-600">Payment Method:</p>
                   <p>{payment.paymentMethod}</p>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex items-center gap-2 ">
                   <p className="text-gray-600">Amount:</p>
                   <p className="text-[#00b087] font-semibold">
                     {payment.amount}
@@ -552,8 +561,71 @@ const OrdertView = () => {
               </div>
             ))}
           </div>
+          <div className="max-w-sm mx-auto mt-8 p-4 border rounded-md shadow-md bg-white">
+            <h2 className="text-lg font-semibold mb-4">Pay Writer</h2>
+            <input
+              type="text"
+              placeholder="Enter amount"
+              className="w-full px-3 py-2 border rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
+              Save
+            </button>
+          </div>
         </div>
       </div>
+      {isOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-lg">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">
+              Send Reminder
+            </h2>
+            {/* Title Input */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Title
+              </label>
+              <input
+                type="text"
+                className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              />
+            </div>
+            {/* Description Textarea */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Description
+              </label>
+              <textarea
+                rows="5"
+                className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              ></textarea>
+            </div>
+            {/* Category Dropdown */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Category
+              </label>
+              <select className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                <option value="alert">Alert</option>
+                <option value="warning">Warning</option>
+                <option value="notice">Notice</option>
+              </select>
+            </div>
+            {/* Buttons */}
+            <div className="flex justify-end gap-4">
+              <button
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg shadow-md hover:bg-gray-300 focus:outline-none"
+                onClick={toggleModal}
+              >
+                Cancel
+              </button>
+              <button className="px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg shadow-md hover:opacity-90 focus:outline-none">
+                Send
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
