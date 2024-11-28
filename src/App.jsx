@@ -77,7 +77,7 @@ function App() {
             <Route path="filetransfer" element={<CsFileTransfer />} />
             <Route path="clientrequest" element={<CsClientRequest/>} />
           </Route>
-          <Route path="/writter" element={<Writer />}>
+          <Route path="/writer" element={<Writer />}>
             <Route index element={<WriterDashboard />} />
             <Route path="writerwithdrawl" element={<WriterWithdrawl />} />
           </Route>

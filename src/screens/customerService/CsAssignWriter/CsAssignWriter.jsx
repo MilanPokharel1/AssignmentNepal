@@ -1,90 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { cs_writers } from "../../../api/Api";
 
-const data = [
-  {
-    name: "Jane Cooper",
-    subject: "Microsoft",
-    phone: "(225) 555-0118",
-    email: "jane@microsoft.com",
-    status: "Active",
-    accountStatus: "enabled",
-  },
-  {
-    name: "Floyd Miles",
-    subject: "Yahoo",
-    phone: "(205) 555-0100",
-    email: "floyd@yahoo.com",
-    status: "Inactive",
-    accountStatus: "disabled",
-  },
-  {
-    name: "Ronald Richards",
-    subject: "Adobe",
-    phone: "(302) 555-0107",
-    email: "ronald@adobe.com",
-    status: "Inactive",
-    accountStatus: "disabled",
-  },
-  {
-    name: "Marvin McKinney",
-    subject: "Tesla",
-    phone: "(252) 555-0126",
-    email: "marvin@tesla.com",
-    status: "Active",
-    accountStatus: "enabled",
-  },
-  {
-    name: "Jerome Bell",
-    subject: "Google",
-    phone: "(629) 555-0129",
-    email: "jerome@google.com",
-    status: "Active",
-    accountStatus: "enabled",
-  },
-  {
-    name: "Kathryn Murphy",
-    subject: "Microsoft",
-    phone: "(406) 555-0120",
-    email: "kathryn@microsoft.com",
-    status: "Active",
-    accountStatus: "enabled",
-  },
-  {
-    name: "Jacob Jones",
-    subject: "Yahoo",
-    phone: "(208) 555-0112",
-    email: "jacob@yahoo.com",
-    status: "Active",
-    accountStatus: "disabled",
-  },
-  {
-    name: "Kristin Watson",
-    subject: "Facebook",
-    phone: "(704) 555-0127",
-    email: "kristin@facebook.com",
-    status: "Inactive",
-    accountStatus: "disabled",
-  },
-  {
-    name: "Jane Cooper", // Duplicate entry
-    subject: "Microsoft",
-    phone: "(225) 555-0118",
-    email: "jane@microsoft.com",
-    status: "Active",
-    accountStatus: "enabled",
-  },
-  {
-    name: "Floyd Miles", // Duplicate entry
-    subject: "Yahoo",
-    phone: "(205) 555-0100",
-    email: "floyd@yahoo.com",
-    status: "Inactive",
-    accountStatus: "disabled",
-  },
-  // ... (Other entries follow the same pattern)
-];
+
 
 const CsAssignWriter = () => {
   const [filter, setFilter] = useState("All");
@@ -94,9 +14,43 @@ const CsAssignWriter = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const [writers, setWriters] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+
+  useEffect(() => {
+    const fetchwriters = async () => {
+      setIsLoading(true);
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
+
+        const response = await fetch(cs_writers, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch reminders");
+        }
+
+        const data = await response.json();
+        console.log(data)
+        setWriters(data.writers); // Assuming the key is 'remainder', set it properly
+      } catch (error) {
+        console.error("Error fetching reminders:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchwriters();
+  }, []);
 
   const handleTogglePopup = (item, index) => {
     setSelectedItem(item);
+    console.log(index)
     setSelectedIndex(index);
     setIsPopupOpen(!isPopupOpen);
   };
@@ -114,7 +68,7 @@ const CsAssignWriter = () => {
     );
   };
 
-  const filteredData = data.filter((item) => {
+  const filteredData = writers.filter((item) => {
     if (filter !== "All" && item.status !== filter) return false;
     if (
       search &&
@@ -172,11 +126,10 @@ const CsAssignWriter = () => {
         <button
           key={i}
           onClick={() => setCurrentPage(i)}
-          className={`px-3 py-1 mx-0.5 rounded ${
-            currentPage === i
-              ? "bg-blue-600 text-white"
-              : "bg-gray-100 hover:bg-gray-200"
-          }`}
+          className={`px-3 py-1 mx-0.5 rounded ${currentPage === i
+            ? "bg-blue-600 text-white"
+            : "bg-gray-100 hover:bg-gray-200"
+            }`}
         >
           {i}
         </button>
@@ -207,30 +160,32 @@ const CsAssignWriter = () => {
 
   return (
     <div className="min-h-screen p-4">
+       {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
+          <CircularProgress />
+        </div>
+      )}
       <h1 className="text-2xl font-bold mb-4 text-center">Writers</h1>
       <div className="flex justify-between items-center mb-4">
         <div className="flex space-x-4">
           <button
             onClick={() => setFilter("All")}
-            className={`px-4 py-2 rounded-md ${
-              filter === "All" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
-            }`}
+            className={`px-4 py-2 rounded-md ${filter === "All" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
+              }`}
           >
             All
           </button>
           <button
             onClick={() => setFilter("Active")}
-            className={`px-4 py-2 rounded-md ${
-              filter === "Active" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
-            }`}
+            className={`px-4 py-2 rounded-md ${filter === "Active" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
+              }`}
           >
             Active
           </button>
           <button
             onClick={() => setFilter("Inactive")}
-            className={`px-4 py-2 rounded-md ${
-              filter === "Inactive" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
-            }`}
+            className={`px-4 py-2 rounded-md ${filter === "Inactive" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
+              }`}
           >
             Inactive
           </button>
@@ -290,7 +245,7 @@ const CsAssignWriter = () => {
                     </div>
                   </td>
                   <td className="border-b-2 px-4 py-3 text-center border-gray-200">
-                    {highlightText(item.subject, search)}
+                    {highlightText(item.catagory, search)}
                   </td>
                   <td className="border-b-2 px-4 py-3 text-center border-gray-200">
                     {highlightText(item.phone, search)}
@@ -311,16 +266,15 @@ const CsAssignWriter = () => {
       rounded-lg
       border-2
       hover:cursor-pointer
-      ${
-        item.accountStatus === "enabled"
-          ? item.status === "Active"
-            ? "border-emerald-700 text-emerald-700 bg-emerald-50 hover:bg-emerald-200"
-            : "border-red-700 text-red-700 bg-red-50 hover:bg-red-200"
-          : "border-red-400 text-red-400 bg-gray-100 opacity-50 cursor-not-allowed"
-      }
+      ${item.accountStatus === "enabled"
+                          ? item.status === "Active"
+                            ? "border-emerald-700 text-emerald-700 bg-emerald-50 hover:bg-emerald-200"
+                            : "border-red-700 text-red-700 bg-red-50 hover:bg-red-200"
+                          : "border-red-400 text-red-400 bg-gray-100 opacity-50 cursor-not-allowed"
+                        }
     `}
                       onClick={
-                        item.accountStatus === "enabled" ? () => {} : null
+                        item.accountStatus === "enabled" ? () => { } : null
                       }
                     >
                       {highlightText(item.status, search)}
@@ -335,14 +289,13 @@ const CsAssignWriter = () => {
       font-medium
       rounded-lg
       border-2
-      ${
-        item.accountStatus === "enabled"
-          ? "border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-200 hover:cursor-pointer"
-          : "border-blue-300 text-blue-400 bg-gray-100 opacity-50 cursor-not-allowed"
-      }
+      ${item.accountStatus === "enabled"
+                          ? "border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-200 hover:cursor-pointer"
+                          : "border-blue-300 text-blue-400 bg-gray-100 opacity-50 cursor-not-allowed"
+                        }
     `}
                       onClick={
-                        item.accountStatus === "enabled" ? () => {} : null
+                        item.accountStatus === "enabled" ? () => { } : null
                       }
                     >
                       LogIn
@@ -360,11 +313,10 @@ const CsAssignWriter = () => {
       border-2
       transition-colors
       duration-200
-      ${
-        item.accountStatus === "enabled"
-          ? "border-gray-500 text-gray-700 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer"
-          : "border-blue-500 text-white bg-blue-500 hover:bg-blue-400 hover:cursor-pointer"
-      }
+      ${item.accountStatus === "enabled"
+                          ? "border-gray-500 text-gray-700 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer"
+                          : "border-blue-500 text-white bg-blue-500 hover:bg-blue-400 hover:cursor-pointer"
+                        }
     `}
                     >
                       {item.accountStatus === "enabled" ? "Disable" : "Enable"}
@@ -412,8 +364,8 @@ const CsAssignWriter = () => {
             </h2>
             <p className="text-gray-600 mb-6">
               {selectedItem.accountStatus === "enabled"
-                ? `Are you sure you want to disable this account? `
-                : `Are you sure you want to enable this account?`}
+                ? `Are you sure you want to disable ${selectedItem.name}? `
+                : `Are you sure you want to enable ${selectedItem.name}?`}
             </p>
             <div className="flex justify-end space-x-4">
               <button
@@ -433,11 +385,10 @@ const CsAssignWriter = () => {
             py-2 
             rounded-lg 
             transition-colors
-            ${
-              selectedItem.accountStatus === "enabled"
-                ? "bg-red-500 text-white hover:bg-red-600"
-                : "bg-blue-500 text-white hover:bg-blue-600"
-            }
+            ${selectedItem.accountStatus === "enabled"
+                    ? "bg-red-500 text-white hover:bg-red-600"
+                    : "bg-blue-500 text-white hover:bg-blue-600"
+                  }
           `}
               >
                 {selectedItem.accountStatus === "enabled"

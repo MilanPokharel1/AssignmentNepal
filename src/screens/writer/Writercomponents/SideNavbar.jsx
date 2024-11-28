@@ -44,7 +44,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
       <div className="w-[98%]  gap-7 flex-col flex h-[50%] justify-between navbarClass2">
         <div>
           <NavLink
-            to="/writter"
+            to="/writer"
             end
             className={({ isActive }) =>
               `${linkStyles} ${isActive ? activeLinkStyles : ""} mb-3`
@@ -58,7 +58,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
 
         <div>
           <NavLink
-            to="/writter/writerwithdrawl"
+            to="/writer/writerwithdrawl"
             className={({ isActive }) =>
               `${linkStyles} ${isActive ? activeLinkStyles : ""}`
             }

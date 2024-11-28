@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { HiArrowRight } from "react-icons/hi";
 
 import { IoBookSharp, IoCheckmarkSharp } from "react-icons/io5";
-import { MdShoppingCart } from "react-icons/md";
+import { MdCancel, MdShoppingCart } from "react-icons/md";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
 
 import Card from "./components/Card";
 import Chart from "./components/Chart";
@@ -10,6 +12,7 @@ import WriterCard from "./components/WriterCard";
 import FilterButtons from "./components/FilterButtons";
 
 import OrderCard from "./components/OrderCard";
+import { cs_dashboard } from "../../../api/Api";
 
 // Dummy chart data
 const chartData = [
@@ -25,29 +28,6 @@ const chartData = [
   { month: "Oct", thisMonth: 29, lastMonth: 27 },
   { month: "Nov", thisMonth: 30, lastMonth: 23 },
   { month: "Dec", lastMonth: 30 },
-];
-const assignments = [
-  {
-    _id: "1",
-    assignmentTitle:
-      "It should be relatively short, but still management, and dedication.dcscdscfdcvfdvfdvfdvfdvfdvfdvfdvdfvdfvcdssssssssssssssssssssssssssssss",
-    status: "Pending",
-    totalAmount: 15000,
-    payments: [{ paidAmount: 7000 }],
-    deadline: "2023-10-06",
-    writerName: "Sachet Khatiwada",
-    writerPic: "path_to_image.jpg",
-  },
-  {
-    _id: "2",
-    assignmentTitle: "Another assignment with similar details.",
-    status: "Pending",
-    totalAmount: 15000,
-    payments: [{ paidAmount: 7000 }],
-    deadline: "2023-10-06",
-    writerName: "Sachet Khatiwada",
-    writerPic: "path_to_image.jpg",
-  },
 ];
 
 const sampleWriters = [
@@ -97,42 +77,77 @@ const sampleWriters = [
 
 const Dashboard = () => {
   const [filter, setFilter] = useState("active");
+  const [csDashboard, setCsDashboard] = useState([])
+  const [assignments, setAssignments] = useState([])
+  const [writers, setWriters] = useState([])
+  const [isLoading, setIsLoading] = useState(false);
 
-  const filteredWriters = sampleWriters.filter((writer) => {
-    if (filter === "all") return true;
-    return writer.status === filter;
-  });
 
-  const handleFilterChange = (newFilter) => {
-    setFilter(newFilter);
-  };
+
+  useEffect(() => {
+    const fetchCsDashboard = async () => {
+      setIsLoading(true);
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
+
+        const response = await fetch(cs_dashboard, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch reminders");
+        }
+
+        const data = await response.json();
+        console.log(data)
+        setCsDashboard(data);
+        setAssignments(data.recentAssignments)
+        setWriters(data.newWriters)
+      } catch (error) {
+        console.error("Error fetching reminders:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCsDashboard();
+  }, []);
+
   return (
     <div className="w-full min-h-screen p-6 bg-gray-50">
+      {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
+          <CircularProgress />
+        </div>
+      )}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-1 mb-3">
         <div className="cols-span-12 md:col-span-7 flex flex-wrap gap-3 mb-5">
           <Card
             Icon={IoBookSharp}
             heading="Total Assignment"
-            number="45"
-            theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
+            number={csDashboard.totalAssignments}
+            theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
           />
           <Card
             Icon={IoBookSharp}
             heading="Active Assignment"
-            number="0"
+            number={csDashboard.activeAssignment}
             theme={{ bgColor: "bg-yellow-100", iconBgColor: "bg-orange-400" }}
           />
           <Card
             Icon={IoCheckmarkSharp}
             heading="Completed"
-            number="0"
+            number={csDashboard.completedAssignment}
             theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
           />
           <Card
-            Icon={MdShoppingCart}
-            heading="Numbers of Orders"
-            number="0"
-            theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
+            Icon={MdCancel}
+            heading="Cancelled"
+            number={csDashboard.cancelledAssignment}
+            theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
           />
         </div>
         <div className="bg-white p-4 rounded-2xl shadow mb-6 cols-span-12 md:col-span-5">
@@ -172,20 +187,15 @@ const Dashboard = () => {
           <HiArrowRight className="text-lg" />
         </div>
       </div>
-      <div className="mb-8">
-        <FilterButtons
-          activeFilter={filter}
-          onFilterChange={handleFilterChange}
-        />
-      </div>
+      
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredWriters.length > 0 ? (
-          filteredWriters.map((writer) => (
+        {writers.length > 0 ? (
+          writers.map((writer) => (
             <WriterCard
-              key={writer.id}
-              name={writer.name}
-              phoneNumber={writer.phoneNumber}
+              key={writer._id}
+              name={writer.firstName}
+              phoneNumber={writer.phone}
               status={writer.status}
               pic={writer.pic}
             />

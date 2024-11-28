@@ -37,7 +37,11 @@ const Login = () => {
       const data = await response.json();
       if (response.ok) {
         setIsLoading(false);
-        localStorage.setItem('userData', data.user);
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('firstName', data.user.firstName);
+        localStorage.setItem('lastName', data.user.lastName);
+        localStorage.setItem('picture', data.user.picture);
+
         navigate(`/${data.user.role}`);
 
       } else {
