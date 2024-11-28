@@ -3,7 +3,8 @@ import { FaSearch } from "react-icons/fa";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { cs_writers } from "../../../api/Api";
-
+import { FaUsers } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
 
 
 const CsAssignWriter = () => {
@@ -47,6 +48,9 @@ const CsAssignWriter = () => {
 
     fetchwriters();
   }, []);
+
+  const [showPopup, setShowPopup] = useState(false);
+
 
   const handleTogglePopup = (item, index) => {
     setSelectedItem(item);
@@ -166,7 +170,42 @@ const CsAssignWriter = () => {
         </div>
       )}
       <h1 className="text-2xl font-bold mb-4 text-center">Writers</h1>
-      <div className="flex justify-between items-center mb-4">
+
+      <div className="flex justify-between items-center mb-6 ">
+        <div className="relative w-[60%] max-w-lg">
+          <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+          <input
+            type="text"
+            placeholder="Search here..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-10 pr-4 py-2 w-full text-gray-700 placeholder-gray-500 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+        <div className="flex gap-11 items-center mr-14">
+          <button
+            className="bg-[#5d5fef] text-white py-2 px-4 rounded-lg flex gap-2 items-center"
+            onClick={() => setShowPopup(true)}
+          >
+            <FaUsers />
+            <span>Create writer +</span>
+          </button>
+          <div className="flex items-center space-x-2">
+            <label>Items per page:</label>
+            <select
+              value={itemsPerPage}
+              onChange={handleItemsPerPageChange}
+              className="border border-[#7072f0] rounded p-1"
+            >
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={30}>30</option>
+              <option value={50}>50</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div className="flex justify-start items-center mb-4">
         <div className="flex space-x-4">
           <button
             onClick={() => setFilter("All")}
@@ -189,31 +228,6 @@ const CsAssignWriter = () => {
           >
             Inactive
           </button>
-        </div>
-        <div className="flex items-center space-x-2">
-          <label>Items per page:</label>
-          <select
-            value={itemsPerPage}
-            onChange={handleItemsPerPageChange}
-            className="border border-[#7072f0] rounded p-1"
-          >
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-            <option value={30}>30</option>
-            <option value={50}>50</option>
-          </select>
-        </div>
-      </div>
-      <div className="flex justify-end mb-6">
-        <div className="relative w-[60%] max-w-lg">
-          <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-          <input
-            type="text"
-            placeholder="Search here..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-10 pr-4 py-2 w-full text-gray-700 placeholder-gray-500 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
         </div>
       </div>
       <div className="min-h-96 bg-white">
@@ -396,6 +410,127 @@ const CsAssignWriter = () => {
                   : "Enable"}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {showPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl sm:max-w-2xl relative">
+            {/* Close Button */}
+            <button
+              onClick={() => setShowPopup(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 transition duration-300"
+              aria-label="Close popup"
+            >
+              <IoMdClose size={24} />
+            </button>
+
+            {/* Form Header */}
+            <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
+              Create Writer
+            </h2>
+
+            {/* Input Fields */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <label
+                  htmlFor="firstName"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  First Name
+                </label>
+                <input
+                  id="firstName"
+                  type="text"
+                  placeholder="Enter your first name"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="lastName"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Last Name
+                </label>
+                <input
+                  id="lastName"
+                  type="text"
+                  placeholder="Enter your last name"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200"
+                />
+              </div>
+            </div>
+
+            {/* Phone Number, Email, and Address Fields */}
+            <div className="mt-6">
+              <label
+                htmlFor="phone"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Phone Number
+              </label>
+              <input
+                id="phone"
+                type="tel"
+                placeholder="Enter phone number"
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200 text-lg"
+              />
+            </div>
+
+            <div className="mt-4">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                placeholder="Enter email address"
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200 text-lg"
+              />
+            </div>
+
+            <div className="mt-4">
+              <label
+                htmlFor="address"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Address
+              </label>
+              <input
+                id="address"
+                type="text"
+                placeholder="Enter your address"
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200 text-lg"
+              />
+            </div>
+
+            {/* Categories Input */}
+            <div className="mt-6">
+              <label
+                htmlFor="categories"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Category
+              </label>
+              <input
+                id="categories"
+                type="text"
+                placeholder="Enter categories"
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200"
+              />
+            </div>
+
+            {/* Submit Button */}
+            <button
+              onClick={() => setShowPopup(false)}
+              className="bg-[#5d5fef] text-white w-40 py-3 mt-6 rounded-lg hover:bg-[#4b4dcc] transition duration-300 mx-auto block"
+            >
+              Create
+            </button>
           </div>
         </div>
       )}

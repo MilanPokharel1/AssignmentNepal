@@ -258,10 +258,6 @@ const CsClientRequest = () => {
           />
         </div>
         <div className="flex gap-11 items-center mr-14">
-          <button className="bg-[#5d5fef] text-white py-2 px-4 rounded-lg flex gap-2 items-center">
-            <FaUsers />
-            <span>Create +</span>
-          </button>
           <div className="flex items-center space-x-2">
             <label>Items per page:</label>
             <select
