@@ -8,6 +8,7 @@ const FilterButtons = ({ activeFilter, onFilterChange }) => {
     "ongoing",
     "submitted",
     "completed",
+    "cancelled"
   ];
   const [isMobile, setIsMobile] = useState(window.innerWidth < 650);
 

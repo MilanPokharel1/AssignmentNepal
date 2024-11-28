@@ -27,7 +27,7 @@ const MultiFileUpload = ({ onFilesChange }) => {
   };
 
   const initiateFileRemoval = (file) => {
-    
+
     setFileToRemove(file);
     setShowConfirmation(true);
   };
@@ -119,6 +119,7 @@ const MultiFileUpload = ({ onFilesChange }) => {
                 </div>
               </div>
               <button
+                type="button"
                 onClick={() => initiateFileRemoval(file)}
                 className="text-red-500 hover:text-red-700"
               >

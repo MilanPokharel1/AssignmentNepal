@@ -11,18 +11,45 @@ import { HiArrowRight } from "react-icons/hi";
 import PaymentCard from "../Payments/Components/PaymentCard";
 import ClientOrderPopup from "../Order/Components/ClientOrderPopup.jsx";
 import { UseTheme } from "../../../contexts/ThemeContext/UseTheme.js";
-import { get_orders } from "../../../api/Api.jsx";
+import { get_orders, get_payment_dashboard } from "../../../api/Api.jsx";
 
 const Dashboard = () => {
   const [activeFilter, setActiveFilter] = useState("all");
   const [orderPopup, setorderPopup] = useState(false);
   const navigate = useNavigate();
   const [assignments, setAssignments] = useState([]);
+  const [paymentData, setPaymentData] = useState([]);
 
   const { currentTheme, themes } = UseTheme();
   const [isLoading, setIsLoading] = useState(false);
 
   const theme = themes[currentTheme];
+
+
+  const countAssignments = () => {
+    const totalAssignments = assignments.length;
+
+    const pendingAssignments = assignments.filter(
+      (assignment) => assignment.status === "pending"
+    ).length;
+
+    const activeAssignments = assignments.filter((assignment) =>
+      ["approved", "ongoing", "submitted"].includes(assignment.status)
+    ).length;
+
+    const completedAssignments = assignments.filter(
+      (assignment) => assignment.status === "completed"
+    ).length;
+
+    return {
+      totalAssignments,
+      pendingAssignments,
+      activeAssignments,
+      completedAssignments,
+    };
+  };
+
+  const { totalAssignments, pendingAssignments, activeAssignments, completedAssignments } = countAssignments();
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -53,38 +80,66 @@ const Dashboard = () => {
 
     fetchOrders();
   }, []);
-  
+
+  useEffect(() => {
+    const fetchPayments = async () => {
+      setIsLoading(true);
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
+
+        const response = await fetch(get_payment_dashboard, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch payments");
+        }
+
+        const data = await response.json();
+        setPaymentData(data.payments);
+        console.log("this is data: ", data);
+      } catch (error) {
+        console.error("Error fetching payments:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPayments();
+  }, []);
+
+  useEffect(() => {
+    const countAssignments = () => {
+      const totalAssignments = assignments.length;
+
+      const pendingAssignments = assignments.filter(
+        (assignment) => assignment.status === "pending"
+      ).length;
+
+      const activeAssignments = assignments.filter((assignment) =>
+        ["approved", "ongoing", "submitted"].includes(assignment.status)
+      ).length;
+
+      const completedAssignments = assignments.filter(
+        (assignment) => assignment.status === "completed"
+      ).length;
+
+      return {
+        totalAssignments,
+        pendingAssignments,
+        activeAssignments,
+        completedAssignments,
+      };
+    };
+
+    const { totalAssignments, pendingAssignments, activeAssignments, completedAssignments } = countAssignments();
+
+  }, [assignments])
 
 
-  const paymentData = [
-    {
-      assignmentTitle:
-        "This is my second assignment submission eqwnjkdewnudnqewdnoiqenoandlaskndkaslndkasndklasndlkkasdasnlxnasxlasxnsa",
-      date: "20/02/2024",
-      method: "Fonepay",
-      currency: "NPR",
-      remarks: "First Payment",
-      amount: 8000,
-    },
-    {
-      assignmentTitle:
-        "This is my second assignment submission sndiasncas nclkasncois dacwslkdcnois dancosdancosc",
-      date: "20/01/2024",
-      method: "Fonepay",
-      currency: "NPR",
-      remarks: "First Payment",
-      amount: 7000,
-    },
-    {
-      assignmentTitle:
-        "It should be relatively short, but still anxcoilasncxoilasndcxoliasnxnlzkm",
-      date: "20/01/2024",
-      method: "Fonepay",
-      currency: "NPR",
-      remarks: "Mid payment",
-      amount: 8000,
-    },
-  ];
   const handleFilterChange = (filter) => {
     setActiveFilter(filter);
   };
@@ -105,26 +160,27 @@ const Dashboard = () => {
         <Card
           Icon={IoBookSharp}
           heading="Total Assignment"
-          number={`${assignments.length}`}
+          number={`${totalAssignments}`}
           theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
         />
+          <Card
+            Icon={MdShoppingCart}
+            heading="Pending Orders"
+            number={`${pendingAssignments}`}
+            theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
+          />
         <Card
           Icon={IoBookSharp}
           heading="Active Assignment"
-          number="0"
+          number={`${activeAssignments}`}
           theme={{ bgColor: "bg-yellow-100", iconBgColor: "bg-orange-400" }}
         />
+
         <Card
           Icon={IoCheckmarkSharp}
           heading="Completed"
-          number="0"
+          number={`${completedAssignments}`}
           theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
-        />
-        <Card
-          Icon={MdShoppingCart}
-          heading="Numbers of Orders"
-          number="0"
-          theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
         />
       </div>
       <div className="flex justify-between w-full md:w-[81%] my-5">
@@ -166,12 +222,12 @@ const Dashboard = () => {
             paymentData.map((payment, index) => (
               <PaymentCard
                 key={index}
-                title={payment.title}
-                date={payment.date}
-                method={payment.method}
-                currency={payment.currency}
-                remarks={payment.remarks}
-                amount={payment.amount}
+                title={payment.assignmentTitle}
+                date={payment.createdAt}
+                method={payment.paymentMethod}
+                currency={payment.paymentCurrency}
+                remarks={payment.remark}
+                amount={`Rs ${payment.paidAmount}`}
               />
             ))}
         </div>

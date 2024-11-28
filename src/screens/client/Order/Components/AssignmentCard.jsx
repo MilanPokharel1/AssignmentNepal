@@ -65,6 +65,8 @@ const AssignmentCard = ({
     completed: "bg-green-100 text-green-600",
     pending: "bg-orange-100 text-orange-600",
     approved: "bg-gray-300 text-gray-600",
+    cancelled: "bg-red-300 text-red-600",
+
   };
 
   const [showPaymentPopup, setShowPaymentPopup] = useState(false);
