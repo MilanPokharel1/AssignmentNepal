@@ -187,7 +187,7 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {writers.length > 0 ? (
-          <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-white p-4 rounded-lg shadow-md">
+          <div className="col-span-1 md:col-span-2 lg:col-span-3  p-4 rounded-lg ">
             <div className="overflow-x-auto">
               <table className="w-full border-collapse">
                 <thead>

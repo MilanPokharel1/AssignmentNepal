@@ -22,7 +22,7 @@ const OrderCard = ({
   paidAmount = payments[0].paidAmount;
 
   const handleView = () => {
-    navigate(`/cs/orders/view/${_id}`);
+    navigate(`/cs/OrderManagement/OrderView/${_id}`);
   };
   const calculatePercentage = (totalAmount, paidAmount) => {
     const total = parseFloat(totalAmount);
@@ -60,12 +60,10 @@ const OrderCard = ({
     }
   };
 
-
-
   const handleStatusChange = async (newStatus) => {
     try {
       const token = localStorage.getItem("token"); // Replace with the actual token
-      console.log(newStatus)
+      console.log(newStatus);
       const response = await fetch(order_status, {
         method: "POST",
         headers: {
@@ -104,7 +102,6 @@ const OrderCard = ({
 
   const progressClasses = getProgressClasses();
 
-
   return (
     <div className="p-4 bg-white rounded-lg shadow-2xl w-full lg:w-[40%] sm:max-lg:w-full drop-shadow-2x2">
       {/* assignmentTitle and Status */}
@@ -124,8 +121,9 @@ const OrderCard = ({
           </div>
         </div>
         <div
-          className={`px-2 py-1 rounded-full text-sm capitalize ${statusColors[currentStatus.toLowerCase()]
-            }`}
+          className={`px-2 py-1 rounded-full text-sm capitalize ${
+            statusColors[currentStatus.toLowerCase()]
+          }`}
         >
           {currentStatus}
         </div>
@@ -216,7 +214,10 @@ const OrderCard = ({
           ) : null}
         </div>
         <div>
-          <button onClick={handleView} className="px-3 py-1 text-sm text-white bg-[#9E9FEE] hover:bg-purple-400 rounded-md transition-colors">
+          <button
+            onClick={handleView}
+            className="px-3 py-1 text-sm text-white bg-[#9E9FEE] hover:bg-purple-400 rounded-md transition-colors"
+          >
             View
           </button>
         </div>

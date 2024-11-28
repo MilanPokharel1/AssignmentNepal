@@ -3,12 +3,12 @@ import React, { useState, useEffect } from "react";
 const FilterButtons = ({ activeFilter, onFilterChange }) => {
   const buttons = [
     "All",
-    "Pending",
+    "pending",
     "approved",
     "ongoing",
     "submitted",
     "completed",
-    "cancelled"
+    "cancelled",
   ];
   const [isMobile, setIsMobile] = useState(window.innerWidth < 650);
 
