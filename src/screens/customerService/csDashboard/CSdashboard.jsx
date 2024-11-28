@@ -5,7 +5,6 @@ import { IoBookSharp, IoCheckmarkSharp } from "react-icons/io5";
 import { MdCancel, MdShoppingCart } from "react-icons/md";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
-
 import Card from "./components/Card";
 import Chart from "./components/Chart";
 import WriterCard from "./components/WriterCard";
@@ -77,12 +76,10 @@ const sampleWriters = [
 
 const Dashboard = () => {
   const [filter, setFilter] = useState("active");
-  const [csDashboard, setCsDashboard] = useState([])
-  const [assignments, setAssignments] = useState([])
-  const [writers, setWriters] = useState([])
+  const [csDashboard, setCsDashboard] = useState([]);
+  const [assignments, setAssignments] = useState([]);
+  const [writers, setWriters] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
-
 
   useEffect(() => {
     const fetchCsDashboard = async () => {
@@ -102,10 +99,10 @@ const Dashboard = () => {
         }
 
         const data = await response.json();
-        console.log(data)
+        console.log(data.newWriters);
         setCsDashboard(data);
-        setAssignments(data.recentAssignments)
-        setWriters(data.newWriters)
+        setAssignments(data.recentAssignments);
+        setWriters(data.newWriters);
       } catch (error) {
         console.error("Error fetching reminders:", error);
       } finally {
@@ -187,21 +184,50 @@ const Dashboard = () => {
           <HiArrowRight className="text-lg" />
         </div>
       </div>
-      
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {writers.length > 0 ? (
-          writers.map((writer) => (
-            <WriterCard
-              key={writer._id}
-              name={writer.firstName}
-              phoneNumber={writer.phone}
-              status={writer.status}
-              pic={writer.pic}
-            />
-          ))
+          <div className="col-span-1 md:col-span-2 lg:col-span-3 bg-white p-4 rounded-lg shadow-md">
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="text-gray-500 ">
+                    <th className="border-b-2 pl-10 py-4 text-left">Name</th>
+                    <th className="border-b-2 px-4 py-4 text-left">Subject</th>
+                    <th className="border-b-2 px-4 py-4 text-left">
+                      Phone Number
+                    </th>
+                    <th className="border-b-2 px-4 py-4 text-left">Email</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {writers.map((item, index) => (
+                    <tr key={index} className="hover:bg-gray-50">
+                      <td className="border-b px-4 py-3 text-left">
+                        <div className="flex items-center gap-3">
+                          <img
+                            src="https://static.vecteezy.com/system/resources/previews/025/220/125/non_2x/picture-a-captivating-scene-of-a-tranquil-lake-at-sunset-ai-generative-photo.jpg"
+                            className="w-10 h-10 rounded-full object-cover"
+                            alt={`${item.firstName} ${item.lastName}`}
+                          />
+                          <span>{`${item.firstName} ${item.lastName}`}</span>
+                        </div>
+                      </td>
+                      <td className="border-b px-4 py-3">
+                        {item.catagory || "N/A"}
+                      </td>
+                      <td className="border-b px-4 py-3">
+                        {item.phone || "N/A"}
+                      </td>
+                      <td className="border-b px-4 py-3">{item.email}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         ) : (
-          <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center p-4 ">
+          <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center p-4">
             <p className="text-gray-800">No data to show</p>
           </div>
         )}
