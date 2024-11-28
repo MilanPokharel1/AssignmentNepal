@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaSearch, FaUsers } from "react-icons/fa";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
-import { FaEdit, FaSignInAlt, FaTrash } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
 const data = [
   {
     id: 1,
@@ -137,7 +137,7 @@ const CSUserManagement = () => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(30);
-
+  const [showPopup, setShowPopup] = useState(false);
   const highlightText = (text, searchTerm) => {
     if (!searchTerm) return text;
     const parts = text.toString().split(new RegExp(`(${searchTerm})`, "gi"));
@@ -258,9 +258,12 @@ const CSUserManagement = () => {
           />
         </div>
         <div className="flex gap-11 items-center mr-14">
-          <button className="bg-[#5d5fef] text-white py-2 px-4 rounded-lg flex gap-2 items-center">
+          <button
+            className="bg-[#5d5fef] text-white py-2 px-4 rounded-lg flex gap-2 items-center"
+            onClick={() => setShowPopup(true)}
+          >
             <FaUsers />
-            <span>Create +</span>
+            <span>Create Client+</span>
           </button>
           <div className="flex items-center space-x-2">
             <label>Items per page:</label>
@@ -355,6 +358,111 @@ const CSUserManagement = () => {
           <MdChevronRight className="w-5 h-5" />
         </button>
       </div>
+      {showPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl sm:max-w-2xl relative">
+            {/* Close Button */}
+            <button
+              onClick={() => setShowPopup(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 transition duration-300"
+              aria-label="Close popup"
+            >
+              <IoMdClose size={24} />
+            </button>
+
+            {/* Form Header */}
+            <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
+              Create Client
+            </h2>
+
+            {/* Input Fields */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <label
+                  htmlFor="firstName"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  First Name
+                </label>
+                <input
+                  id="firstName"
+                  type="text"
+                  placeholder="Enter your first name"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="lastName"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Last Name
+                </label>
+                <input
+                  id="lastName"
+                  type="text"
+                  placeholder="Enter your last name"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200"
+                />
+              </div>
+            </div>
+
+            {/* Phone Number, Email, and Address Fields */}
+            <div className="mt-6">
+              <label
+                htmlFor="phone"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Phone Number
+              </label>
+              <input
+                id="phone"
+                type="tel"
+                placeholder="Enter phone number"
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200 text-lg"
+              />
+            </div>
+
+            <div className="mt-4">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                placeholder="Enter email address"
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200 text-lg"
+              />
+            </div>
+
+            <div className="mt-4">
+              <label
+                htmlFor="address"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Address
+              </label>
+              <input
+                id="address"
+                type="text"
+                placeholder="Enter your address"
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200 text-lg"
+              />
+            </div>
+
+            {/* Submit Button */}
+            <button
+              onClick={() => setShowPopup(false)}
+              className="bg-[#5d5fef] text-white w-40 py-3 mt-6 rounded-lg hover:bg-[#4b4dcc] transition duration-300 mx-auto block"
+            >
+              Create
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
