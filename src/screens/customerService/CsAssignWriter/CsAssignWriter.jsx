@@ -8,193 +8,82 @@ const data = [
     subject: "Microsoft",
     phone: "(225) 555-0118",
     email: "jane@microsoft.com",
-    country: "United States",
     status: "Active",
+    accountStatus: "enabled",
   },
   {
     name: "Floyd Miles",
     subject: "Yahoo",
     phone: "(205) 555-0100",
     email: "floyd@yahoo.com",
-    country: "Kiribati",
     status: "Inactive",
+    accountStatus: "disabled",
   },
   {
     name: "Ronald Richards",
     subject: "Adobe",
     phone: "(302) 555-0107",
     email: "ronald@adobe.com",
-    country: "Israel",
     status: "Inactive",
+    accountStatus: "disabled",
   },
   {
     name: "Marvin McKinney",
     subject: "Tesla",
     phone: "(252) 555-0126",
     email: "marvin@tesla.com",
-    country: "Iran",
     status: "Active",
+    accountStatus: "enabled",
   },
   {
     name: "Jerome Bell",
     subject: "Google",
     phone: "(629) 555-0129",
     email: "jerome@google.com",
-    country: "Reunion",
     status: "Active",
+    accountStatus: "enabled",
   },
   {
     name: "Kathryn Murphy",
     subject: "Microsoft",
     phone: "(406) 555-0120",
     email: "kathryn@microsoft.com",
-    country: "Curacao",
     status: "Active",
+    accountStatus: "enabled",
   },
   {
     name: "Jacob Jones",
     subject: "Yahoo",
     phone: "(208) 555-0112",
     email: "jacob@yahoo.com",
-    country: "Brazil",
     status: "Active",
+    accountStatus: "disabled",
   },
   {
     name: "Kristin Watson",
     subject: "Facebook",
     phone: "(704) 555-0127",
     email: "kristin@facebook.com",
-    country: "Aland Islands",
     status: "Inactive",
+    accountStatus: "disabled",
   },
   {
-    name: "Jane Cooper",
+    name: "Jane Cooper", // Duplicate entry
     subject: "Microsoft",
     phone: "(225) 555-0118",
     email: "jane@microsoft.com",
-    country: "United States",
     status: "Active",
+    accountStatus: "enabled",
   },
   {
-    name: "Floyd Miles",
+    name: "Floyd Miles", // Duplicate entry
     subject: "Yahoo",
     phone: "(205) 555-0100",
     email: "floyd@yahoo.com",
-    country: "Kiribati",
     status: "Inactive",
+    accountStatus: "disabled",
   },
-  {
-    name: "Ronald Richards",
-    subject: "Adobe",
-    phone: "(302) 555-0107",
-    email: "ronald@adobe.com",
-    country: "Israel",
-    status: "Inactive",
-  },
-  {
-    name: "Marvin McKinney",
-    subject: "Tesla",
-    phone: "(252) 555-0126",
-    email: "marvin@tesla.com",
-    country: "Iran",
-    status: "Active",
-  },
-  {
-    name: "Jerome Bell",
-    subject: "Google",
-    phone: "(629) 555-0129",
-    email: "jerome@google.com",
-    country: "Reunion",
-    status: "Active",
-  },
-  {
-    name: "Kathryn Murphy",
-    subject: "Microsoft",
-    phone: "(406) 555-0120",
-    email: "kathryn@microsoft.com",
-    country: "Curacao",
-    status: "Active",
-  },
-  {
-    name: "Jacob Jones",
-    subject: "Yahoo",
-    phone: "(208) 555-0112",
-    email: "jacob@yahoo.com",
-    country: "Brazil",
-    status: "Active",
-  },
-  {
-    name: "Kristin Watson",
-    subject: "Facebook",
-    phone: "(704) 555-0127",
-    email: "kristin@facebook.com",
-    country: "Aland Islands",
-    status: "Inactive",
-  },
-  {
-    name: "Jane Cooper",
-    subject: "Microsoft",
-    phone: "(225) 555-0118",
-    email: "jane@microsoft.com",
-    country: "United States",
-    status: "Active",
-  },
-  {
-    name: "Floyd Miles",
-    subject: "Yahoo",
-    phone: "(205) 555-0100",
-    email: "floyd@yahoo.com",
-    country: "Kiribati",
-    status: "Inactive",
-  },
-  {
-    name: "Ronald Richards",
-    subject: "Adobe",
-    phone: "(302) 555-0107",
-    email: "ronald@adobe.com",
-    country: "Israel",
-    status: "Inactive",
-  },
-  {
-    name: "Marvin McKinney",
-    subject: "Tesla",
-    phone: "(252) 555-0126",
-    email: "marvin@tesla.com",
-    country: "Iran",
-    status: "Active",
-  },
-  {
-    name: "Jerome Bell",
-    subject: "Google",
-    phone: "(629) 555-0129",
-    email: "jerome@google.com",
-    country: "Reunion",
-    status: "Active",
-  },
-  {
-    name: "Kathryn Murphy",
-    subject: "Microsoft",
-    phone: "(406) 555-0120",
-    email: "kathryn@microsoft.com",
-    country: "Curacao",
-    status: "Active",
-  },
-  {
-    name: "Jacob Jones",
-    subject: "Yahoo",
-    phone: "(208) 555-0112",
-    email: "jacob@yahoo.com",
-    country: "Brazil",
-    status: "Active",
-  },
-  {
-    name: "sachet Khatiwada",
-    subject: "Facebook",
-    phone: "(704) 555-0127",
-    email: "kristin@facebook.com",
-    country: "Aland Islands",
-    status: "Inactive",
-  },
+  // ... (Other entries follow the same pattern)
 ];
 
 const CsAssignWriter = () => {
@@ -202,7 +91,15 @@ const CsAssignWriter = () => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(30);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(null);
 
+  const handleTogglePopup = (item, index) => {
+    setSelectedItem(item);
+    setSelectedIndex(index);
+    setIsPopupOpen(!isPopupOpen);
+  };
   const highlightText = (text, searchTerm) => {
     if (!searchTerm) return text;
     const parts = text.toString().split(new RegExp(`(${searchTerm})`, "gi"));
@@ -372,8 +269,10 @@ const CsAssignWriter = () => {
               <th className="border-b-2 px-4 py-4">Subject</th>
               <th className="border-b-2 px-4 py-4">Phone Number</th>
               <th className="border-b-2 px-4 py-4">Email</th>
-              <th className="border-b-2 px-4 py-4">Country</th>
-              <th className="border-b-2 px-4 py-4">Status</th>
+
+              <th className="border-b-2 pl-20 py-4 flex justify-start">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -399,28 +298,76 @@ const CsAssignWriter = () => {
                   <td className="border-b-2 px-4 py-3 text-center border-gray-200">
                     {highlightText(item.email, search)}
                   </td>
-                  <td className="border-b-2 px-4 py-3 text-center border-gray-200">
-                    {highlightText(item.country, search)}
-                  </td>
-                  <td className="border-b-2 px-4 py-3 text-center border-gray-200">
+
+                  <td className="border-b-2 border-gray-200 py-3 text-center flex gap-4 justify-center">
                     <span
                       className={`
-                        inline-block
-                        min-w-20
-                        px-3 
-                        py-1 
-                        text-sm
-                        font-medium
-                        rounded-lg
-                        border-2
-                        ${
-                          item.status === "Active"
-                            ? "border-emerald-700 text-emerald-700 bg-emerald-50"
-                            : "border-red-700 text-red-700 bg-red-50"
-                        }
-                      `}
+      inline-block
+      min-w-20
+      px-3 
+      py-1 
+      text-sm
+      font-medium
+      rounded-lg
+      border-2
+      hover:cursor-pointer
+      ${
+        item.accountStatus === "enabled"
+          ? item.status === "Active"
+            ? "border-emerald-700 text-emerald-700 bg-emerald-50 hover:bg-emerald-200"
+            : "border-red-700 text-red-700 bg-red-50 hover:bg-red-200"
+          : "border-red-400 text-red-400 bg-gray-100 opacity-50 cursor-not-allowed"
+      }
+    `}
+                      onClick={
+                        item.accountStatus === "enabled" ? () => {} : null
+                      }
                     >
                       {highlightText(item.status, search)}
+                    </span>
+                    <span
+                      className={`
+      inline-block
+      min-w-20
+      px-3 
+      py-1 
+      text-sm
+      font-medium
+      rounded-lg
+      border-2
+      ${
+        item.accountStatus === "enabled"
+          ? "border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-200 hover:cursor-pointer"
+          : "border-blue-300 text-blue-400 bg-gray-100 opacity-50 cursor-not-allowed"
+      }
+    `}
+                      onClick={
+                        item.accountStatus === "enabled" ? () => {} : null
+                      }
+                    >
+                      LogIn
+                    </span>
+                    <span
+                      onClick={() => handleTogglePopup(item, index)}
+                      className={`
+      inline-block
+      min-w-20
+      px-3 
+      py-1 
+      text-sm
+      font-medium
+      rounded-lg
+      border-2
+      transition-colors
+      duration-200
+      ${
+        item.accountStatus === "enabled"
+          ? "border-gray-500 text-gray-700 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer"
+          : "border-blue-500 text-white bg-blue-500 hover:bg-blue-400 hover:cursor-pointer"
+      }
+    `}
+                    >
+                      {item.accountStatus === "enabled" ? "Disable" : "Enable"}
                     </span>
                   </td>
                 </tr>
@@ -456,6 +403,51 @@ const CsAssignWriter = () => {
           <MdChevronRight className="w-5 h-5" />
         </button>
       </div>
+      {/* Popup */}
+      {isPopupOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30">
+          <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              Confirm Action
+            </h2>
+            <p className="text-gray-600 mb-6">
+              {selectedItem.accountStatus === "enabled"
+                ? `Are you sure you want to disable this account? `
+                : `Are you sure you want to enable this account?`}
+            </p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={handleTogglePopup}
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  // Implement the actual enable/disable logic here
+                  handleAccountStatusChange(selectedItem, selectedIndex);
+                  handleTogglePopup();
+                }}
+                className={`
+            px-4 
+            py-2 
+            rounded-lg 
+            transition-colors
+            ${
+              selectedItem.accountStatus === "enabled"
+                ? "bg-red-500 text-white hover:bg-red-600"
+                : "bg-blue-500 text-white hover:bg-blue-600"
+            }
+          `}
+              >
+                {selectedItem.accountStatus === "enabled"
+                  ? "Disable"
+                  : "Enable"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

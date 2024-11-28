@@ -29,6 +29,7 @@ import WriterWithdrawl from "./screens/writer/WriterWithdrawl/WriterWithdrawl";
 import CsFileTransfer from "./screens/customerService/CSFileTransfer/CsFileTransfer";
 import AdminReminders from "./screens/admin/AdminRemainders/AdminRemainders";
 import AdminPayments from "./screens/admin/AdminPayments/AdminPayments";
+import CsClientRequest from "./screens/customerService/CsClientRequest/CsClientRequest";
 
 function App() {
   return (
@@ -74,6 +75,7 @@ function App() {
             <Route path="reminders" element={<CsRemainders />} />
             <Route path="payments" element={<CsPayments />} />
             <Route path="filetransfer" element={<CsFileTransfer />} />
+            <Route path="clientrequest" element={<CsClientRequest/>} />
           </Route>
           <Route path="/writter" element={<Writer />}>
             <Route index element={<WriterDashboard />} />

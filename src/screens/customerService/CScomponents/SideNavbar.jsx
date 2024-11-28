@@ -7,7 +7,7 @@ import { RiPieChart2Fill } from "react-icons/ri";
 import { MdShoppingCart } from "react-icons/md";
 import { FaUser, FaUsers } from "react-icons/fa";
 import { FaMoneyBillWave } from "react-icons/fa6";
-import { GiOpenBook } from "react-icons/gi";
+import { FaUserPlus } from "react-icons/fa6";
 import { FaFolder } from "react-icons/fa";
 const SideNavbar = ({ onClose, isMobile }) => {
   const navigate = useNavigate();
@@ -78,7 +78,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
             onClick={() => isMobile && onClose?.()}
           >
             <FaUser className="w-5 h-5" />
-            <span>Assign Writer</span>
+            <span>Writer</span>
           </NavLink>
         </div>
         <div>
@@ -90,7 +90,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
             onClick={() => isMobile && onClose?.()}
           >
             <FaUsers className="w-5 h-5" />
-            <span>User Management</span>
+            <span>Client</span>
           </NavLink>
         </div>
 
@@ -104,6 +104,18 @@ const SideNavbar = ({ onClose, isMobile }) => {
           >
             <FaFolder className="w-5 h-5" />
             <span>File Transfer</span>
+          </NavLink>
+        </div>
+        <div>
+          <NavLink
+            to="/cs/clientrequest"
+            className={({ isActive }) =>
+              `${linkStyles} ${isActive ? activeLinkStyles : ""}`
+            }
+            onClick={() => isMobile && onClose?.()}
+          >
+            <FaUserPlus className="w-5 h-5" />
+            <span>Client Request</span>
           </NavLink>
         </div>
         <div>
@@ -142,7 +154,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
             <span>Payments</span>
           </NavLink>
         </div>
-   
+
         <div className="mt-9 pl-7">
           <button className="flex items-center space-x-4 text-gray-700 hover:text-red-600 transition">
             <FaSignOutAlt className="w-5 h-5" />

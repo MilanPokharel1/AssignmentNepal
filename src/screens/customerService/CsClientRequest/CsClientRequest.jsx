@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaSearch, FaUsers } from "react-icons/fa";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
-import { FaEdit, FaSignInAlt, FaTrash } from "react-icons/fa";
+
 const data = [
   {
     id: 1,
@@ -9,7 +9,7 @@ const data = [
     phone: "(225) 555-0118",
     email: "jane@microsoft.com",
     country: "United States",
-    role: "Client",
+    status: "approved",
   },
   {
     id: 2,
@@ -17,7 +17,7 @@ const data = [
     phone: "(205) 555-0100",
     email: "floyd@yahoo.com",
     country: "Kiribati",
-    role: "Admin",
+    status: "pending",
   },
   {
     id: 3,
@@ -25,7 +25,7 @@ const data = [
     phone: "(302) 555-0107",
     email: "ronald@adobe.com",
     country: "Israel",
-    role: "Customer Service",
+    status: "pending",
   },
   {
     id: 4,
@@ -33,7 +33,7 @@ const data = [
     phone: "(252) 555-0126",
     email: "marvin@tesla.com",
     country: "Iran",
-    role: "Writer",
+    status: "approved",
   },
   {
     id: 5,
@@ -41,7 +41,7 @@ const data = [
     phone: "(629) 555-0129",
     email: "jerome@google.com",
     country: "Reunion",
-    role: "Client",
+    status: "approved",
   },
   {
     id: 6,
@@ -49,7 +49,7 @@ const data = [
     phone: "(406) 555-0120",
     email: "kathryn@microsoft.com",
     country: "Curacao",
-    role: "Admin",
+    status: "pending",
   },
   {
     id: 7,
@@ -57,7 +57,7 @@ const data = [
     phone: "(208) 555-0112",
     email: "jacob@yahoo.com",
     country: "Brazil",
-    role: "Customer Service",
+    status: "approved",
   },
   {
     id: 8,
@@ -65,63 +65,63 @@ const data = [
     phone: "(704) 555-0127",
     email: "kristin@facebook.com",
     country: "Aland Islands",
-    role: "Writer",
+    status: "pending",
   },
   {
     id: 9,
-    name: "Jane Cooper",
+    name: "Jane Cooper", // Duplicate entry
     phone: "(225) 555-0118",
     email: "jane@microsoft.com",
     country: "United States",
-    role: "Client",
+    status: "approved",
   },
   {
     id: 10,
-    name: "Floyd Miles",
+    name: "Floyd Miles", // Duplicate entry
     phone: "(205) 555-0100",
     email: "floyd@yahoo.com",
     country: "Kiribati",
-    role: "Admin",
+    status: "pending",
   },
   {
     id: 11,
-    name: "Ronald Richards",
+    name: "Ronald Richards", // Duplicate entry
     phone: "(302) 555-0107",
     email: "ronald@adobe.com",
     country: "Israel",
-    role: "Customer Service",
+    status: "pending",
   },
   {
     id: 12,
-    name: "Marvin McKinney",
+    name: "Marvin McKinney", // Duplicate entry
     phone: "(252) 555-0126",
     email: "marvin@tesla.com",
     country: "Iran",
-    role: "Writer",
+    status: "approved",
   },
   {
     id: 13,
-    name: "Jerome Bell",
+    name: "Jerome Bell", // Duplicate entry
     phone: "(629) 555-0129",
     email: "jerome@google.com",
     country: "Reunion",
-    role: "Client",
+    status: "approved",
   },
   {
     id: 14,
-    name: "Kathryn Murphy",
+    name: "Kathryn Murphy", // Duplicate entry
     phone: "(406) 555-0120",
     email: "kathryn@microsoft.com",
     country: "Curacao",
-    role: "Admin",
+    status: "pending",
   },
   {
     id: 15,
-    name: "Jacob Jones",
+    name: "Jacob Jones", // Duplicate entry
     phone: "(208) 555-0112",
     email: "jacob@yahoo.com",
     country: "Brazil",
-    role: "Customer Service",
+    status: "approved",
   },
   {
     id: 16,
@@ -129,11 +129,11 @@ const data = [
     phone: "(704) 555-0127",
     email: "kristin@facebook.com",
     country: "Aland Islands",
-    role: "Writer",
+    status: "pending",
   },
 ];
 
-const CSUserManagement = () => {
+const CsClientRequest = () => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(30);
@@ -315,12 +315,28 @@ const CSUserManagement = () => {
                     {highlightText(item.country, search)}
                   </td>
                   <td className="border-b-2 px-0 py-3 text-center border-gray-200 flex items-center">
-                    <button className="rounded-lg m-1 flex items-center  border text-sm border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-200 hover:cursor-pointer px-3 py-1">
-                      Login
-                    </button>
-                    <button className="px-3 py-1 rounded-lg m-1  flex items-center border  text-sm border-gray-500 text-gray-700 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer">
-                      Disable
-                    </button>
+                    {item.status === "pending" ? (
+                      <>
+                        <button
+                          onClick={() => {
+                            console.log(item.id);
+                          }}
+                          className="rounded-lg m-1 flex items-center border text-sm border-green-700 text-green-700 bg-green-50 hover:bg-green-200 hover:cursor-pointer px-3 py-1"
+                        >
+                          Approve
+                        </button>
+                        <button className="px-3 py-1 rounded-lg m-1 flex items-center border text-sm border-gray-500 text-gray-700 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer">
+                          Decline
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        disabled
+                        className="px-3 py-1 rounded-lg m-1 flex items-center border text-sm border-green-700 text-green-700 bg-green-50 opacity-50 cursor-not-allowed"
+                      >
+                        Approved
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))
@@ -359,4 +375,4 @@ const CSUserManagement = () => {
   );
 };
 
-export default CSUserManagement;
+export default CsClientRequest;

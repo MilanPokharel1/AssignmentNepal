@@ -7,7 +7,7 @@ const pathToTitleMap = {
   "/cs/ordermanagement": "Order Management",
   "/cs/assignwriter": "Assign Writers",
   "/cs/usermanagement": "User Management",
-
+  "/cs/clientrequest": "Client Request",
   "/cs/withdrawlrequest": "Withdrawl Request",
   "/cs/reminders": "Reminders",
   "/cs/payments": "Payments",
