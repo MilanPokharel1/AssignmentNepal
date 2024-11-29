@@ -92,7 +92,9 @@ const WriterCard = ({
                 : "bg-gray-300 cursor-not-allowed"
             }`}
             disabled={status !== "Pending"}
-            onClick={() => navigate(`/writer/writerView/${_id}`)}
+            onClick={() =>
+              navigate(`/writer/writerorder/writerView/:orderId${_id}`)
+            }
           >
             View
           </button>

@@ -38,6 +38,7 @@ import WriterPayments from "./screens/writer/WriterPayments/WriterPayments";
 import WriterView from "./screens/writer/WriterView/WriterView";
 import AdminCS from "./screens/admin/AdminCS/AdminCS";
 import AdminWithdrawal from "./screens/admin/AdminWithdrawal/AdminWithdrawal";
+import AdminOrderView from "./screens/admin/AdminOrderView/AdminOrderView";
 
 function App() {
   return (
@@ -71,9 +72,13 @@ function App() {
               element={<AdminWritersManagement />}
             />
             <Route path="adminCS" element={<AdminCS />} />
-            <Route path="adminWithdrawal" element={<AdminWithdrawal/>} />
+            <Route path="adminWithdrawal" element={<AdminWithdrawal />} />
             <Route path="adminreminders" element={<AdminReminders />} />
             <Route path="adminpayments" element={<AdminPayments />} />
+            <Route
+              path="adminordermanagement/adminorderview/:orderId"
+              element={<AdminOrderView/>}
+            />
           </Route>
           <Route path="/cs" element={<CustomerService />}>
             <Route index element={<CSdashboard />} />
@@ -97,7 +102,10 @@ function App() {
             <Route path="writermytask" element={<WriterMyTask />} />
             <Route path="writerRemainder" element={<WriterRemainder />} />
             <Route path="writerPayments" element={<WriterPayments />} />
-            <Route path="writerView/:orderId" element={<WriterView />} />
+            <Route
+              path="writerorder/writerView/:orderId"
+              element={<WriterView />}
+            />
           </Route>
         </Routes>
       </Router>

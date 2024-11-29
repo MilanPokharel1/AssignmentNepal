@@ -22,7 +22,7 @@ const OrderCard = ({
   paidAmount = payments[0].paidAmount;
 
   const handleView = () => {
-    navigate(`/cs/OrderManagement/OrderView/${_id}`);
+    navigate(`/admin/adminordermanagement/adminorderview/${_id}`);
   };
   const calculatePercentage = (totalAmount, paidAmount) => {
     const total = parseFloat(totalAmount);
