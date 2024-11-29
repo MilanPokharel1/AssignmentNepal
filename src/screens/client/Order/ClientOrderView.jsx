@@ -289,7 +289,7 @@ const AssignmentView = () => {
             </button>
           </div>
           <div className=" border-[0.2px] border-gray-200 p-8 rounded-xl bg-white">
-            <h3 className="text-md font-semibold tracking-wider mb-1">
+            <h3 className="text-md font-semibold tracking-wider mb-4">
               Comments:
             </h3>
             <div

@@ -3,138 +3,7 @@ import { FaSearch, FaUsers } from "react-icons/fa";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { cs_clients } from "../../../api/Api";
-
-const data = [
-  {
-    id: 1,
-    name: "Jane Cooper",
-    phone: "(225) 555-0118",
-    email: "jane@microsoft.com",
-    country: "United States",
-    role: "Client",
-  },
-  {
-    id: 2,
-    name: "Floyd Miles",
-    phone: "(205) 555-0100",
-    email: "floyd@yahoo.com",
-    country: "Kiribati",
-    role: "Admin",
-  },
-  {
-    id: 3,
-    name: "Ronald Richards",
-    phone: "(302) 555-0107",
-    email: "ronald@adobe.com",
-    country: "Israel",
-    role: "Customer Service",
-  },
-  {
-    id: 4,
-    name: "Marvin McKinney",
-    phone: "(252) 555-0126",
-    email: "marvin@tesla.com",
-    country: "Iran",
-    role: "Writer",
-  },
-  {
-    id: 5,
-    name: "Jerome Bell",
-    phone: "(629) 555-0129",
-    email: "jerome@google.com",
-    country: "Reunion",
-    role: "Client",
-  },
-  {
-    id: 6,
-    name: "Kathryn Murphy",
-    phone: "(406) 555-0120",
-    email: "kathryn@microsoft.com",
-    country: "Curacao",
-    role: "Admin",
-  },
-  {
-    id: 7,
-    name: "Jacob Jones",
-    phone: "(208) 555-0112",
-    email: "jacob@yahoo.com",
-    country: "Brazil",
-    role: "Customer Service",
-  },
-  {
-    id: 8,
-    name: "Kristin Watson",
-    phone: "(704) 555-0127",
-    email: "kristin@facebook.com",
-    country: "Aland Islands",
-    role: "Writer",
-  },
-  {
-    id: 9,
-    name: "Jane Cooper",
-    phone: "(225) 555-0118",
-    email: "jane@microsoft.com",
-    country: "United States",
-    role: "Client",
-  },
-  {
-    id: 10,
-    name: "Floyd Miles",
-    phone: "(205) 555-0100",
-    email: "floyd@yahoo.com",
-    country: "Kiribati",
-    role: "Admin",
-  },
-  {
-    id: 11,
-    name: "Ronald Richards",
-    phone: "(302) 555-0107",
-    email: "ronald@adobe.com",
-    country: "Israel",
-    role: "Customer Service",
-  },
-  {
-    id: 12,
-    name: "Marvin McKinney",
-    phone: "(252) 555-0126",
-    email: "marvin@tesla.com",
-    country: "Iran",
-    role: "Writer",
-  },
-  {
-    id: 13,
-    name: "Jerome Bell",
-    phone: "(629) 555-0129",
-    email: "jerome@google.com",
-    country: "Reunion",
-    role: "Client",
-  },
-  {
-    id: 14,
-    name: "Kathryn Murphy",
-    phone: "(406) 555-0120",
-    email: "kathryn@microsoft.com",
-    country: "Curacao",
-    role: "Admin",
-  },
-  {
-    id: 15,
-    name: "Jacob Jones",
-    phone: "(208) 555-0112",
-    email: "jacob@yahoo.com",
-    country: "Brazil",
-    role: "Customer Service",
-  },
-  {
-    id: 16,
-    name: "sachet Khatiwada",
-    phone: "(704) 555-0127",
-    email: "kristin@facebook.com",
-    country: "Aland Islands",
-    role: "Writer",
-  },
-];
+import { cs_clients, user_status } from "../../../api/Api";
 
 const CSUserManagement = () => {
   const [search, setSearch] = useState("");
@@ -143,6 +12,10 @@ const CSUserManagement = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [clients, setClients] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+
 
 
   useEffect(() => {
@@ -174,6 +47,42 @@ const CSUserManagement = () => {
 
     fetchclients();
   }, []);
+
+
+
+  const changeUserStatus = async (item) => {
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem("token"); // Replace with the actual token
+
+      const response = await fetch(user_status, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ userId: item._id, status: item.accountStatus }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to change status");
+      }
+
+      setClients((prevClients) =>
+        prevClients.map((client) =>
+          client._id === item._id
+            ? { ...client, accountStatus: item.accountStatus === "enabled" ? "disabled" : "enabled" }
+            : client
+        )
+      );
+    } catch (error) {
+      console.error("Error fetching reminders:", error);
+    } finally {
+
+      setIsLoading(false);
+    }
+  };
+
 
   const highlightText = (text, searchTerm) => {
     if (!searchTerm) return text;
@@ -247,11 +156,10 @@ const CSUserManagement = () => {
         <button
           key={i}
           onClick={() => setCurrentPage(i)}
-          className={`px-3 py-1 mx-0.5 rounded ${
-            currentPage === i
-              ? "bg-blue-600 text-white"
-              : "bg-gray-100 hover:bg-gray-200"
-          }`}
+          className={`px-3 py-1 mx-0.5 rounded ${currentPage === i
+            ? "bg-blue-600 text-white"
+            : "bg-gray-100 hover:bg-gray-200"
+            }`}
         >
           {i}
         </button>
@@ -279,6 +187,12 @@ const CSUserManagement = () => {
 
     return pageNumbers;
   };
+
+
+  const handleTogglePopup = (item) => {
+    setSelectedItem(item);
+    setIsPopupOpen(!isPopupOpen);
+  }
 
   return (
     <div className="min-h-screen p-4">
@@ -357,14 +271,16 @@ const CSUserManagement = () => {
                     {highlightText(item.email, search)}
                   </td>
                   <td className="border-b-2 px-4 py-3 text-center border-gray-200">
-                    {highlightText(item.country, search)}
+                    {highlightText(item.address, search)}
                   </td>
                   <td className="border-b-2 px-0 py-3 text-center border-gray-200 flex items-center">
                     <button className="rounded-lg m-1 flex items-center  border text-sm border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-200 hover:cursor-pointer px-3 py-1">
                       Login
                     </button>
-                    <button className="px-3 py-1 rounded-lg m-1  flex items-center border  text-sm border-gray-500 text-gray-700 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer">
-                      Disable
+                    <button
+                      onClick={() => handleTogglePopup(item, index)}
+                      className={`px-3 py-1 rounded-lg m-1  flex items-center border  text-sm border-gray-500 ${item.accountStatus === "enabled"?"text-red-700":"text-green-700"} bg-gray-100 hover:bg-gray-200 hover:cursor-pointer`}>
+                      {item.accountStatus === "enabled" ? "Disable" : "Enable"}
                     </button>
                   </td>
                 </tr>
@@ -400,6 +316,50 @@ const CSUserManagement = () => {
           <MdChevronRight className="w-5 h-5" />
         </button>
       </div>
+      {isPopupOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30">
+          <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              Confirm Action
+            </h2>
+            <p className="text-gray-600 mb-6">
+              {selectedItem.accountStatus === "enabled"
+                ? `Are you sure you want to disable ${selectedItem.firstName}${" "}${selectedItem.lastName}? `
+                : `Are you sure you want to enable ${selectedItem.firstName}${" "}${selectedItem.lastName}?`}
+            </p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={handleTogglePopup}
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  // Implement the actual enable/disable logic here
+
+                  changeUserStatus(selectedItem)
+                  handleTogglePopup(selectedItem);
+                }}
+                className={`
+            px-4 
+            py-2 
+            rounded-lg 
+            transition-colors
+            ${selectedItem.accountStatus === "enabled"
+                    ? "bg-red-500 text-white hover:bg-red-600"
+                    : "bg-blue-500 text-white hover:bg-blue-600"
+                  }
+          `}
+              >
+                {selectedItem.accountStatus === "enabled"
+                  ? "Disable"
+                  : "Enable"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {showPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl sm:max-w-2xl relative">
@@ -504,6 +464,7 @@ const CSUserManagement = () => {
             </button>
           </div>
         </div>
+
       )}
     </div>
   );

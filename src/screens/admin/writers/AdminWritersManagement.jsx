@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { cs_writers } from "../../../api/Api";
+import { cs_writers, user_status } from "../../../api/Api";
 import { FaUsers } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 
@@ -54,7 +54,6 @@ const AdminWritersManagement = () => {
 
   const handleTogglePopup = (item, index) => {
     setSelectedItem(item);
-    console.log(index)
     setSelectedIndex(index);
     setIsPopupOpen(!isPopupOpen);
   };
@@ -72,8 +71,43 @@ const AdminWritersManagement = () => {
     );
   };
 
+
+  const changeUserStatus = async (item) => {
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem("token"); // Replace with the actual token
+
+      const response = await fetch(user_status, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ userId: item._id, status: item.accountStatus }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to change status");
+      }
+
+      setWriters((prevWriters) =>
+        prevWriters.map((writer) =>
+          writer._id === item._id
+            ? { ...writer, accountStatus: item.accountStatus === "enabled" ? "disabled" : "enabled" }
+            : writer
+        )
+      );
+    } catch (error) {
+      console.error("Error fetching reminders:", error);
+    } finally {
+
+      setIsLoading(false);
+    }
+  };
+
+
   const filteredData = writers.filter((item) => {
-    if (filter !== "All" && item.status !== filter) return false;
+    if (filter !== "All" && item.writerStatus !== filter) return false;
     if (
       search &&
       !Object.values(item).some((val) =>
@@ -164,7 +198,7 @@ const AdminWritersManagement = () => {
 
   return (
     <div className="min-h-screen p-4">
-       {isLoading && (
+      {isLoading && (
         <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
           <CircularProgress />
         </div>
@@ -215,18 +249,18 @@ const AdminWritersManagement = () => {
             All
           </button>
           <button
-            onClick={() => setFilter("Active")}
-            className={`px-4 py-2 rounded-md ${filter === "Active" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
+            onClick={() => setFilter("assigned")}
+            className={`px-4 py-2 rounded-md ${filter === "assigned" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
               }`}
           >
-            Active
+            Assigned
           </button>
           <button
-            onClick={() => setFilter("Inactive")}
-            className={`px-4 py-2 rounded-md ${filter === "Inactive" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
+            onClick={() => setFilter("unassigned")}
+            className={`px-4 py-2 rounded-md ${filter === "unassigned" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
               }`}
           >
-            Inactive
+            Unassigned
           </button>
         </div>
       </div>
@@ -255,7 +289,7 @@ const AdminWritersManagement = () => {
                         className="w-8 h-8 rounded-full object-cover"
                         alt={item.name}
                       />
-                      <span>{highlightText(item.name, search)}</span>
+                      <span>{highlightText(item.firstName, search)}{" "}{highlightText(item.lastName, search)}</span>
                     </div>
                   </td>
                   <td className="border-b-2 px-4 py-3 text-center border-gray-200">
@@ -281,7 +315,7 @@ const AdminWritersManagement = () => {
       border-2
       hover:cursor-pointer
       ${item.accountStatus === "enabled"
-                          ? item.status === "Active"
+                          ? item.status === "Assigned"
                             ? "border-emerald-700 text-emerald-700 bg-emerald-50 hover:bg-emerald-200"
                             : "border-red-700 text-red-700 bg-red-50 hover:bg-red-200"
                           : "border-red-400 text-red-400 bg-gray-100 opacity-50 cursor-not-allowed"
@@ -291,7 +325,7 @@ const AdminWritersManagement = () => {
                         item.accountStatus === "enabled" ? () => { } : null
                       }
                     >
-                      {highlightText(item.status, search)}
+                      {highlightText(item.writerStatus, search)}
                     </span>
                     <span
                       className={`
@@ -378,8 +412,8 @@ const AdminWritersManagement = () => {
             </h2>
             <p className="text-gray-600 mb-6">
               {selectedItem.accountStatus === "enabled"
-                ? `Are you sure you want to disable ${selectedItem.name}? `
-                : `Are you sure you want to enable ${selectedItem.name}?`}
+                ? `Are you sure you want to disable ${selectedItem.firstName}${" "}${selectedItem.lastName}? `
+                : `Are you sure you want to enable ${selectedItem.firstName}${" "}${selectedItem.lastName}?`}
             </p>
             <div className="flex justify-end space-x-4">
               <button
@@ -391,8 +425,9 @@ const AdminWritersManagement = () => {
               <button
                 onClick={() => {
                   // Implement the actual enable/disable logic here
-                  handleAccountStatusChange(selectedItem, selectedIndex);
-                  handleTogglePopup();
+
+                  changeUserStatus(selectedItem)
+                  handleTogglePopup(selectedItem);
                 }}
                 className={`
             px-4 

@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaSearch, FaUsers } from "react-icons/fa";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { change_pending_user, pending_users } from "../../../api/Api";
+
+
 
 const data = [
   {
@@ -138,6 +142,81 @@ const CsClientRequest = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(30);
 
+  const [clients, setClients] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+
+  useEffect(() => {
+    const fetchclients = async () => {
+      setIsLoading(true);
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
+
+        const response = await fetch(pending_users, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch clients");
+        }
+
+        const data = await response.json();
+        console.log(data)
+        setClients(data.pendingUsers);
+      } catch (error) {
+        console.error("Error fetching clients:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchclients();
+  }, []);
+
+
+
+  const changeUserStatus = async (item, status) => {
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem("token"); // Replace with the actual token
+
+      const response = await fetch(change_pending_user, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ userId: item._id, status }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to change status");
+      }
+
+      setClients((prevClients) =>
+        prevClients.map((client) =>
+          client._id === item._id
+            ? { ...client, status }
+            : client
+        )
+      );
+    } catch (error) {
+      console.error("Error fetching reminders:", error);
+    } finally {
+
+      setIsLoading(false);
+    }
+  };
+
+
+
+
+
+
+
   const highlightText = (text, searchTerm) => {
     if (!searchTerm) return text;
     const parts = text.toString().split(new RegExp(`(${searchTerm})`, "gi"));
@@ -151,7 +230,7 @@ const CsClientRequest = () => {
       )
     );
   };
-  const filteredData = data.filter((item) => {
+  const filteredData = clients.filter((item) => {
     if (
       search &&
       !Object.values(item).some(
@@ -168,7 +247,7 @@ const CsClientRequest = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const totalPages = Math.ceil(clients.length / itemsPerPage);
 
   const handleItemsPerPageChange = (e) => {
     setItemsPerPage(Number(e.target.value));
@@ -210,11 +289,10 @@ const CsClientRequest = () => {
         <button
           key={i}
           onClick={() => setCurrentPage(i)}
-          className={`px-3 py-1 mx-0.5 rounded ${
-            currentPage === i
-              ? "bg-blue-600 text-white"
-              : "bg-gray-100 hover:bg-gray-200"
-          }`}
+          className={`px-3 py-1 mx-0.5 rounded ${currentPage === i
+            ? "bg-blue-600 text-white"
+            : "bg-gray-100 hover:bg-gray-200"
+            }`}
         >
           {i}
         </button>
@@ -245,6 +323,11 @@ const CsClientRequest = () => {
 
   return (
     <div className="min-h-screen p-4">
+      {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
+          <CircularProgress />
+        </div>
+      )}
       <h1 className="text-2xl font-bold mb-4 text-center">Users</h1>
       <div className="flex justify-between items-center mb-4">
         <div className="relative w-[60%] max-w-lg">
@@ -297,7 +380,7 @@ const CsClientRequest = () => {
                         className="w-8 h-8 rounded-full object-cover"
                         alt={item.name}
                       />
-                      <span>{highlightText(item.name, search)}</span>
+                      <span>{highlightText(item.firstName, search)}{" "}{highlightText(item.lastName, search)}</span>
                     </div>
                   </td>
 
@@ -308,29 +391,33 @@ const CsClientRequest = () => {
                     {highlightText(item.email, search)}
                   </td>
                   <td className="border-b-2 px-4 py-3 text-center border-gray-200">
-                    {highlightText(item.country, search)}
+                    {highlightText(item.address, search)}
                   </td>
                   <td className="border-b-2 px-0 py-3 text-center border-gray-200 flex items-center">
                     {item.status === "pending" ? (
                       <>
                         <button
                           onClick={() => {
-                            console.log(item.id);
+                            changeUserStatus(item, "approved")
                           }}
                           className="rounded-lg m-1 flex items-center border text-sm border-green-700 text-green-700 bg-green-50 hover:bg-green-200 hover:cursor-pointer px-3 py-1"
                         >
                           Approve
                         </button>
-                        <button className="px-3 py-1 rounded-lg m-1 flex items-center border text-sm border-gray-500 text-gray-700 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer">
+                        <button
+                          onClick={() => {
+                            changeUserStatus(item, "declined")
+                          }}
+                          className="px-3 py-1 rounded-lg m-1 flex items-center border text-sm border-red-500 text-red-700 bg-red-100 hover:bg-gray-200 hover:cursor-pointer">
                           Decline
                         </button>
                       </>
                     ) : (
                       <button
                         disabled
-                        className="px-3 py-1 rounded-lg m-1 flex items-center border text-sm border-green-700 text-green-700 bg-green-50 opacity-50 cursor-not-allowed"
+                        className={`px-3 py-1 rounded-lg m-1 flex${item.status == "approved" ? "border-green-700 text-green-700" : "border-red-700 text-red-700"} items-center border text-sm  bg-green-50 opacity-50 cursor-not-allowed`}
                       >
-                        Approved
+                        {item.status}
                       </button>
                     )}
                   </td>

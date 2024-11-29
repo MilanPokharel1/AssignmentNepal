@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { cs_writers } from "../../../api/Api";
+import { cs_writers, user_status } from "../../../api/Api";
 import { FaUsers } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 
@@ -54,7 +54,6 @@ const CsAssignWriter = () => {
 
   const handleTogglePopup = (item, index) => {
     setSelectedItem(item);
-    console.log(index)
     setSelectedIndex(index);
     setIsPopupOpen(!isPopupOpen);
   };
@@ -71,6 +70,41 @@ const CsAssignWriter = () => {
       )
     );
   };
+
+
+  const changeUserStatus = async (item) => {
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem("token"); // Replace with the actual token
+
+      const response = await fetch(user_status, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ userId: item._id, status: item.accountStatus }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to change status");
+      }
+
+      setWriters((prevWriters) =>
+        prevWriters.map((writer) =>
+          writer._id === item._id
+            ? { ...writer, accountStatus: item.accountStatus === "enabled" ? "disabled" : "enabled" }
+            : writer
+        )
+      );
+    } catch (error) {
+      console.error("Error fetching reminders:", error);
+    } finally {
+
+      setIsLoading(false);
+    }
+  };
+
 
   const filteredData = writers.filter((item) => {
     if (filter !== "All" && item.writerStatus !== filter) return false;
@@ -164,7 +198,7 @@ const CsAssignWriter = () => {
 
   return (
     <div className="min-h-screen p-4">
-       {isLoading && (
+      {isLoading && (
         <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
           <CircularProgress />
         </div>
@@ -378,8 +412,8 @@ const CsAssignWriter = () => {
             </h2>
             <p className="text-gray-600 mb-6">
               {selectedItem.accountStatus === "enabled"
-                ? `Are you sure you want to disable ${selectedItem.name}? `
-                : `Are you sure you want to enable ${selectedItem.name}?`}
+                ? `Are you sure you want to disable ${selectedItem.firstName}${" "}${selectedItem.lastName}? `
+                : `Are you sure you want to enable ${selectedItem.firstName}${" "}${selectedItem.lastName}?`}
             </p>
             <div className="flex justify-end space-x-4">
               <button
@@ -391,8 +425,9 @@ const CsAssignWriter = () => {
               <button
                 onClick={() => {
                   // Implement the actual enable/disable logic here
-                  handleAccountStatusChange(selectedItem, selectedIndex);
-                  handleTogglePopup();
+
+                  changeUserStatus(selectedItem)
+                  handleTogglePopup(selectedItem);
                 }}
                 className={`
             px-4 
