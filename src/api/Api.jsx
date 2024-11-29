@@ -15,3 +15,4 @@ export const make_payment = `${url}/user/makepayment`;
 export const get_remainder = `${url}/user/remainder`;
 export const cs_dashboard = `${url}/cs/dashboard`;
 export const cs_writers = `${url}/cs/getWriters`;
+export const cs_clients = `${url}/cs/getClients`;

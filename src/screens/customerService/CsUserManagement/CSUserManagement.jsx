@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaSearch, FaUsers } from "react-icons/fa";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { cs_clients } from "../../../api/Api";
+
 const data = [
   {
     id: 1,
@@ -138,6 +141,40 @@ const CSUserManagement = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(30);
   const [showPopup, setShowPopup] = useState(false);
+  const [clients, setClients] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+
+  useEffect(() => {
+    const fetchclients = async () => {
+      setIsLoading(true);
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
+
+        const response = await fetch(cs_clients, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch reminders");
+        }
+
+        const data = await response.json();
+        console.log(data)
+        setClients(data.clients); // Assuming the key is 'remainder', set it properly
+      } catch (error) {
+        console.error("Error fetching reminders:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchclients();
+  }, []);
+
   const highlightText = (text, searchTerm) => {
     if (!searchTerm) return text;
     const parts = text.toString().split(new RegExp(`(${searchTerm})`, "gi"));
@@ -151,7 +188,7 @@ const CSUserManagement = () => {
       )
     );
   };
-  const filteredData = data.filter((item) => {
+  const filteredData = clients.filter((item) => {
     if (
       search &&
       !Object.values(item).some(
@@ -168,7 +205,7 @@ const CSUserManagement = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
 
-  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const totalPages = Math.ceil(clients.length / itemsPerPage);
 
   const handleItemsPerPageChange = (e) => {
     setItemsPerPage(Number(e.target.value));
@@ -245,6 +282,11 @@ const CSUserManagement = () => {
 
   return (
     <div className="min-h-screen p-4">
+      {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
+          <CircularProgress />
+        </div>
+      )}
       <h1 className="text-2xl font-bold mb-4 text-center">Users</h1>
       <div className="flex justify-between items-center mb-4">
         <div className="relative w-[60%] max-w-lg">
@@ -304,7 +346,7 @@ const CSUserManagement = () => {
                         className="w-8 h-8 rounded-full object-cover"
                         alt={item.name}
                       />
-                      <span>{highlightText(item.name, search)}</span>
+                      <span>{highlightText(item.firstName, search)}{" "}{highlightText(item.lastName, search)}</span>
                     </div>
                   </td>
 

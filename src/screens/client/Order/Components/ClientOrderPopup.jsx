@@ -72,13 +72,13 @@ const ClientOrderPopup = ({ setorderPopup }) => {
           const estimatedTimeRemaining = remainingBytes / uploadSpeed / 1000; // convert to seconds
 
           setEstimatedTime(Math.max(0, estimatedTimeRemaining));
-          // if (percentComplete >= 100) {
-          //   setShowSuccessPopup(true);
-          //   setTimeout(() => {
-          //     setShowSuccessPopup(false);
-          //     // setorderPopup(false);
-          //   }, 3000);
-          // }
+          if (percentComplete >= 100) {
+            setShowSuccessPopup(true);
+            setTimeout(() => {
+              setShowSuccessPopup(false);
+              // setorderPopup(false);
+            }, 3000);
+          }
         }
       });
       const token = localStorage.getItem("token");
@@ -104,11 +104,11 @@ const ClientOrderPopup = ({ setorderPopup }) => {
       // Wait for upload to complete
       await uploadPromise;
 
-      setShowSuccessPopup(true);
-      setTimeout(() => {
-        setShowSuccessPopup(false);
-        setorderPopup(false);
-      }, 3000);
+      // setShowSuccessPopup(true);
+      // setTimeout(() => {
+      //   setShowSuccessPopup(false);
+      //   setorderPopup(false);
+      // }, 3000);
 
       // Reset form
       setFormData({

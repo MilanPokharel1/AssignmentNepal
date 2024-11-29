@@ -238,7 +238,7 @@ const AssignmentView = () => {
   const downloadableFiles = [
     { name: "finalaccounting.zip", size: "5.3MB", status: "pending" },
     { name: "completed-analysis.pdf", size: "3.2MB", status: "approved " },
-    { name: "final-report.docx", size: "1.5MB", status: "pending" },
+    { name: "final-report.docx", size: "1.5MB", status: "declined" },
   ];
 
   const formatDate = (dateString) => {
@@ -367,12 +367,12 @@ const AssignmentView = () => {
             </h3>
             <div className="space-y-2">
               {assignment &&
-                assignment.files.map((file, index) => (
+                assignment.files.filter(file => file.uploadedBy === 'client').map((file, index) => (
                   <div key={index} className="relative">
                     <div
                       className={`flex flex-col p-2 rounded border ${file.fileUrl
-                          ? "bg-white border-gray-200"
-                          : "bg-gray-100 border-gray-300"
+                        ? "bg-white border-gray-200"
+                        : "bg-gray-100 border-gray-300"
                         }`}
                     >
                       <div className="flex items-center justify-between">
@@ -393,6 +393,7 @@ const AssignmentView = () => {
                             handleDownload(file.fileUrl, file.fileName)
                           }
                           disabled={
+                            file.fileStatus !== "approved" ||
                             downloadingFiles[
                             new URL(file.fileUrl).searchParams.get("id")
                             ]
@@ -405,7 +406,12 @@ const AssignmentView = () => {
                               <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
                             </div>
                           ) : (
-                            <Download className="w-4 h-4 text-gray-500 hover:cursor-pointer" />
+                            <Download className={`w-4 h-4  ${file.fileStatus === "approved"
+                                ? "text-gray-500"
+                                : file.fileStatus === "pending"
+                                  ? "text-gray-400"
+                                  : "text-gray-400"
+                              } hover:cursor-pointer`} />
                           )}
                         </button>
                       </div>
@@ -432,10 +438,10 @@ const AssignmentView = () => {
                                 className="h-2 bg-blue-500 rounded-full"
                                 style={{
                                   width: `${downloadingFiles[
-                                      new URL(file.fileUrl).searchParams.get(
-                                        "id"
-                                      )
-                                    ].progress
+                                    new URL(file.fileUrl).searchParams.get(
+                                      "id"
+                                    )
+                                  ].progress
                                     }%`,
                                 }}
                               ></div>
@@ -460,40 +466,98 @@ const AssignmentView = () => {
               Downloads Available
             </h3>
             <div className="space-y-2">
-              {downloadableFiles.map((file, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between p-2 bg-white rounded border border-gray-200"
-                >
-                  <div className="flex items-center space-x-2">
-                    <FolderIcon className="h-5 w-5 text-yellow-500" />
-                    <div>
-                      <p className="text-sm font-medium text-gray-700">
-                        {file.name}
-                      </p>
-                      <p className="text-xs text-gray-500">{file.size}</p>
-                    </div>
-                  </div>
-                  {file.status === "pending" ? (
-                    <button className="focus:outline-none">
-                      <Download className="w-4 h-4 text-gray-300" />
-                    </button>
-                  ) : (
-                    <button
-                      className="focus:outline-none"
-                      onClick={() => {
-                        setisDownloading(true);
-                      }}
+              {assignment &&
+                assignment.files.filter(file => file.uploadedBy === 'writer').map((file, index) => (
+                  <div key={index} className="relative">
+                    <div
+                      className={`flex flex-col p-2 rounded border ${file.fileUrl
+                        ? "bg-white border-gray-200"
+                        : "bg-gray-100 border-gray-300"
+                        }`}
                     >
-                      {!isDownloading ? (
-                        <Download className="w-4 h-4 text-gray-300" />
-                      ) : (
-                        <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
-                      )}
-                    </button>
-                  )}
-                </div>
-              ))}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <FolderIcon className="h-5 w-5 text-yellow-500" />
+                          <div>
+                            <p className="text-sm font-medium text-gray-700">
+                              {file.fileName}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {file.fileSize}
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          className="focus:outline-none"
+                          onClick={() =>
+                            handleDownload(file.fileUrl, file.fileName)
+                          }
+                          disabled={
+                            file.fileStatus !== "approved" ||
+                            downloadingFiles[
+                            new URL(file.fileUrl).searchParams.get("id")
+                            ]
+                          }
+                        >
+                          {downloadingFiles[
+                            new URL(file.fileUrl).searchParams.get("id")
+                          ] ? (
+                            <div className="flex flex-col items-end">
+                              <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
+                            </div>
+                          ) : (
+                            <Download className={`w-4 h-4  ${file.fileStatus === "approved"
+                                ? "text-gray-500"
+                                : file.fileStatus === "pending"
+                                  ? "text-gray-300"
+                                  : "text-gray-300"
+                              } hover:cursor-pointer`} />
+                          )}
+                        </button>
+                      </div>
+                      {file.fileUrl &&
+                        downloadingFiles[
+                        new URL(file.fileUrl).searchParams.get("id")
+                        ] && (
+                          <div className="mt-2 ml-7">
+                            <div className="text-xs text-gray-500 mb-1">
+                              {
+                                downloadingFiles[
+                                  new URL(file.fileUrl).searchParams.get("id")
+                                ].progress
+                              }
+                              % •{" "}
+                              {
+                                downloadingFiles[
+                                  new URL(file.fileUrl).searchParams.get("id")
+                                ].timeRemaining
+                              }
+                            </div>
+                            <div className="w-full h-2 bg-gray-200 rounded-full">
+                              <div
+                                className="h-2 bg-blue-500 rounded-full"
+                                style={{
+                                  width: `${downloadingFiles[
+                                    new URL(file.fileUrl).searchParams.get(
+                                      "id"
+                                    )
+                                  ].progress
+                                    }%`,
+                                }}
+                              ></div>
+                            </div>
+                          </div>
+                        )}
+                    </div>
+
+                    {/* Overlay for blur and loader */}
+                    {!file.fileUrl && (
+                      <div className="absolute inset-0 bg-white/5 opacity-85 backdrop-blur flex items-center justify-center rounded">
+                        <Loader className="w-5 h-5 text-gray-500 animate-spin" />
+                      </div>
+                    )}
+                  </div>
+                ))}
             </div>
           </div>
         </div>
