@@ -4,7 +4,7 @@ import { FaMoneyBillWave } from "react-icons/fa";
 import Card from "./components/Card";
 import WriterCard from "./components/WriterCard";
 import TaskCard from "./components/TaskCard";
-
+import { HiArrowRight } from "react-icons/hi";
 const assignments = [
   {
     _id: "1",
@@ -27,13 +27,23 @@ const assignments = [
     writerName: "Sachet Khatiwada",
     writerPic: "path_to_image.jpg",
   },
+  {
+    _id: "2",
+    assignmentTitle: "Another assignment with similar details.",
+    status: "Assigned",
+    totalAmount: 15000,
+    payments: [{ paidAmount: 7000 }],
+    deadline: "2023-10-06",
+    writerName: "Sachet Khatiwada",
+    writerPic: "path_to_image.jpg",
+  },
 ];
 
 const taskData = [
   {
     id: 1,
-    title: "It should be relatively short, but still...",
-    status: "in-process",
+    title: "Design homepage UI",
+    status: "ongoing", // Can also be called "ongoing"
     dueDate: "Oct 6",
     amount: "Rs 5000",
     assignee: {
@@ -44,7 +54,7 @@ const taskData = [
   },
   {
     id: 2,
-    title: "It should be relatively short, but still...",
+    title: "Complete API integration",
     status: "completed",
     dueDate: "Oct 6",
     amount: "Rs 5000",
@@ -56,7 +66,7 @@ const taskData = [
   },
   {
     id: 3,
-    title: "Another task that is done",
+    title: "Fix UI bugs in login page",
     status: "completed",
     dueDate: "Oct 8",
     amount: "Rs 6000",
@@ -67,36 +77,44 @@ const taskData = [
     },
     writer: "Millu bhaiya",
   },
+  {
+    id: 4,
+    title: "Submit project documentation",
+    status: "submitted",
+    dueDate: "Oct 10",
+    amount: "Rs 4500",
+    assignee: {
+      name: "Emily Brown",
+      avatar: "/api/placeholder/32/32",
+    },
+    writer: "Shreya Singh",
+  },
+  {
+    id: 5,
+    title: "Prepare project presentation",
+    status: "ongoing",
+    dueDate: "Oct 12",
+    amount: "Rs 4000",
+    assignee: {
+      name: "Rahul Verma",
+      avatar: "/api/placeholder/32/32",
+    },
+    writer: "Millu bhaiya",
+  },
+  {
+    id: 6,
+    title: "Review test cases",
+    status: "cancelled",
+    dueDate: "Oct 15",
+    amount: "Rs 3000",
+    assignee: {
+      name: "Aisha Khan",
+      avatar: "/api/placeholder/32/32",
+    },
+    writer: "Shreya Singh",
+  },
 ];
-
-const FilterButton = ({ label, active, onClick }) => (
-  <button
-    onClick={onClick}
-    className={`px-4 py-1.5 rounded-lg text-lg ${
-      active
-        ? "text-white font-light bg-indigo-500"
-        : "border font-semibold border-indigo-500"
-    }`}
-  >
-    {label}
-  </button>
-);
-
 const WriterDashboard = () => {
-  const [activeFilter, setActiveFilter] = useState("all");
-
-  const filters = [
-    { id: "all", label: "All" },
-    { id: "in-process", label: "In process" },
-    { id: "completed", label: "Completed" },
-  ];
-
-  // Modified filter logic to handle "all" case
-  const filteredTasks =
-    activeFilter === "all"
-      ? taskData
-      : taskData.filter((task) => task.status === activeFilter);
-
   return (
     <div className="w-full min-h-screen p-6 bg-gray-50">
       <div className="flex flex-wrap gap-5 mt-3 mx-auto">
@@ -121,7 +139,16 @@ const WriterDashboard = () => {
       </div>
 
       <div className="mt-6">
-        <h2 className="text-2xl font-semibold">Orders</h2>
+        <div className="flex mb-4 justify-between">
+          <h2 className="text-2xl font-semibold">Orders</h2>
+          <div
+            onClick={() => console.log("view all clicked")}
+            className={`flex items-center gap-1 cursor-pointer hover:text-blue-600 mr-14`}
+          >
+            View all
+            <HiArrowRight className="text-lg" />
+          </div>
+        </div>
         <div className="flex flex-wrap gap-4">
           {assignments.map((assignment) => (
             <WriterCard key={assignment._id} {...assignment} />
@@ -130,26 +157,24 @@ const WriterDashboard = () => {
       </div>
 
       <div className="mt-6">
-        <h2 className="text-2xl font-semibold mt-3">Current Tasks</h2>
-        <div className="p-6">
-          <div className="mb-6 space-x-2">
-            {filters.map((filter) => (
-              <FilterButton
-                key={filter.id}
-                label={filter.label}
-                active={activeFilter === filter.id}
-                onClick={() => setActiveFilter(filter.id)}
-              />
-            ))}
+        <div className="flex mb-4 justify-between">
+          <h2 className="text-2xl font-semibold">My Tasks</h2>
+          <div
+            onClick={() => console.log("view all clicked")}
+            className={`flex items-center gap-1 cursor-pointer hover:text-blue-600 mr-`}
+          >
+            View all
+            <HiArrowRight className="text-lg mr-14" />
           </div>
-
+        </div>
+        <div className="p-6">
           <div className="flex gap-4 flex-wrap">
-            {filteredTasks.map((task) => (
+            {taskData.map((task) => (
               <TaskCard key={task.id} task={task} />
             ))}
           </div>
 
-          {filteredTasks.length === 0 && (
+          {taskData.length === 0 && (
             <div className="text-center text-gray-500 py-8">
               No tasks found for this status
             </div>

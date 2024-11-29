@@ -14,10 +14,11 @@ const TaskCard = ({ task }) => {
     totalAmount = amount ? parseInt(amount.replace("Rs ", "")) : 5000,
     writer,
   } = task;
-
   const statusColors = {
-    "in-process": "bg-purple-100 text-purple-600",
-    completed: "bg-green-100 text-green-600",
+    ongoing: "bg-blue-100 text-blue-600", // Blue for tasks in progress
+    submitted: "bg-yellow-100 text-yellow-600", // Yellow for tasks submitted but not finalized
+    completed: "bg-green-100 text-green-600", // Green for completed tasks
+    cancelled: "bg-red-100 text-red-600", 
   };
 
   return (

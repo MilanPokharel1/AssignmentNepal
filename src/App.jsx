@@ -31,6 +31,8 @@ import AdminReminders from "./screens/admin/AdminRemainders/AdminRemainders";
 import AdminPayments from "./screens/admin/AdminPayments/AdminPayments";
 import CsClientRequest from "./screens/customerService/CsClientRequest/CsClientRequest";
 import OrdertView from "./screens/customerService/OrderManagement/OrderView";
+import WriterOrder from "./screens/writer/WriterOrder/WriterOrder";
+import WriterMyTask from "./screens/writer/WriterMyTask/WriterMyTask";
 
 function App() {
   return (
@@ -84,6 +86,8 @@ function App() {
           <Route path="/writer" element={<Writer />}>
             <Route index element={<WriterDashboard />} />
             <Route path="writerwithdrawl" element={<WriterWithdrawl />} />
+            <Route path="writerorder" element={<WriterOrder />} />
+            <Route path="writermytask" element={<WriterMyTask />} />
           </Route>
         </Routes>
       </Router>

@@ -5,9 +5,9 @@ import { FaWallet, FaBell, FaCog, FaSignOutAlt, FaTimes } from "react-icons/fa";
 import logo from "../../../assets/random-logo.png";
 import { RiPieChart2Fill } from "react-icons/ri";
 import { MdShoppingCart } from "react-icons/md";
-import { FaUser, FaUsers } from "react-icons/fa";
+
 import { FaMoneyBillWave } from "react-icons/fa6";
-import { GiOpenBook } from "react-icons/gi";
+
 const SideNavbar = ({ onClose, isMobile }) => {
   const navigate = useNavigate();
 
@@ -70,14 +70,26 @@ const SideNavbar = ({ onClose, isMobile }) => {
         </div>
         <div>
           <NavLink
-            to="/cs/reminders"
+            to="/writer/writerorder"
+            className={({ isActive }) =>
+              `${linkStyles} ${isActive ? activeLinkStyles : ""}`
+            }
+            onClick={() => isMobile && onClose?.()}
+          >
+            <MdShoppingCart className="w-5 h-5" />
+            <span>Orders</span>
+          </NavLink>
+        </div>
+        <div>
+          <NavLink
+            to="/writer/writermytask"
             className={({ isActive }) =>
               `${linkStyles} ${isActive ? activeLinkStyles : ""}`
             }
             onClick={() => isMobile && onClose?.()}
           >
             <FaBell className="w-5 h-5" />
-            <span>Reminders</span>
+            <span>Task</span>
           </NavLink>
         </div>
         <div>

@@ -3,8 +3,8 @@ import { MdOutlineNotifications, MdMenu } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const pathToTitleMap = {
-  "/writter": "Dashboard",
-  "/cs/ordermanagement": "Order Management",
+  "/writer": "Dashboard",
+  "/writer/writerorder": "Order",
   "/cs/assignwriter": "Assign Writers",
   "/cs/usermanagement": "User Management",
   "/cs/assignmentrequest": "Assignment Request",

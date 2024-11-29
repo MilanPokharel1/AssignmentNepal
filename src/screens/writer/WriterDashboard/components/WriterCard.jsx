@@ -66,26 +66,39 @@ const WriterCard = ({
       </div>
       {/* Writer Info */}
       <div className="flex justify-between items-center">
-        <div className="flex gap-2">
-          <button
-            className="px-3 py-1 text-sm font-semibold text-emerald-700 bg-emerald-200 
+        {status === "Pending" ? (
+          <div className="flex gap-2">
+            <button
+              className="px-3 py-1 text-sm font-semibold text-emerald-700 bg-emerald-200 
                    hover:bg-emerald-700 hover:text-white rounded-md transition-all duration-200 
                    border-2 border-emerald-700"
-            onClick={() => console.log("Approved")}
-          >
-            Accept
-          </button>
-          <button
-            className="px-3 py-1 text-sm font-semibold text-red-700 bg-red-200
+              onClick={() => console.log("Approved")}
+            >
+              Accept
+            </button>
+            <button
+              className="px-3 py-1 text-sm font-semibold text-red-700 bg-red-200
                    hover:bg-red-700 hover:text-white rounded-md transition-all duration-200
                    border-2 border-red-700"
-            onClick={() => console.log("Declined")}
-          >
-            Decline
-          </button>
-        </div>
+              onClick={() => console.log("Declined")}
+            >
+              Decline
+            </button>
+          </div>
+        ) : (
+          <span className="text-sm font-light">
+            Already Assigned
+          </span>
+        )}
         <div>
-          <button className="px-3 py-1 text-sm text-white bg-[#9E9FEE] hover:bg-purple-400 rounded-md transition-colors">
+          <button
+            className={`px-3 py-1 text-sm text-white bg-[#9E9FEE] rounded-md transition-colors ${
+              status === "Pending"
+                ? "hover:bg-purple-400"
+                : "bg-gray-300 cursor-not-allowed"
+            }`}
+            disabled={status !== "Pending"}
+          >
             View
           </button>
         </div>
