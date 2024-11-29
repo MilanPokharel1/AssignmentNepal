@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import WithdrawalCard from "./components/WithdrawalCard";
 import { FiX } from "react-icons/fi";
+import Card from "./components/Card";
+
+import { MdAccountBalance } from "react-icons/md";
+import { MdPendingActions } from "react-icons/md";
+import { MdReceipt } from "react-icons/md";
+import { FaMoneyBillWave } from "react-icons/fa6";
 // Dummy data
 const withdrawalData = [
   {
@@ -56,6 +62,33 @@ const WriterWithdrawal = () => {
   const toggleModal = () => setIsModalOpen(!isModalOpen);
   return (
     <div className="w-full min-h-screen p-6 bg-gray-50">
+      <div className="flex flex-wrap gap-7 justify-center sm:justify-start mb-14">
+        <Card
+          Icon={MdAccountBalance}
+          heading="Balance"
+          number={40}
+          theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
+        />
+        <Card
+          Icon={MdPendingActions}
+          heading="Pending"
+          number={40}
+          theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
+        />
+        <Card
+          Icon={MdReceipt}
+          heading="Withdrawaled"
+          number={40}
+          theme={{ bgColor: "bg-yellow-100", iconBgColor: "bg-orange-400" }}
+        />
+
+        <Card
+          Icon={FaMoneyBillWave}
+          heading="Total"
+          number={40}
+          theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
+        />
+      </div>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <div className="flex flex-wrap gap-2">
           {filters.map((filter) => (
@@ -68,7 +101,7 @@ const WriterWithdrawal = () => {
           ))}
         </div>
         <button
-          className="px-4 py-3 bg-indigo-600 text-white rounded-lg flex items-center gap-2 text-sm"
+          className="px-4 py-3 bg-indigo-600 text-white rounded-lg flex items-center gap-2 text-sm mr-9"
           onClick={toggleModal}
         >
           <span>+ Withdrawal</span>

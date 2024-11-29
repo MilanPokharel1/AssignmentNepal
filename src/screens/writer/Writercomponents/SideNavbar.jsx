@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { FaWallet, FaBell, FaCog, FaSignOutAlt, FaTimes } from "react-icons/fa";
+import { FaWallet, FaBell, FaSignOutAlt, FaTimes } from "react-icons/fa";
 import logo from "../../../assets/random-logo.png";
 import { RiPieChart2Fill } from "react-icons/ri";
 import { MdShoppingCart } from "react-icons/md";
@@ -94,19 +94,19 @@ const SideNavbar = ({ onClose, isMobile }) => {
         </div>
         <div>
           <NavLink
-            to="/cs/payments"
+            to="/writer/writerRemainder"
             className={({ isActive }) =>
               `${linkStyles} ${isActive ? activeLinkStyles : ""}`
             }
             onClick={() => isMobile && onClose?.()}
           >
-            <FaWallet className="w-5 h-5" />
-            <span>Payments</span>
+            <FaBell className="w-5 h-5" />
+            <span>Remainder</span>
           </NavLink>
         </div>
         <div>
           <NavLink
-            to="/cs/payments"
+            to="/writer/writerPayments"
             className={({ isActive }) =>
               `${linkStyles} ${isActive ? activeLinkStyles : ""}`
             }

@@ -33,6 +33,8 @@ import CsClientRequest from "./screens/customerService/CsClientRequest/CsClientR
 import OrdertView from "./screens/customerService/OrderManagement/OrderView";
 import WriterOrder from "./screens/writer/WriterOrder/WriterOrder";
 import WriterMyTask from "./screens/writer/WriterMyTask/WriterMyTask";
+import WriterRemainder from "./screens/writer/WriterRemainder/WriterRemainder";
+import WriterPayments from "./screens/writer/WriterPayments/WriterPayments";
 
 function App() {
   return (
@@ -88,6 +90,8 @@ function App() {
             <Route path="writerwithdrawl" element={<WriterWithdrawl />} />
             <Route path="writerorder" element={<WriterOrder />} />
             <Route path="writermytask" element={<WriterMyTask />} />
+            <Route path="writerRemainder" element={<WriterRemainder />} />
+            <Route path="writerPayments" element={<WriterPayments />} />
           </Route>
         </Routes>
       </Router>

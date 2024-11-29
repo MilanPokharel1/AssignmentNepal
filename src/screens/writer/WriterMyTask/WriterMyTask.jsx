@@ -7,7 +7,7 @@ const FilterButton = ({ label, active, onClick }) => (
     className={`px-4 py-1.5 rounded-lg text-lg ${
       active
         ? "text-white font-light bg-indigo-500"
-        : "border font-semibold border-indigo-500"
+        : "border font-thin border-indigo-500"
     }`}
   >
     {label}
