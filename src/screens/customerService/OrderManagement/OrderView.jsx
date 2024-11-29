@@ -519,8 +519,11 @@ const OrdertView = () => {
                     </div>
                   </div>
                   {file.status === "pending" ? (
-                    <button className="focus:outline-none">
-                      <Download className="w-4 h-4 text-gray-300" />
+                    <button className="focus:outline-none flex gap-2 items-center">
+                      <span className="px-2 py-1 rounded-xl  border border-blue-500 bg-blue-50 text-blue-500">
+                        Approve
+                      </span>
+                      <Download className="w-4 h-4 " />
                     </button>
                   ) : (
                     <button
@@ -530,7 +533,7 @@ const OrdertView = () => {
                       }}
                     >
                       {!isDownloading ? (
-                        <Download className="w-4 h-4 text-gray-300" />
+                        <Download className="w-4 h-4 " />
                       ) : (
                         <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
                       )}
@@ -540,7 +543,7 @@ const OrdertView = () => {
               ))}
             </div>
           </div>
-          <div className="space-y-4">
+          <div className="space-y-4 text-sm">
             <h2 className="text-2xl font-bold">Payments</h2>
             {dummyData.map((payment, index) => (
               <div key={index} className="bg-white shadow-md rounded-lg p-4 ">
