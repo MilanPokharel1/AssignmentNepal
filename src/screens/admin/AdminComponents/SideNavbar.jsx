@@ -7,7 +7,7 @@ import { RiPieChart2Fill } from "react-icons/ri";
 import { MdShoppingCart } from "react-icons/md";
 import { FaUser, FaUsers } from "react-icons/fa";
 import { FaMoneyBillWave } from "react-icons/fa6";
-import { GiOpenBook } from "react-icons/gi";
+import { RiShieldUserFill } from "react-icons/ri";
 const SideNavbar = ({ onClose, isMobile }) => {
   const navigate = useNavigate();
 
@@ -77,7 +77,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
             onClick={() => isMobile && onClose?.()}
           >
             <FaUser className="w-5 h-5" />
-            <span>Assign Writer</span>
+            <span>Writers</span>
           </NavLink>
         </div>
         <div>
@@ -89,13 +89,25 @@ const SideNavbar = ({ onClose, isMobile }) => {
             onClick={() => isMobile && onClose?.()}
           >
             <FaUsers className="w-5 h-5" />
-            <span>User Management</span>
+            <span>Clients</span>
+          </NavLink>
+        </div>
+        <div>
+          <NavLink
+            to="/admin/adminCS"
+            className={({ isActive }) =>
+              `${linkStyles} ${isActive ? activeLinkStyles : ""}`
+            }
+            onClick={() => isMobile && onClose?.()}
+          >
+            <RiShieldUserFill className="w-5 h-5" />
+            <span>Customer Service</span>
           </NavLink>
         </div>
 
         <div>
           <NavLink
-            to="/cs/withdrawlrequest"
+            to="/admin/adminWithdrawal"
             className={({ isActive }) =>
               `${linkStyles} ${isActive ? activeLinkStyles : ""}`
             }

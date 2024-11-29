@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { HiArrowRight } from "react-icons/hi";
 import { MdShoppingCart } from "react-icons/md";
 import { FaUsers, FaPenFancy, FaMoneyBillWave } from "react-icons/fa";
@@ -147,16 +147,37 @@ const metricsData = [
 ];
 
 const Dashboard = () => {
-  const [filter, setFilter] = useState("active");
+  const [writers, setWriters] = useState([]);
+  useEffect(() => {
+    const fetchCsDashboard = async () => {
+      setIsLoading(true);
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
 
-  const filteredWriters = sampleWriters.filter((writer) => {
-    if (filter === "all") return true;
-    return writer.status === filter;
-  });
+        const response = await fetch(admin_dashboard, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-  const handleFilterChange = (newFilter) => {
-    setFilter(newFilter);
-  };
+        if (!response.ok) {
+          throw new Error("Failed to fetch reminders");
+        }
+
+        const data = await response.json();
+        console.log(data.newWriters);
+
+        setWriters(data.newWriters);
+      } catch (error) {
+        console.error("Error fetching reminders:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCsDashboard();
+  }, []);
   return (
     <div className="w-full min-h-screen p-6 bg-gray-50">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-1 mb-3">
@@ -238,26 +259,50 @@ const Dashboard = () => {
           <HiArrowRight className="text-lg" />
         </div>
       </div>
-      <div className="mb-8">
-        <FilterButtons
-          activeFilter={filter}
-          onFilterChange={handleFilterChange}
-        />
-      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredWriters.length > 0 ? (
-          filteredWriters.map((writer) => (
-            <WriterCard
-              key={writer.id}
-              name={writer.name}
-              phoneNumber={writer.phoneNumber}
-              status={writer.status}
-              pic={writer.pic}
-            />
-          ))
+        {writers.length > 0 ? (
+          <div className="col-span-1 md:col-span-2 lg:col-span-3  p-4 rounded-lg ">
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="text-gray-500 ">
+                    <th className="border-b-2 pl-10 py-4 text-left">Name</th>
+                    <th className="border-b-2 px-4 py-4 text-left">Subject</th>
+                    <th className="border-b-2 px-4 py-4 text-left">
+                      Phone Number
+                    </th>
+                    <th className="border-b-2 px-4 py-4 text-left">Email</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {writers.map((item, index) => (
+                    <tr key={index} className="hover:bg-gray-50">
+                      <td className="border-b px-4 py-3 text-left">
+                        <div className="flex items-center gap-3">
+                          <img
+                            src="https://static.vecteezy.com/system/resources/previews/025/220/125/non_2x/picture-a-captivating-scene-of-a-tranquil-lake-at-sunset-ai-generative-photo.jpg"
+                            className="w-10 h-10 rounded-full object-cover"
+                            alt={`${item.firstName} ${item.lastName}`}
+                          />
+                          <span>{`${item.firstName} ${item.lastName}`}</span>
+                        </div>
+                      </td>
+                      <td className="border-b px-4 py-3">
+                        {item.catagory || "N/A"}
+                      </td>
+                      <td className="border-b px-4 py-3">
+                        {item.phone || "N/A"}
+                      </td>
+                      <td className="border-b px-4 py-3">{item.email}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         ) : (
-          <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center p-4 ">
+          <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center p-4">
             <p className="text-gray-800">No data to show</p>
           </div>
         )}
@@ -265,28 +310,65 @@ const Dashboard = () => {
       <div>
         <div className="flex items-center justify-between w-[60%] gap-10 mt-4">
           <h2 className="text-2xl font-semibold">Customer Service</h2>
-          <button className="bg-[#5d5fef] text-white py-2 px-4 rounded-lg flex gap-2 items-center">
-            <FaUsers />
-            <span>Create +</span>
-          </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {sampleCS.length > 0 ? (
-            sampleCS.map((writer) => (
-              <CsCard
-                key={writer.id}
-                name={writer.name}
-                phoneNumber={writer.phoneNumber}
-                status={writer.status}
-                pic={writer.pic}
-              />
-            ))
-          ) : (
-            <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center p-4 ">
-              <p className="text-gray-800">No data to show</p>
-            </div>
-          )}
+        <div className="min-h-96 bg-white">
+          <table className="min-w-full">
+            <thead>
+              <tr className="w-32 text-gray-400">
+                <th className="border-b-2 pl-10 py-4 text-left">Name</th>
+
+                <th className="border-b-2 px-4 py-4">Phone Number</th>
+                <th className="border-b-2 px-4 py-4">Email</th>
+                <th className="border-b-2 px-4 py-4">Locations</th>
+                <th className="border-b-2 px-4 py-4 text-left">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {writers.length > 0 ? (
+                currentItems.map((item, index) => (
+                  <tr key={index}>
+                    <td className="border-b-2 px-4 py-3 text-center border-gray-200">
+                      <div className="flex justify-start items-center gap-3">
+                        <img
+                          src="https://static.vecteezy.com/system/resources/previews/025/220/125/non_2x/picture-a-captivating-scene-of-a-tranquil-lake-at-sunset-ai-generative-photo.jpg"
+                          className="w-8 h-8 rounded-full object-cover"
+                          alt={item.name}
+                        />
+                        <span>{highlightText(item.name, search)}</span>
+                      </div>
+                    </td>
+
+                    <td className="border-b-2 px-4 py-3 text-center border-gray-200">
+                      {highlightText(item.phone, search)}
+                    </td>
+                    <td className="border-b-2 px-4 py-3 text-center border-gray-200">
+                      {highlightText(item.email, search)}
+                    </td>
+                    <td className="border-b-2 px-4 py-3 text-center border-gray-200">
+                      {highlightText(item.country, search)}
+                    </td>
+                    <td className="border-b-2 px-0 py-3 text-center border-gray-200 flex items-center">
+                      <button className="rounded-lg m-1 flex items-center  border text-sm border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-200 hover:cursor-pointer px-3 py-1">
+                        Login
+                      </button>
+                      <button className="px-3 py-1 rounded-lg m-1  flex items-center border  text-sm border-gray-500 text-gray-700 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer">
+                        Disable
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="6" className="h-64 border px-4 py-2">
+                    <div className="flex items-center justify-center h-full text-gray-500">
+                      No data to display
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

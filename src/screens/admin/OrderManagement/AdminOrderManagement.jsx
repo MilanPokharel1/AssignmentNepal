@@ -1,40 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ImSearch } from "react-icons/im";
 import { FaChevronDown } from "react-icons/fa";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
 import FilterButtons from "./components/FilterButtons"; // Ensure this component is implemented
 import OrderCard from "../Dashboard/components/OrderCard";
+import { get_all_orders } from "../../../api/Api";
 
 const AdminOrderManagement = () => {
-  const assignmentsData = [
-    {
-      _id: "1",
-      assignmentTitle: "It should be relatively short, but still management.",
-      status: "Pending",
-      totalAmount: 15000,
-      payments: [{ paidAmount: 7000 }],
-      deadline: "2023-10-06",
-      writerName: "Sachet Khatiwada",
-      writerPic: "path_to_image.jpg",
-    },
-    {
-      _id: "2",
-      assignmentTitle: "Another assignment with similar details.",
-      status: "Pending",
-      totalAmount: 15000,
-      payments: [{ paidAmount: 7000 }],
-      deadline: "2023-10-06",
-      writerName: "Sachet Khatiwada",
-      writerPic: "path_to_image.jpg",
-    },
-  ];
-
   const [activeFilter, setActiveFilter] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("Newest");
   const [showOptions, setShowOptions] = useState(false);
+  const [assignments, setAssignments] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Initialize assignments with assignmentsData
-  const [assignments, setAssignments] = useState(assignmentsData);
+  useEffect(() => {
+    const fetchOrders = async () => {
+      setIsLoading(true);
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
+
+        const response = await fetch(get_all_orders, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch orders");
+        }
+
+        const data = await response.json();
+        setAssignments(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
 
   const handleFilterChange = (filter) => {
     setActiveFilter(filter);
@@ -89,6 +98,7 @@ const AdminOrderManagement = () => {
       const search = normalizeText(searchTerm);
       return (
         normalizeText(assignment.assignmentTitle).includes(search) ||
+        normalizeText(assignment.instagramTitle).includes(search) ||
         normalizeText(assignment.deadline).includes(search) ||
         (assignment.writerName &&
           normalizeText(assignment.writerName).includes(search))
@@ -114,6 +124,11 @@ const AdminOrderManagement = () => {
 
   return (
     <div className="flex-1 p-6">
+      {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
+          <CircularProgress />
+        </div>
+      )}
       <div className="flex flex-row-reverse px-4 mt-5 w-full md:w-[85%]">
         <div className="flex justify-between items-center mr-5 gap-3">
           <div className="relative">
@@ -167,7 +182,7 @@ const AdminOrderManagement = () => {
           )}
         </div>
 
-        <div className="flex flex-wrap gap-4">
+        <div className="flex flex-wrap gap-4 mt-5">
           {sortedAssignments.length > 0 ? (
             sortedAssignments.map((assignment) => (
               <OrderCard
@@ -175,6 +190,10 @@ const AdminOrderManagement = () => {
                 {...assignment}
                 assignmentTitle={highlightText(
                   assignment.assignmentTitle,
+                  searchTerm
+                )}
+                instagramTitle={highlightText(
+                  assignment.instagramTitle,
                   searchTerm
                 )}
                 writerName={

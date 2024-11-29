@@ -1,208 +1,63 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaSearch } from "react-icons/fa";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { cs_writers } from "../../../api/Api";
+import { FaUsers } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
 
-const data = [
-  {
-    name: "Jane Cooper",
-    subject: "Microsoft",
-    phone: "(225) 555-0118",
-    email: "jane@microsoft.com",
-    country: "United States",
-    status: "Active",
-  },
-  {
-    name: "Floyd Miles",
-    subject: "Yahoo",
-    phone: "(205) 555-0100",
-    email: "floyd@yahoo.com",
-    country: "Kiribati",
-    status: "Inactive",
-  },
-  {
-    name: "Ronald Richards",
-    subject: "Adobe",
-    phone: "(302) 555-0107",
-    email: "ronald@adobe.com",
-    country: "Israel",
-    status: "Inactive",
-  },
-  {
-    name: "Marvin McKinney",
-    subject: "Tesla",
-    phone: "(252) 555-0126",
-    email: "marvin@tesla.com",
-    country: "Iran",
-    status: "Active",
-  },
-  {
-    name: "Jerome Bell",
-    subject: "Google",
-    phone: "(629) 555-0129",
-    email: "jerome@google.com",
-    country: "Reunion",
-    status: "Active",
-  },
-  {
-    name: "Kathryn Murphy",
-    subject: "Microsoft",
-    phone: "(406) 555-0120",
-    email: "kathryn@microsoft.com",
-    country: "Curacao",
-    status: "Active",
-  },
-  {
-    name: "Jacob Jones",
-    subject: "Yahoo",
-    phone: "(208) 555-0112",
-    email: "jacob@yahoo.com",
-    country: "Brazil",
-    status: "Active",
-  },
-  {
-    name: "Kristin Watson",
-    subject: "Facebook",
-    phone: "(704) 555-0127",
-    email: "kristin@facebook.com",
-    country: "Aland Islands",
-    status: "Inactive",
-  },
-  {
-    name: "Jane Cooper",
-    subject: "Microsoft",
-    phone: "(225) 555-0118",
-    email: "jane@microsoft.com",
-    country: "United States",
-    status: "Active",
-  },
-  {
-    name: "Floyd Miles",
-    subject: "Yahoo",
-    phone: "(205) 555-0100",
-    email: "floyd@yahoo.com",
-    country: "Kiribati",
-    status: "Inactive",
-  },
-  {
-    name: "Ronald Richards",
-    subject: "Adobe",
-    phone: "(302) 555-0107",
-    email: "ronald@adobe.com",
-    country: "Israel",
-    status: "Inactive",
-  },
-  {
-    name: "Marvin McKinney",
-    subject: "Tesla",
-    phone: "(252) 555-0126",
-    email: "marvin@tesla.com",
-    country: "Iran",
-    status: "Active",
-  },
-  {
-    name: "Jerome Bell",
-    subject: "Google",
-    phone: "(629) 555-0129",
-    email: "jerome@google.com",
-    country: "Reunion",
-    status: "Active",
-  },
-  {
-    name: "Kathryn Murphy",
-    subject: "Microsoft",
-    phone: "(406) 555-0120",
-    email: "kathryn@microsoft.com",
-    country: "Curacao",
-    status: "Active",
-  },
-  {
-    name: "Jacob Jones",
-    subject: "Yahoo",
-    phone: "(208) 555-0112",
-    email: "jacob@yahoo.com",
-    country: "Brazil",
-    status: "Active",
-  },
-  {
-    name: "Kristin Watson",
-    subject: "Facebook",
-    phone: "(704) 555-0127",
-    email: "kristin@facebook.com",
-    country: "Aland Islands",
-    status: "Inactive",
-  },
-  {
-    name: "Jane Cooper",
-    subject: "Microsoft",
-    phone: "(225) 555-0118",
-    email: "jane@microsoft.com",
-    country: "United States",
-    status: "Active",
-  },
-  {
-    name: "Floyd Miles",
-    subject: "Yahoo",
-    phone: "(205) 555-0100",
-    email: "floyd@yahoo.com",
-    country: "Kiribati",
-    status: "Inactive",
-  },
-  {
-    name: "Ronald Richards",
-    subject: "Adobe",
-    phone: "(302) 555-0107",
-    email: "ronald@adobe.com",
-    country: "Israel",
-    status: "Inactive",
-  },
-  {
-    name: "Marvin McKinney",
-    subject: "Tesla",
-    phone: "(252) 555-0126",
-    email: "marvin@tesla.com",
-    country: "Iran",
-    status: "Active",
-  },
-  {
-    name: "Jerome Bell",
-    subject: "Google",
-    phone: "(629) 555-0129",
-    email: "jerome@google.com",
-    country: "Reunion",
-    status: "Active",
-  },
-  {
-    name: "Kathryn Murphy",
-    subject: "Microsoft",
-    phone: "(406) 555-0120",
-    email: "kathryn@microsoft.com",
-    country: "Curacao",
-    status: "Active",
-  },
-  {
-    name: "Jacob Jones",
-    subject: "Yahoo",
-    phone: "(208) 555-0112",
-    email: "jacob@yahoo.com",
-    country: "Brazil",
-    status: "Active",
-  },
-  {
-    name: "sachet Khatiwada",
-    subject: "Facebook",
-    phone: "(704) 555-0127",
-    email: "kristin@facebook.com",
-    country: "Aland Islands",
-    status: "Inactive",
-  },
-];
 
 const AdminWritersManagement = () => {
   const [filter, setFilter] = useState("All");
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(30);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(null);
+  const [writers, setWriters] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
+
+  useEffect(() => {
+    const fetchwriters = async () => {
+      setIsLoading(true);
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
+
+        const response = await fetch(cs_writers, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch reminders");
+        }
+
+        const data = await response.json();
+        console.log(data)
+        setWriters(data.writers); // Assuming the key is 'remainder', set it properly
+      } catch (error) {
+        console.error("Error fetching reminders:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchwriters();
+  }, []);
+
+  const [showPopup, setShowPopup] = useState(false);
+
+
+  const handleTogglePopup = (item, index) => {
+    setSelectedItem(item);
+    console.log(index)
+    setSelectedIndex(index);
+    setIsPopupOpen(!isPopupOpen);
+  };
   const highlightText = (text, searchTerm) => {
     if (!searchTerm) return text;
     const parts = text.toString().split(new RegExp(`(${searchTerm})`, "gi"));
@@ -217,7 +72,7 @@ const AdminWritersManagement = () => {
     );
   };
 
-  const filteredData = data.filter((item) => {
+  const filteredData = writers.filter((item) => {
     if (filter !== "All" && item.status !== filter) return false;
     if (
       search &&
@@ -275,11 +130,10 @@ const AdminWritersManagement = () => {
         <button
           key={i}
           onClick={() => setCurrentPage(i)}
-          className={`px-3 py-1 mx-0.5 rounded ${
-            currentPage === i
-              ? "bg-blue-600 text-white"
-              : "bg-gray-100 hover:bg-gray-200"
-          }`}
+          className={`px-3 py-1 mx-0.5 rounded ${currentPage === i
+            ? "bg-blue-600 text-white"
+            : "bg-gray-100 hover:bg-gray-200"
+            }`}
         >
           {i}
         </button>
@@ -310,49 +164,14 @@ const AdminWritersManagement = () => {
 
   return (
     <div className="min-h-screen p-4">
+       {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
+          <CircularProgress />
+        </div>
+      )}
       <h1 className="text-2xl font-bold mb-4 text-center">Writers</h1>
-      <div className="flex justify-between items-center mb-4">
-        <div className="flex space-x-4">
-          <button
-            onClick={() => setFilter("All")}
-            className={`px-4 py-2 rounded-md ${
-              filter === "All" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
-            }`}
-          >
-            All
-          </button>
-          <button
-            onClick={() => setFilter("Active")}
-            className={`px-4 py-2 rounded-md ${
-              filter === "Active" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
-            }`}
-          >
-            Active
-          </button>
-          <button
-            onClick={() => setFilter("Inactive")}
-            className={`px-4 py-2 rounded-md ${
-              filter === "Inactive" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
-            }`}
-          >
-            Inactive
-          </button>
-        </div>
-        <div className="flex items-center space-x-2">
-          <label>Items per page:</label>
-          <select
-            value={itemsPerPage}
-            onChange={handleItemsPerPageChange}
-            className="border border-[#7072f0] rounded p-1"
-          >
-            <option value={10}>10</option>
-            <option value={20}>20</option>
-            <option value={30}>30</option>
-            <option value={50}>50</option>
-          </select>
-        </div>
-      </div>
-      <div className="flex justify-end mb-6">
+
+      <div className="flex justify-between items-center mb-6 ">
         <div className="relative w-[60%] max-w-lg">
           <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
           <input
@@ -363,6 +182,53 @@ const AdminWritersManagement = () => {
             className="pl-10 pr-4 py-2 w-full text-gray-700 placeholder-gray-500 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
+        <div className="flex gap-11 items-center mr-14">
+          <button
+            className="bg-[#5d5fef] text-white py-2 px-4 rounded-lg flex gap-2 items-center"
+            onClick={() => setShowPopup(true)}
+          >
+            <FaUsers />
+            <span>Create writer +</span>
+          </button>
+          <div className="flex items-center space-x-2">
+            <label>Items per page:</label>
+            <select
+              value={itemsPerPage}
+              onChange={handleItemsPerPageChange}
+              className="border border-[#7072f0] rounded p-1"
+            >
+              <option value={10}>10</option>
+              <option value={20}>20</option>
+              <option value={30}>30</option>
+              <option value={50}>50</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div className="flex justify-start items-center mb-4">
+        <div className="flex space-x-4">
+          <button
+            onClick={() => setFilter("All")}
+            className={`px-4 py-2 rounded-md ${filter === "All" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
+              }`}
+          >
+            All
+          </button>
+          <button
+            onClick={() => setFilter("Active")}
+            className={`px-4 py-2 rounded-md ${filter === "Active" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
+              }`}
+          >
+            Active
+          </button>
+          <button
+            onClick={() => setFilter("Inactive")}
+            className={`px-4 py-2 rounded-md ${filter === "Inactive" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
+              }`}
+          >
+            Inactive
+          </button>
+        </div>
       </div>
       <div className="min-h-96 bg-white">
         <table className="min-w-full">
@@ -372,8 +238,10 @@ const AdminWritersManagement = () => {
               <th className="border-b-2 px-4 py-4">Subject</th>
               <th className="border-b-2 px-4 py-4">Phone Number</th>
               <th className="border-b-2 px-4 py-4">Email</th>
-              <th className="border-b-2 px-4 py-4">Country</th>
-              <th className="border-b-2 px-4 py-4">Status</th>
+
+              <th className="border-b-2 pl-20 py-4 flex justify-start">
+                Action
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -391,7 +259,7 @@ const AdminWritersManagement = () => {
                     </div>
                   </td>
                   <td className="border-b-2 px-4 py-3 text-center border-gray-200">
-                    {highlightText(item.subject, search)}
+                    {highlightText(item.catagory, search)}
                   </td>
                   <td className="border-b-2 px-4 py-3 text-center border-gray-200">
                     {highlightText(item.phone, search)}
@@ -399,28 +267,73 @@ const AdminWritersManagement = () => {
                   <td className="border-b-2 px-4 py-3 text-center border-gray-200">
                     {highlightText(item.email, search)}
                   </td>
-                  <td className="border-b-2 px-4 py-3 text-center border-gray-200">
-                    {highlightText(item.country, search)}
-                  </td>
-                  <td className="border-b-2 px-4 py-3 text-center border-gray-200">
+
+                  <td className="border-b-2 border-gray-200 py-3 text-center flex gap-4 justify-center">
                     <span
                       className={`
-                        inline-block
-                        min-w-20
-                        px-3 
-                        py-1 
-                        text-sm
-                        font-medium
-                        rounded-lg
-                        border-2
-                        ${
-                          item.status === "Active"
-                            ? "border-emerald-700 text-emerald-700 bg-emerald-50"
-                            : "border-red-700 text-red-700 bg-red-50"
+      inline-block
+      min-w-20
+      px-3 
+      py-1 
+      text-sm
+      font-medium
+      rounded-lg
+      border-2
+      hover:cursor-pointer
+      ${item.accountStatus === "enabled"
+                          ? item.status === "Active"
+                            ? "border-emerald-700 text-emerald-700 bg-emerald-50 hover:bg-emerald-200"
+                            : "border-red-700 text-red-700 bg-red-50 hover:bg-red-200"
+                          : "border-red-400 text-red-400 bg-gray-100 opacity-50 cursor-not-allowed"
                         }
-                      `}
+    `}
+                      onClick={
+                        item.accountStatus === "enabled" ? () => { } : null
+                      }
                     >
                       {highlightText(item.status, search)}
+                    </span>
+                    <span
+                      className={`
+      inline-block
+      min-w-20
+      px-3 
+      py-1 
+      text-sm
+      font-medium
+      rounded-lg
+      border-2
+      ${item.accountStatus === "enabled"
+                          ? "border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-200 hover:cursor-pointer"
+                          : "border-blue-300 text-blue-400 bg-gray-100 opacity-50 cursor-not-allowed"
+                        }
+    `}
+                      onClick={
+                        item.accountStatus === "enabled" ? () => { } : null
+                      }
+                    >
+                      LogIn
+                    </span>
+                    <span
+                      onClick={() => handleTogglePopup(item, index)}
+                      className={`
+      inline-block
+      min-w-20
+      px-3 
+      py-1 
+      text-sm
+      font-medium
+      rounded-lg
+      border-2
+      transition-colors
+      duration-200
+      ${item.accountStatus === "enabled"
+                          ? "border-gray-500 text-gray-700 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer"
+                          : "border-blue-500 text-white bg-blue-500 hover:bg-blue-400 hover:cursor-pointer"
+                        }
+    `}
+                    >
+                      {item.accountStatus === "enabled" ? "Disable" : "Enable"}
                     </span>
                   </td>
                 </tr>
@@ -456,6 +369,171 @@ const AdminWritersManagement = () => {
           <MdChevronRight className="w-5 h-5" />
         </button>
       </div>
+      {/* Popup */}
+      {isPopupOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30">
+          <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              Confirm Action
+            </h2>
+            <p className="text-gray-600 mb-6">
+              {selectedItem.accountStatus === "enabled"
+                ? `Are you sure you want to disable ${selectedItem.name}? `
+                : `Are you sure you want to enable ${selectedItem.name}?`}
+            </p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={handleTogglePopup}
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  // Implement the actual enable/disable logic here
+                  handleAccountStatusChange(selectedItem, selectedIndex);
+                  handleTogglePopup();
+                }}
+                className={`
+            px-4 
+            py-2 
+            rounded-lg 
+            transition-colors
+            ${selectedItem.accountStatus === "enabled"
+                    ? "bg-red-500 text-white hover:bg-red-600"
+                    : "bg-blue-500 text-white hover:bg-blue-600"
+                  }
+          `}
+              >
+                {selectedItem.accountStatus === "enabled"
+                  ? "Disable"
+                  : "Enable"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl sm:max-w-2xl relative">
+            {/* Close Button */}
+            <button
+              onClick={() => setShowPopup(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 transition duration-300"
+              aria-label="Close popup"
+            >
+              <IoMdClose size={24} />
+            </button>
+
+            {/* Form Header */}
+            <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
+              Create Writer
+            </h2>
+
+            {/* Input Fields */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <label
+                  htmlFor="firstName"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  First Name
+                </label>
+                <input
+                  id="firstName"
+                  type="text"
+                  placeholder="Enter your first name"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="lastName"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Last Name
+                </label>
+                <input
+                  id="lastName"
+                  type="text"
+                  placeholder="Enter your last name"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200"
+                />
+              </div>
+            </div>
+
+            {/* Phone Number, Email, and Address Fields */}
+            <div className="mt-6">
+              <label
+                htmlFor="phone"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Phone Number
+              </label>
+              <input
+                id="phone"
+                type="tel"
+                placeholder="Enter phone number"
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200 text-lg"
+              />
+            </div>
+
+            <div className="mt-4">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                placeholder="Enter email address"
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200 text-lg"
+              />
+            </div>
+
+            <div className="mt-4">
+              <label
+                htmlFor="address"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Address
+              </label>
+              <input
+                id="address"
+                type="text"
+                placeholder="Enter your address"
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200 text-lg"
+              />
+            </div>
+
+            {/* Categories Input */}
+            <div className="mt-6">
+              <label
+                htmlFor="categories"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Category
+              </label>
+              <input
+                id="categories"
+                type="text"
+                placeholder="Enter categories"
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200"
+              />
+            </div>
+
+            {/* Submit Button */}
+            <button
+              onClick={() => setShowPopup(false)}
+              className="bg-[#5d5fef] text-white w-40 py-3 mt-6 rounded-lg hover:bg-[#4b4dcc] transition duration-300 mx-auto block"
+            >
+              Create
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

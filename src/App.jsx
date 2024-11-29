@@ -35,6 +35,9 @@ import WriterOrder from "./screens/writer/WriterOrder/WriterOrder";
 import WriterMyTask from "./screens/writer/WriterMyTask/WriterMyTask";
 import WriterRemainder from "./screens/writer/WriterRemainder/WriterRemainder";
 import WriterPayments from "./screens/writer/WriterPayments/WriterPayments";
+import WriterView from "./screens/writer/WriterView/WriterView";
+import AdminCS from "./screens/admin/AdminCS/AdminCS";
+import AdminWithdrawal from "./screens/admin/AdminWithdrawal/AdminWithdrawal";
 
 function App() {
   return (
@@ -67,6 +70,8 @@ function App() {
               path="adminwritermanagement"
               element={<AdminWritersManagement />}
             />
+            <Route path="adminCS" element={<AdminCS />} />
+            <Route path="adminWithdrawal" element={<AdminWithdrawal/>} />
             <Route path="adminreminders" element={<AdminReminders />} />
             <Route path="adminpayments" element={<AdminPayments />} />
           </Route>
@@ -92,6 +97,7 @@ function App() {
             <Route path="writermytask" element={<WriterMyTask />} />
             <Route path="writerRemainder" element={<WriterRemainder />} />
             <Route path="writerPayments" element={<WriterPayments />} />
+            <Route path="writerView/:orderId" element={<WriterView />} />
           </Route>
         </Routes>
       </Router>

@@ -133,7 +133,7 @@ const data = [
   },
 ];
 
-const AdminUserManagement = () => {
+const AdminCS = () => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(30);
@@ -263,7 +263,7 @@ const AdminUserManagement = () => {
             onClick={() => setShowPopup(true)}
           >
             <FaUsers />
-            <span>Create Client+</span>
+            <span>Create Customer Service+</span>
           </button>
           <div className="flex items-center space-x-2">
             <label>Items per page:</label>
@@ -372,7 +372,7 @@ const AdminUserManagement = () => {
 
             {/* Form Header */}
             <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
-              Create Client
+              Create Customer Service
             </h2>
 
             {/* Input Fields */}
@@ -467,4 +467,4 @@ const AdminUserManagement = () => {
   );
 };
 
-export default AdminUserManagement;
+export default AdminCS;

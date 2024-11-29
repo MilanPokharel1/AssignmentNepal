@@ -18,7 +18,7 @@ const TaskCard = ({ task }) => {
     ongoing: "bg-blue-100 text-blue-600", // Blue for tasks in progress
     submitted: "bg-yellow-100 text-yellow-600", // Yellow for tasks submitted but not finalized
     completed: "bg-green-100 text-green-600", // Green for completed tasks
-    cancelled: "bg-red-100 text-red-600", 
+    cancelled: "bg-red-100 text-red-600",
   };
 
   return (
@@ -82,7 +82,7 @@ const TaskCard = ({ task }) => {
         </div>
         <div>
           <button
-            onClick={() => navigate(`/client/orders/view/${_id}`)}
+            onClick={() => navigate(`/writer/writerView/${_id}`)}
             className="px-3 py-1 text-sm text-white bg-[#9E9FEE] hover:bg-purple-400 rounded-md transition-colors"
           >
             View

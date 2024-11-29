@@ -18,10 +18,6 @@ const WriterCard = ({
   const navigate = useNavigate();
   paidAmount = payments[0].paidAmount;
 
-  const handleView = () => {
-    navigate(`/client/orders/view/${_id}`);
-  };
-
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
   };
@@ -86,9 +82,7 @@ const WriterCard = ({
             </button>
           </div>
         ) : (
-          <span className="text-sm font-light">
-            Already Assigned
-          </span>
+          <span className="text-sm font-light">Already Assigned</span>
         )}
         <div>
           <button
@@ -98,6 +92,7 @@ const WriterCard = ({
                 : "bg-gray-300 cursor-not-allowed"
             }`}
             disabled={status !== "Pending"}
+            onClick={() => navigate(`/writer/writerView/${_id}`)}
           >
             View
           </button>
