@@ -5,6 +5,7 @@ import Card from "./components/Card";
 import WriterCard from "./components/WriterCard";
 import TaskCard from "./components/TaskCard";
 import { HiArrowRight } from "react-icons/hi";
+
 const assignments = [
   {
     _id: "1",

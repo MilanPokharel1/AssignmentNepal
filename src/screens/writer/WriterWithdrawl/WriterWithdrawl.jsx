@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import WithdrawalCard from "./components/WithdrawalCard";
+import { FiX } from "react-icons/fi";
 // Dummy data
 const withdrawalData = [
   {
@@ -43,7 +44,7 @@ const FilterButton = ({ label, active, onClick }) => (
 
 const WriterWithdrawal = () => {
   const [activeFilter, setActiveFilter] = useState("All");
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   // Filter options
   const filters = ["All", "Approved", "Declined"];
 
@@ -52,7 +53,7 @@ const WriterWithdrawal = () => {
     if (activeFilter === "All") return true;
     return item.status.toLowerCase() === activeFilter.toLowerCase();
   });
-
+  const toggleModal = () => setIsModalOpen(!isModalOpen);
   return (
     <div className="w-full min-h-screen p-6 bg-gray-50">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
@@ -66,7 +67,10 @@ const WriterWithdrawal = () => {
             />
           ))}
         </div>
-        <button className="px-4 py-3 bg-indigo-600 text-white rounded-lg flex items-center gap-2 text-sm">
+        <button
+          className="px-4 py-3 bg-indigo-600 text-white rounded-lg flex items-center gap-2 text-sm"
+          onClick={toggleModal}
+        >
           <span>+ Withdrawal</span>
         </button>
       </div>
@@ -76,6 +80,79 @@ const WriterWithdrawal = () => {
           <WithdrawalCard key={item.id} item={item} />
         ))}
       </div>
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white rounded-lg p-6 w-[40rem] relative">
+            {/* Close Button */}
+            <button
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+              onClick={toggleModal}
+            >
+              <FiX size={24} />
+            </button>
+
+            <h2 className="text-lg font-semibold mb-4">Basic Information</h2>
+            <form className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Name</label>
+                  <input
+                    type="text"
+                    placeholder="Type Here"
+                    className="w-full px-3 py-2 border rounded-lg"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">
+                    Phone Number
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Type Here"
+                    className="w-full px-3 py-2 border rounded-lg"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">E-mail</label>
+                <input
+                  type="email"
+                  placeholder="Type Here"
+                  className="w-full px-3 py-2 border rounded-lg"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Address
+                </label>
+                <input
+                  type="text"
+                  placeholder="Type Here"
+                  className="w-full px-3 py-2 border rounded-lg"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Withdrawal Amount
+                </label>
+                <input
+                  type="number"
+                  placeholder="Type Here"
+                  className="w-full px-3 py-2 border rounded-lg"
+                />
+              </div>
+              <div className="w-full flex justify-center">
+                <button
+                  type="submit"
+                  className="w-32 bg-indigo-600 text-white py-2 rounded-lg"
+                >
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

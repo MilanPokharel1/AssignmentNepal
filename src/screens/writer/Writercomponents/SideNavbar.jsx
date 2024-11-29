@@ -5,7 +5,7 @@ import { FaWallet, FaBell, FaCog, FaSignOutAlt, FaTimes } from "react-icons/fa";
 import logo from "../../../assets/random-logo.png";
 import { RiPieChart2Fill } from "react-icons/ri";
 import { MdShoppingCart } from "react-icons/md";
-
+import { FaPenAlt } from "react-icons/fa";
 import { FaMoneyBillWave } from "react-icons/fa6";
 
 const SideNavbar = ({ onClose, isMobile }) => {
@@ -88,7 +88,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
             }
             onClick={() => isMobile && onClose?.()}
           >
-            <FaBell className="w-5 h-5" />
+            <FaPenAlt className="w-5 h-5" />
             <span>Task</span>
           </NavLink>
         </div>
