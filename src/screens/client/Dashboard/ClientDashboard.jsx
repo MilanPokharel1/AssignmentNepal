@@ -25,7 +25,6 @@ const Dashboard = () => {
 
   const theme = themes[currentTheme];
 
-
   const countAssignments = () => {
     const totalAssignments = assignments.length;
 
@@ -49,7 +48,12 @@ const Dashboard = () => {
     };
   };
 
-  const { totalAssignments, pendingAssignments, activeAssignments, completedAssignments } = countAssignments();
+  const {
+    totalAssignments,
+    pendingAssignments,
+    activeAssignments,
+    completedAssignments,
+  } = countAssignments();
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -135,10 +139,13 @@ const Dashboard = () => {
       };
     };
 
-    const { totalAssignments, pendingAssignments, activeAssignments, completedAssignments } = countAssignments();
-
-  }, [assignments])
-
+    const {
+      totalAssignments,
+      pendingAssignments,
+      activeAssignments,
+      completedAssignments,
+    } = countAssignments();
+  }, [assignments]);
 
   const handleFilterChange = (filter) => {
     setActiveFilter(filter);
@@ -163,12 +170,12 @@ const Dashboard = () => {
           number={`${totalAssignments}`}
           theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
         />
-          <Card
-            Icon={MdShoppingCart}
-            heading="Pending Orders"
-            number={`${pendingAssignments}`}
-            theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
-          />
+        <Card
+          Icon={MdShoppingCart}
+          heading="Pending Orders"
+          number={`${pendingAssignments}`}
+          theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
+        />
         <Card
           Icon={IoBookSharp}
           heading="Active Assignment"
@@ -198,11 +205,15 @@ const Dashboard = () => {
       </div>
       <div className="flex flex-wrap gap-4 mt-4">
         {filteredAssignments.length > 0 ? (
-          filteredAssignments.slice(0, 2).map((assignment, index) => (
-            <AssignmentCard key={index} {...assignment} />
-          ))
+          filteredAssignments
+            .slice(0, 2)
+            .map((assignment, index) => (
+              <AssignmentCard key={index} {...assignment} />
+            ))
         ) : (
-          <p className="text-gray-500 h-[5rem] py-[5rem] text-center ml-[35%] items-center">No data to show</p>
+          <p className="text-gray-500 h-[5rem] py-[5rem] text-center ml-[35%] items-center">
+            No data to show
+          </p>
         )}
       </div>
 
@@ -218,7 +229,7 @@ const Dashboard = () => {
           </div>
         </div>
         <div className="w-full md:w-[81%]">
-          {paymentData.length > 0 &&
+          {paymentData.length > 0 ? (
             paymentData.map((payment, index) => (
               <PaymentCard
                 key={index}
@@ -229,7 +240,12 @@ const Dashboard = () => {
                 remarks={payment.remark}
                 amount={`Rs ${payment.paidAmount}`}
               />
-            ))}
+            ))
+          ) : (
+            <p className="text-gray-500 h-[5rem] py-[5rem] text-center  items-center">
+              No data to show
+            </p>
+          )}
         </div>
       </div>
     </div>

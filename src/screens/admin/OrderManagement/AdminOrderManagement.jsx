@@ -7,7 +7,6 @@ import FilterButtons from "./components/FilterButtons"; // Ensure this component
 import OrderCard from "../Dashboard/components/OrderCard";
 import { get_all_orders } from "../../../api/Api";
 
-
 import { IoBookSharp, IoCheckmarkSharp } from "react-icons/io5";
 import { MdShoppingCart } from "react-icons/md";
 
@@ -81,15 +80,8 @@ const AdminOrderManagement = () => {
         No Results Found
       </h3>
       <p className="text-gray-500 text-center max-w-md">
-        We couldn't find any payments matching "{searchTerm}". Try adjusting
-        your search terms or filters.
+        We couldn't find any orders.
       </p>
-      <button
-        onClick={() => setSearchTerm("")}
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-      >
-        Clear Search
-      </button>
     </div>
   );
 
@@ -143,20 +135,34 @@ const AdminOrderManagement = () => {
         <Card
           Icon={MdShoppingCart}
           heading="Pending Orders"
-          number={`${assignments.filter((assignment) => assignment.status === "pending").length}`}
+          number={`${
+            assignments.filter((assignment) => assignment.status === "pending")
+              .length
+          }`}
           theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
         />
         <Card
           Icon={IoBookSharp}
           heading="Active Assignment"
-          number={`${assignments.filter((assignment) => assignment.status === "ongoing" || assignment.status === "approved" || assignment.status === "submitted").length}`}
+          number={`${
+            assignments.filter(
+              (assignment) =>
+                assignment.status === "ongoing" ||
+                assignment.status === "approved" ||
+                assignment.status === "submitted"
+            ).length
+          }`}
           theme={{ bgColor: "bg-yellow-100", iconBgColor: "bg-orange-400" }}
         />
 
         <Card
           Icon={IoCheckmarkSharp}
           heading="Completed"
-          number={`${assignments.filter((assignment) => assignment.status === "completed").length}`}
+          number={`${
+            assignments.filter(
+              (assignment) => assignment.status === "completed"
+            ).length
+          }`}
           theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
         />
       </div>

@@ -8,16 +8,12 @@ import OrderCard from "../csDashboard/components/OrderCard";
 import { get_all_orders } from "../../../api/Api";
 
 const OrderManagement = () => {
-  
-
   const [activeFilter, setActiveFilter] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("Newest");
   const [showOptions, setShowOptions] = useState(false);
   const [assignments, setAssignments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
-
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -48,7 +44,6 @@ const OrderManagement = () => {
 
     fetchOrders();
   }, []);
-
 
   const handleFilterChange = (filter) => {
     setActiveFilter(filter);
@@ -82,15 +77,8 @@ const OrderManagement = () => {
         No Results Found
       </h3>
       <p className="text-gray-500 text-center max-w-md">
-        We couldn't find any payments matching "{searchTerm}". Try adjusting
-        your search terms or filters.
+        We couldn't find any orders.
       </p>
-      <button
-        onClick={() => setSearchTerm("")}
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-      >
-        Clear Search
-      </button>
     </div>
   );
 
@@ -103,7 +91,7 @@ const OrderManagement = () => {
       const search = normalizeText(searchTerm);
       return (
         normalizeText(assignment.assignmentTitle).includes(search) ||
-        normalizeText(assignment.instagramTitle).includes(search)||
+        normalizeText(assignment.instagramTitle).includes(search) ||
         normalizeText(assignment.deadline).includes(search) ||
         (assignment.writerName &&
           normalizeText(assignment.writerName).includes(search))
@@ -179,7 +167,6 @@ const OrderManagement = () => {
 
       <div className="mt-5">
         <div className="flex justify-between w-full md:w-[81%]">
-       
           {typeof FilterButtons !== "undefined" && (
             <FilterButtons
               activeFilter={activeFilter}
@@ -214,8 +201,6 @@ const OrderManagement = () => {
             <NoDataFound />
           )}
         </div>
-
-      
       </div>
     </div>
   );

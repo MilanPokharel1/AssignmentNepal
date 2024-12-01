@@ -8,16 +8,20 @@ const Client = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const checkSideNavVisibility = () => {
-      const mediaQuery = window.matchMedia("(min-width: 1000px)");
-      setIsSideNavVisible(mediaQuery.matches);
+    const mediaQuery = window.matchMedia("(min-width: 1159px)");
+
+    const checkSideNavVisibility = (event) => {
+      setIsSideNavVisible(event.matches);
     };
 
-    checkSideNavVisibility();
-    const mediaQuery = window.matchMedia("(min-width: 100px)");
+    // Set initial state
+    setIsSideNavVisible(mediaQuery.matches);
+
+    // Attach the listener
     mediaQuery.addEventListener("change", checkSideNavVisibility);
 
     return () => {
+      // Clean up the listener
       mediaQuery.removeEventListener("change", checkSideNavVisibility);
     };
   }, []);
@@ -25,9 +29,11 @@ const Client = () => {
   return (
     <div className="min-h-screen flex gap-2 bg-white">
       {/* Desktop Sidebar */}
-      <div className="w-0 SideNavHide:w-[19%] h-screen bg-gray-50 fixed invisible SideNavHide:visible">
-        <SideNavbar />
-      </div>
+      {isSideNavVisible && (
+        <div className="w-0 SideNavHide:w-[19%] h-screen bg-gray-50 fixed">
+          <SideNavbar />
+        </div>
+      )}
 
       {/* Mobile Sidebar */}
       {!isSideNavVisible && isMobileMenuOpen && (
@@ -47,7 +53,12 @@ const Client = () => {
         </div>
       )}
 
-      <div className="flex flex-1 flex-col SideNavHide:ml-[20%] ">
+      {/* Main Content */}
+      <div
+        className={`flex flex-1 flex-col ${
+          isSideNavVisible ? "SideNavHide:ml-[20%]" : ""
+        }`}
+      >
         <div className="h-[6rem] md:h-[4rem]">
           <TopNavbar
             notificationCount={19}

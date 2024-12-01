@@ -6,18 +6,21 @@ import TopNavbar from "./AdminComponents/TopNavbar";
 const Admin = () => {
   const [isSideNavVisible, setIsSideNavVisible] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
   useEffect(() => {
-    const checkSideNavVisibility = () => {
-      const mediaQuery = window.matchMedia("(min-width: 1159px)");
-      setIsSideNavVisible(mediaQuery.matches);
+    const mediaQuery = window.matchMedia("(min-width: 1159px)");
+
+    const checkSideNavVisibility = (event) => {
+      setIsSideNavVisible(event.matches);
     };
 
-    checkSideNavVisibility();
-    const mediaQuery = window.matchMedia("(min-width: 100px)");
+    // Set initial state
+    setIsSideNavVisible(mediaQuery.matches);
+
+    // Attach the listener
     mediaQuery.addEventListener("change", checkSideNavVisibility);
 
     return () => {
+      // Clean up the listener
       mediaQuery.removeEventListener("change", checkSideNavVisibility);
     };
   }, []);
