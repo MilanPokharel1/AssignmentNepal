@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Download, Loader, Loader2 } from "lucide-react";
 import { FolderIcon } from "@heroicons/react/solid";
-import { download_file, file_status, get_orderById, send_comment } from "../../../api/Api";
+import { create_remainder, download_file, file_status, get_orderById, send_comment } from "../../../api/Api";
 import { useParams } from "react-router-dom";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { FiBell } from "react-icons/fi";
@@ -19,6 +19,9 @@ const OrdertView = () => {
   const commentAreaRef = useRef(null);
   const [downloadingFiles, setDownloadingFiles] = useState({});
   const [newComment, setNewComment] = useState("");
+  const [remainderTitile, setRemainderTitle] = useState("");
+  const [remainderType, setRemainderType] = useState("update");
+  const [remainderDescription, setRemainderDescription] = useState("");
   const commentsContainerRef = useRef(null);
   const { orderId } = useParams(); // Get orderId from the URL
   const [isLoading, setIsLoading] = useState(true);
@@ -135,10 +138,10 @@ const OrdertView = () => {
         console.error("File ID or status missing");
         return;
       }
-  
+
       const token = localStorage.getItem("token");
       console.log("Hit the API");
-  
+
       // Make the API request to update the file status
       const response = await fetch(file_status, {
         method: "POST",
@@ -148,24 +151,66 @@ const OrdertView = () => {
         },
         body: JSON.stringify({ fileId, status }),
       });
-  
+
       // Check for a successful response
       if (!response.ok) {
         throw new Error("Failed to update file status");
       }
-  
+
       // Process the response data
       const res = await response.json();
       console.log(res);
-  
+
 
       // Optionally, handle any UI updates based on response here
-  
+
     } catch (error) {
       console.error("Failed to update file status:", error);
     }
   };
-  
+
+
+  const sendRemainder = async (fileId, status) => {
+    try {
+      const token = localStorage.getItem("token");
+      console.log("Hit the API");
+
+      // Make the API request to update the file status
+      const response = await fetch(create_remainder, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          userId:assignment.userId,
+          assignmentTitle: assignment.assignmentTitle,
+          instagramTitle: assignment.firstName + " " + assignment.lastName,
+          type:remainderType,
+          title:remainderTitile,
+          description:remainderDescription
+          
+        }),
+      });
+
+      // Check for a successful response
+      if (!response.ok) {
+        throw new Error("Failed to update file status");
+      }
+
+      // Process the response data
+      const res = await response.json();
+      console.log(res);
+      setIsOpen(false)
+
+
+      // Optionally, handle any UI updates based on response here
+
+    } catch (error) {
+      console.error("Failed to send remainder:", error);
+    }
+  };
+
 
   function formatTimeRemaining(timeRemaining) {
     if (timeRemaining < 60) {
@@ -622,6 +667,8 @@ const OrdertView = () => {
                 Title
               </label>
               <input
+                onChange={(e) => setRemainderTitle(e.target.value)}
+                value={remainderTitile}
                 type="text"
                 className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               />
@@ -633,6 +680,8 @@ const OrdertView = () => {
               </label>
               <textarea
                 rows="5"
+                onChange={(e) => setRemainderDescription(e.target.value)}
+                value={remainderDescription}
                 className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               ></textarea>
             </div>
@@ -641,10 +690,13 @@ const OrdertView = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Category
               </label>
-              <select className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <select
+                onChange={(e) => setRemainderType(e.target.value)}
+                value={remainderType}
+                className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                 <option value="alert">Alert</option>
                 <option value="warning">Warning</option>
-                <option value="notice">Notice</option>
+                <option value="update">Update</option>
               </select>
             </div>
             {/* Buttons */}
@@ -655,7 +707,9 @@ const OrdertView = () => {
               >
                 Cancel
               </button>
-              <button className="px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg shadow-md hover:opacity-90 focus:outline-none">
+              <button 
+              onClick={()=>sendRemainder()}
+              className="px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg shadow-md hover:opacity-90 focus:outline-none">
                 Send
               </button>
             </div>
