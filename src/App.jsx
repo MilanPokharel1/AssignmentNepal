@@ -39,6 +39,7 @@ import WriterView from "./screens/writer/WriterView/WriterView";
 import AdminCS from "./screens/admin/AdminCS/AdminCS";
 import AdminWithdrawal from "./screens/admin/AdminWithdrawal/AdminWithdrawal";
 import AdminOrderView from "./screens/admin/AdminOrderView/AdminOrderView";
+import Settings from "./screens/admin/Settings/Settings";
 
 function App() {
   return (
@@ -77,8 +78,9 @@ function App() {
             <Route path="adminpayments" element={<AdminPayments />} />
             <Route
               path="adminordermanagement/adminorderview/:orderId"
-              element={<AdminOrderView/>}
+              element={<AdminOrderView />}
             />
+            <Route path="adminsettings" element={<Settings />} />
           </Route>
           <Route path="/cs" element={<CustomerService />}>
             <Route index element={<CSdashboard />} />

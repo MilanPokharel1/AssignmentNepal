@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { FaPenFancy, FaSearch } from "react-icons/fa";
-import { MdAssignmentTurnedIn, MdChevronLeft, MdChevronRight, MdDisabledByDefault, MdPhoneEnabled } from "react-icons/md";
+import {
+  MdAssignmentTurnedIn,
+  MdChevronLeft,
+  MdChevronRight,
+  MdDisabledByDefault,
+} from "react-icons/md";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { cs_writers, user_status } from "../../../api/Api";
 import { FaUsers } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import Card from "../../client/Dashboard/components/Card";
-import { IoBookSharp, IoCheckmarkSharp } from "react-icons/io5";
-import { MdShoppingCart } from "react-icons/md";
-import { GrDisabledOutline } from "react-icons/gr";
+
 import { RiExchangeBoxLine } from "react-icons/ri";
-
-
+import { BiExpandVertical } from "react-icons/bi";
+import { MdOutlineExpandMore } from "react-icons/md";
+import { MdOutlineExpandLess } from "react-icons/md";
 const AdminWritersManagement = () => {
   const [filter, setFilter] = useState("All");
   const [search, setSearch] = useState("");
@@ -22,9 +26,17 @@ const AdminWritersManagement = () => {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [writers, setWriters] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [expandedRows, setExpandedRows] = useState([]);
+  const [down, setdown] = useState(false);
 
-
-
+  const handleRowClick = (index) => {
+    setExpandedRows((prev) =>
+      prev.includes(index)
+        ? prev.filter((rowIndex) => rowIndex !== index)
+        : [...prev, index]
+    );
+    setdown((prev) => !prev);
+  };
 
   useEffect(() => {
     const fetchwriters = async () => {
@@ -44,7 +56,7 @@ const AdminWritersManagement = () => {
         }
 
         const data = await response.json();
-        console.log(data)
+        console.log(data);
         setWriters(data.writers); // Assuming the key is 'remainder', set it properly
       } catch (error) {
         console.error("Error fetching reminders:", error);
@@ -57,7 +69,6 @@ const AdminWritersManagement = () => {
   }, []);
 
   const [showPopup, setShowPopup] = useState(false);
-
 
   const handleTogglePopup = (item, index) => {
     setSelectedItem(item);
@@ -77,7 +88,6 @@ const AdminWritersManagement = () => {
       )
     );
   };
-
 
   const changeUserStatus = async (item) => {
     setIsLoading(true);
@@ -100,28 +110,34 @@ const AdminWritersManagement = () => {
       setWriters((prevWriters) =>
         prevWriters.map((writer) =>
           writer._id === item._id
-            ? { ...writer, accountStatus: item.accountStatus === "enabled" ? "disabled" : "enabled" }
+            ? {
+                ...writer,
+                accountStatus:
+                  item.accountStatus === "enabled" ? "disabled" : "enabled",
+              }
             : writer
         )
       );
     } catch (error) {
       console.error("Error fetching reminders:", error);
     } finally {
-
       setIsLoading(false);
     }
   };
 
-
   const filteredData = writers.filter((item) => {
     if (filter !== "All" && item.writerStatus !== filter) return false;
+
     if (
       search &&
-      !Object.values(item).some((val) =>
-        val.toLowerCase().includes(search.toLowerCase())
+      !Object.values(item).some(
+        (val) =>
+          typeof val === "string" &&
+          val.toLowerCase().includes(search.toLowerCase())
       )
     )
       return false;
+
     return true;
   });
 
@@ -171,10 +187,11 @@ const AdminWritersManagement = () => {
         <button
           key={i}
           onClick={() => setCurrentPage(i)}
-          className={`px-3 py-1 mx-0.5 rounded ${currentPage === i
-            ? "bg-blue-600 text-white"
-            : "bg-gray-100 hover:bg-gray-200"
-            }`}
+          className={`px-3 py-1 mx-0.5 rounded ${
+            currentPage === i
+              ? "bg-blue-600 text-white"
+              : "bg-gray-100 hover:bg-gray-200"
+          }`}
         >
           {i}
         </button>
@@ -220,20 +237,28 @@ const AdminWritersManagement = () => {
         <Card
           Icon={MdAssignmentTurnedIn}
           heading="Assigned Writers"
-          number={`${writers.filter((writer) => writer.status === "assigned").length}`}
+          number={`${
+            writers.filter((writer) => writer.status === "assigned").length
+          }`}
           theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
         />
         <Card
           Icon={RiExchangeBoxLine}
           heading="Enabled Writers"
-          number={`${writers.filter((writer) => writer.accountStatus === "enabled").length}`}
+          number={`${
+            writers.filter((writer) => writer.accountStatus === "enabled")
+              .length
+          }`}
           theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
         />
 
         <Card
           Icon={MdDisabledByDefault}
           heading="Disabled Writers"
-          number={`${writers.filter((writer) => writer.accountStatus === "disabled").length}`}
+          number={`${
+            writers.filter((writer) => writer.accountStatus === "disabled")
+              .length
+          }`}
           theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
         />
       </div>
@@ -250,20 +275,25 @@ const AdminWritersManagement = () => {
             className="pl-10 pr-4 py-2 w-full text-gray-700 placeholder-gray-500 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
-        <div className="flex gap-11 items-center mr-14">
+        <div className="flex flex-col gap-4 sm:flex-row sm:gap-11 items-start sm:items-center sm:justify-between mr-0 sm:mr-14">
+          {/* Create Writer Button */}
           <button
-            className="bg-[#5d5fef] text-white py-2 px-4 rounded-lg flex gap-2 items-center"
+            className="bg-[#5d5fef] text-white py-2 px-4 rounded-lg flex gap-2 items-center justify-center whitespace-nowrap w-full sm:w-auto"
             onClick={() => setShowPopup(true)}
           >
             <FaUsers />
             <span>Create writer +</span>
           </button>
-          <div className="flex items-center space-x-2">
-            <label>Items per page:</label>
+
+          {/* Items per page section */}
+          <div className="flex flex-col sm:flex-row items-center sm:items-center w-full sm:w-auto gap-2">
+            <label className="text-sm sm:text-base w-full sm:w-auto text-left">
+              Items per page:
+            </label>
             <select
               value={itemsPerPage}
               onChange={handleItemsPerPageChange}
-              className="border border-[#7072f0] rounded p-1"
+              className="border border-[#7072f0] rounded p-2 w-full sm:w-auto"
             >
               <option value={10}>10</option>
               <option value={20}>20</option>
@@ -277,22 +307,27 @@ const AdminWritersManagement = () => {
         <div className="flex space-x-4">
           <button
             onClick={() => setFilter("All")}
-            className={`px-4 py-2 rounded-md ${filter === "All" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
-              }`}
+            className={`px-4 py-2 rounded-md ${
+              filter === "All" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
+            }`}
           >
             All
           </button>
           <button
             onClick={() => setFilter("assigned")}
-            className={`px-4 py-2 rounded-md ${filter === "assigned" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
-              }`}
+            className={`px-4 py-2 rounded-md ${
+              filter === "assigned" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
+            }`}
           >
             Assigned
           </button>
           <button
             onClick={() => setFilter("unassigned")}
-            className={`px-4 py-2 rounded-md ${filter === "unassigned" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
-              }`}
+            className={`px-4 py-2 rounded-md ${
+              filter === "unassigned"
+                ? "bg-[#20dcb6]"
+                : "border border-[#7072f0]"
+            }`}
           >
             Unassigned
           </button>
@@ -302,109 +337,167 @@ const AdminWritersManagement = () => {
         <table className="min-w-full">
           <thead>
             <tr className="w-32 text-gray-500">
+              <th className="border-b-2 px-4 py-4 md:hidden">
+                <BiExpandVertical className="w-6 h-6" />
+              </th>
               <th className="border-b-2 pl-10 py-4 text-left">Name</th>
               <th className="border-b-2 px-4 py-4">Subject</th>
               <th className="border-b-2 px-4 py-4">Phone Number</th>
-              <th className="border-b-2 px-4 py-4">Email</th>
-
-              <th className="border-b-2 pl-20 py-4 flex justify-start">
-                Action
-              </th>
+              <th className="border-b-2 px-4 py-4 max-md:hidden">Email</th>
+              <th className="border-b-2 pl-20 py-4 max-md:hidden">Action</th>
             </tr>
           </thead>
           <tbody>
             {currentItems.length > 0 ? (
               currentItems.map((item, index) => (
-                <tr key={index} className="w-52">
-                  <td className="border-b-2 px-4 py-3 text-center border-gray-200">
-                    <div className="flex justify-start items-center gap-3">
-                      <img
-                        src="https://static.vecteezy.com/system/resources/previews/025/220/125/non_2x/picture-a-captivating-scene-of-a-tranquil-lake-at-sunset-ai-generative-photo.jpg"
-                        className="w-8 h-8 rounded-full object-cover"
-                        alt={item.name}
-                      />
-                      <span>{highlightText(item.firstName, search)}{" "}{highlightText(item.lastName, search)}</span>
-                    </div>
-                  </td>
-                  <td className="border-b-2 px-4 py-3 text-center border-gray-200">
-                    {highlightText(item.catagory, search)}
-                  </td>
-                  <td className="border-b-2 px-4 py-3 text-center border-gray-200">
-                    {highlightText(item.phone, search)}
-                  </td>
-                  <td className="border-b-2 px-4 py-3 text-center border-gray-200">
-                    {highlightText(item.email, search)}
-                  </td>
+                <React.Fragment key={index}>
+                  <tr className="w-52">
+                    <td className="border-b-2 px-4 py-3 text-center border-gray-200 md:hidden">
+                      {down ? (
+                        <MdOutlineExpandLess
+                          className="w-6 h-6 cursor-pointer"
+                          onClick={() => handleRowClick(index)}
+                        />
+                      ) : (
+                        <MdOutlineExpandMore
+                          className="w-6 h-6 cursor-pointer"
+                          onClick={() => handleRowClick(index)}
+                        />
+                      )}
+                    </td>
+                    <td className="border-b-2 px-4 py-3 text-center border-gray-200">
+                      <div className="flex justify-start items-center gap-3">
+                        <img
+                          src="https://static.vecteezy.com/system/resources/previews/025/220/125/non_2x/picture-a-captivating-scene-of-a-tranquil-lake-at-sunset-ai-generative-photo.jpg"
+                          className="w-8 h-8 rounded-full object-cover"
+                          alt={item.name}
+                        />
+                        <span>
+                          {highlightText(item.firstName, search)}{" "}
+                          {highlightText(item.lastName, search)}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="border-b-2 px-4 py-3 text-center border-gray-200">
+                      {highlightText(item.catagory, search)}
+                    </td>
+                    <td className="border-b-2 px-4 py-3 text-center border-gray-200">
+                      {highlightText(item.phone, search)}
+                    </td>
+                    <td className="border-b-2 px-4 py-3 text-center border-gray-200 max-md:hidden">
+                      {highlightText(item.email, search)}
+                    </td>
+                    <td className="border-b-2 border-gray-200 py-3 text-center max-md:hidden">
+                      <div className="flex gap-4 justify-center">
+                        <span
+                          className={`inline-block min-w-20 px-3 py-1 text-sm font-medium rounded-lg border-2 hover:cursor-pointer ${
+                            item.accountStatus === "enabled"
+                              ? item.status === "Assigned"
+                                ? "border-emerald-700 text-emerald-700 bg-emerald-50 hover:bg-emerald-200"
+                                : "border-red-700 text-red-700 bg-red-50 hover:bg-red-200"
+                              : "border-red-400 text-red-400 bg-gray-100 opacity-50 cursor-not-allowed"
+                          }`}
+                          onClick={
+                            item.accountStatus === "enabled" ? () => {} : null
+                          }
+                        >
+                          {highlightText(item.writerStatus, search)}
+                        </span>
+                        <span
+                          className={`inline-block min-w-20 px-3 py-1 text-sm font-medium rounded-lg border-2 ${
+                            item.accountStatus === "enabled"
+                              ? "border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-200 hover:cursor-pointer"
+                              : "border-blue-300 text-blue-400 bg-gray-100 opacity-50 cursor-not-allowed"
+                          }`}
+                          onClick={
+                            item.accountStatus === "enabled" ? () => {} : null
+                          }
+                        >
+                          LogIn
+                        </span>
+                        <span
+                          onClick={() => handleTogglePopup(item, index)}
+                          className={`inline-block min-w-20 px-3 py-1 text-sm font-medium rounded-lg border-2 transition-colors duration-200 ${
+                            item.accountStatus === "enabled"
+                              ? "border-gray-500 text-gray-700 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer"
+                              : "border-blue-500 text-white bg-blue-500 hover:bg-blue-400 hover:cursor-pointer"
+                          }`}
+                        >
+                          {item.accountStatus === "enabled"
+                            ? "Disable"
+                            : "Enable"}
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                  {/* Conditionally render the expandable row */}
+                  {expandedRows.includes(index) && (
+                    <tr>
+                      <td
+                        colSpan="6"
+                        className="border-b-2 px-4 py-3 bg-gray-100"
+                      >
+                        <div className="flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
+                          <div className="flex items-center space-x-4">
+                            <p className=" flex items-center space-x-2 gap-2">
+                              <span className="font-bold text-gray-500">
+                                Email-
+                              </span>
+                              {highlightText(item.email, search)}
+                            </p>
+                          </div>
 
-                  <td className="border-b-2 border-gray-200 py-3 text-center flex gap-4 justify-center">
-                    <span
-                      className={`
-      inline-block
-      min-w-20
-      px-3 
-      py-1 
-      text-sm
-      font-medium
-      rounded-lg
-      border-2
-      hover:cursor-pointer
-      ${item.accountStatus === "enabled"
-                          ? item.status === "Assigned"
-                            ? "border-emerald-700 text-emerald-700 bg-emerald-50 hover:bg-emerald-200"
-                            : "border-red-700 text-red-700 bg-red-50 hover:bg-red-200"
-                          : "border-red-400 text-red-400 bg-gray-100 opacity-50 cursor-not-allowed"
-                        }
-    `}
-                      onClick={
-                        item.accountStatus === "enabled" ? () => { } : null
-                      }
-                    >
-                      {highlightText(item.writerStatus, search)}
-                    </span>
-                    <span
-                      className={`
-      inline-block
-      min-w-20
-      px-3 
-      py-1 
-      text-sm
-      font-medium
-      rounded-lg
-      border-2
-      ${item.accountStatus === "enabled"
-                          ? "border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-200 hover:cursor-pointer"
-                          : "border-blue-300 text-blue-400 bg-gray-100 opacity-50 cursor-not-allowed"
-                        }
-    `}
-                      onClick={
-                        item.accountStatus === "enabled" ? () => { } : null
-                      }
-                    >
-                      LogIn
-                    </span>
-                    <span
-                      onClick={() => handleTogglePopup(item, index)}
-                      className={`
-      inline-block
-      min-w-20
-      px-3 
-      py-1 
-      text-sm
-      font-medium
-      rounded-lg
-      border-2
-      transition-colors
-      duration-200
-      ${item.accountStatus === "enabled"
-                          ? "border-gray-500 text-gray-700 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer"
-                          : "border-blue-500 text-white bg-blue-500 hover:bg-blue-400 hover:cursor-pointer"
-                        }
-    `}
-                    >
-                      {item.accountStatus === "enabled" ? "Disable" : "Enable"}
-                    </span>
-                  </td>
-                </tr>
+                          <div className="flex gap-3 flex-wrap justify-center items-center">
+                            <span
+                              className={`inline-block min-w-[5rem] px-3 py-1 text-sm font-medium rounded-lg border-2 text-center transition-all duration-200 ${
+                                item.accountStatus === "enabled"
+                                  ? item.status === "Assigned"
+                                    ? "border-emerald-700 text-emerald-700 bg-emerald-50 hover:bg-emerald-200"
+                                    : "border-red-700 text-red-700 bg-red-50 hover:bg-red-200"
+                                  : "border-red-400 text-red-400 bg-gray-100 opacity-50 cursor-not-allowed"
+                              }`}
+                              onClick={
+                                item.accountStatus === "enabled"
+                                  ? () => {}
+                                  : null
+                              }
+                            >
+                              {highlightText(item.writerStatus, search)}
+                            </span>
+
+                            <span
+                              className={`inline-block min-w-[5rem] px-3 py-1 text-sm font-medium rounded-lg border-2 text-center transition-all duration-200 ${
+                                item.accountStatus === "enabled"
+                                  ? "border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-200 hover:cursor-pointer"
+                                  : "border-blue-300 text-blue-400 bg-gray-100 opacity-50 cursor-not-allowed"
+                              }`}
+                              onClick={
+                                item.accountStatus === "enabled"
+                                  ? () => {}
+                                  : null
+                              }
+                            >
+                              LogIn
+                            </span>
+
+                            <span
+                              onClick={() => handleTogglePopup(item, index)}
+                              className={`inline-block min-w-[5rem] px-3 py-1 text-sm font-medium rounded-lg border-2 text-center transition-all duration-200 ${
+                                item.accountStatus === "enabled"
+                                  ? "border-gray-500 text-gray-700 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer"
+                                  : "border-blue-500 text-white bg-blue-500 hover:bg-blue-400 hover:cursor-pointer"
+                              }`}
+                            >
+                              {item.accountStatus === "enabled"
+                                ? "Disable"
+                                : "Enable"}
+                            </span>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
               ))
             ) : (
               <tr>
@@ -446,8 +539,12 @@ const AdminWritersManagement = () => {
             </h2>
             <p className="text-gray-600 mb-6">
               {selectedItem.accountStatus === "enabled"
-                ? `Are you sure you want to disable ${selectedItem.firstName}${" "}${selectedItem.lastName}? `
-                : `Are you sure you want to enable ${selectedItem.firstName}${" "}${selectedItem.lastName}?`}
+                ? `Are you sure you want to disable ${
+                    selectedItem.firstName
+                  }${" "}${selectedItem.lastName}? `
+                : `Are you sure you want to enable ${
+                    selectedItem.firstName
+                  }${" "}${selectedItem.lastName}?`}
             </p>
             <div className="flex justify-end space-x-4">
               <button
@@ -460,7 +557,7 @@ const AdminWritersManagement = () => {
                 onClick={() => {
                   // Implement the actual enable/disable logic here
 
-                  changeUserStatus(selectedItem)
+                  changeUserStatus(selectedItem);
                   handleTogglePopup(selectedItem);
                 }}
                 className={`
@@ -468,10 +565,11 @@ const AdminWritersManagement = () => {
             py-2 
             rounded-lg 
             transition-colors
-            ${selectedItem.accountStatus === "enabled"
-                    ? "bg-red-500 text-white hover:bg-red-600"
-                    : "bg-blue-500 text-white hover:bg-blue-600"
-                  }
+            ${
+              selectedItem.accountStatus === "enabled"
+                ? "bg-red-500 text-white hover:bg-red-600"
+                : "bg-blue-500 text-white hover:bg-blue-600"
+            }
           `}
               >
                 {selectedItem.accountStatus === "enabled"

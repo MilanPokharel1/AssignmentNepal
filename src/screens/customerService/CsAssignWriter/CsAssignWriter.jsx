@@ -6,7 +6,6 @@ import { cs_writers, user_status } from "../../../api/Api";
 import { FaUsers } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 
-
 const CsAssignWriter = () => {
   const [filter, setFilter] = useState("All");
   const [search, setSearch] = useState("");
@@ -17,7 +16,6 @@ const CsAssignWriter = () => {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [writers, setWriters] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
 
   useEffect(() => {
     const fetchwriters = async () => {
@@ -37,7 +35,7 @@ const CsAssignWriter = () => {
         }
 
         const data = await response.json();
-        console.log(data)
+        console.log(data);
         setWriters(data.writers); // Assuming the key is 'remainder', set it properly
       } catch (error) {
         console.error("Error fetching reminders:", error);
@@ -50,7 +48,6 @@ const CsAssignWriter = () => {
   }, []);
 
   const [showPopup, setShowPopup] = useState(false);
-
 
   const handleTogglePopup = (item, index) => {
     setSelectedItem(item);
@@ -70,7 +67,6 @@ const CsAssignWriter = () => {
       )
     );
   };
-
 
   const changeUserStatus = async (item) => {
     setIsLoading(true);
@@ -93,18 +89,20 @@ const CsAssignWriter = () => {
       setWriters((prevWriters) =>
         prevWriters.map((writer) =>
           writer._id === item._id
-            ? { ...writer, accountStatus: item.accountStatus === "enabled" ? "disabled" : "enabled" }
+            ? {
+                ...writer,
+                accountStatus:
+                  item.accountStatus === "enabled" ? "disabled" : "enabled",
+              }
             : writer
         )
       );
     } catch (error) {
       console.error("Error fetching reminders:", error);
     } finally {
-
       setIsLoading(false);
     }
   };
-
 
   const filteredData = writers.filter((item) => {
     if (filter !== "All" && item.writerStatus !== filter) return false;
@@ -164,10 +162,11 @@ const CsAssignWriter = () => {
         <button
           key={i}
           onClick={() => setCurrentPage(i)}
-          className={`px-3 py-1 mx-0.5 rounded ${currentPage === i
-            ? "bg-blue-600 text-white"
-            : "bg-gray-100 hover:bg-gray-200"
-            }`}
+          className={`px-3 py-1 mx-0.5 rounded ${
+            currentPage === i
+              ? "bg-blue-600 text-white"
+              : "bg-gray-100 hover:bg-gray-200"
+          }`}
         >
           {i}
         </button>
@@ -243,22 +242,27 @@ const CsAssignWriter = () => {
         <div className="flex space-x-4">
           <button
             onClick={() => setFilter("All")}
-            className={`px-4 py-2 rounded-md ${filter === "All" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
-              }`}
+            className={`px-4 py-2 rounded-md ${
+              filter === "All" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
+            }`}
           >
             All
           </button>
           <button
             onClick={() => setFilter("assigned")}
-            className={`px-4 py-2 rounded-md ${filter === "assigned" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
-              }`}
+            className={`px-4 py-2 rounded-md ${
+              filter === "assigned" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
+            }`}
           >
             Assigned
           </button>
           <button
             onClick={() => setFilter("unassigned")}
-            className={`px-4 py-2 rounded-md ${filter === "unassigned" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
-              }`}
+            className={`px-4 py-2 rounded-md ${
+              filter === "unassigned"
+                ? "bg-[#20dcb6]"
+                : "border border-[#7072f0]"
+            }`}
           >
             Unassigned
           </button>
@@ -273,9 +277,7 @@ const CsAssignWriter = () => {
               <th className="border-b-2 px-4 py-4">Phone Number</th>
               <th className="border-b-2 px-4 py-4">Email</th>
 
-              <th className="border-b-2 pl-20 py-4 flex justify-start">
-                Action
-              </th>
+              <th className="border-b-2 px-4 py-4">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -289,7 +291,10 @@ const CsAssignWriter = () => {
                         className="w-8 h-8 rounded-full object-cover"
                         alt={item.name}
                       />
-                      <span>{highlightText(item.firstName, search)}{" "}{highlightText(item.lastName, search)}</span>
+                      <span>
+                        {highlightText(item.firstName, search)}{" "}
+                        {highlightText(item.lastName, search)}
+                      </span>
                     </div>
                   </td>
                   <td className="border-b-2 px-4 py-3 text-center border-gray-200">
@@ -302,7 +307,7 @@ const CsAssignWriter = () => {
                     {highlightText(item.email, search)}
                   </td>
 
-                  <td className="border-b-2 border-gray-200 py-3 text-center flex gap-4 justify-center">
+                  <td className="border-b-2 border-gray-200 py-3 px-4 text-center flex gap-4 justify-center">
                     <span
                       className={`
       inline-block
@@ -314,15 +319,16 @@ const CsAssignWriter = () => {
       rounded-lg
       border-2
       hover:cursor-pointer
-      ${item.accountStatus === "enabled"
-                          ? item.status === "Assigned"
-                            ? "border-emerald-700 text-emerald-700 bg-emerald-50 hover:bg-emerald-200"
-                            : "border-red-700 text-red-700 bg-red-50 hover:bg-red-200"
-                          : "border-red-400 text-red-400 bg-gray-100 opacity-50 cursor-not-allowed"
-                        }
+      ${
+        item.accountStatus === "enabled"
+          ? item.status === "Assigned"
+            ? "border-emerald-700 text-emerald-700 bg-emerald-50 hover:bg-emerald-200"
+            : "border-red-700 text-red-700 bg-red-50 hover:bg-red-200"
+          : "border-red-400 text-red-400 bg-gray-100 opacity-50 cursor-not-allowed"
+      }
     `}
                       onClick={
-                        item.accountStatus === "enabled" ? () => { } : null
+                        item.accountStatus === "enabled" ? () => {} : null
                       }
                     >
                       {highlightText(item.writerStatus, search)}
@@ -337,13 +343,14 @@ const CsAssignWriter = () => {
       font-medium
       rounded-lg
       border-2
-      ${item.accountStatus === "enabled"
-                          ? "border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-200 hover:cursor-pointer"
-                          : "border-blue-300 text-blue-400 bg-gray-100 opacity-50 cursor-not-allowed"
-                        }
+      ${
+        item.accountStatus === "enabled"
+          ? "border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-200 hover:cursor-pointer"
+          : "border-blue-300 text-blue-400 bg-gray-100 opacity-50 cursor-not-allowed"
+      }
     `}
                       onClick={
-                        item.accountStatus === "enabled" ? () => { } : null
+                        item.accountStatus === "enabled" ? () => {} : null
                       }
                     >
                       LogIn
@@ -361,10 +368,11 @@ const CsAssignWriter = () => {
       border-2
       transition-colors
       duration-200
-      ${item.accountStatus === "enabled"
-                          ? "border-gray-500 text-gray-700 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer"
-                          : "border-blue-500 text-white bg-blue-500 hover:bg-blue-400 hover:cursor-pointer"
-                        }
+      ${
+        item.accountStatus === "enabled"
+          ? "border-gray-500 text-gray-700 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer"
+          : "border-blue-500 text-white bg-blue-500 hover:bg-blue-400 hover:cursor-pointer"
+      }
     `}
                     >
                       {item.accountStatus === "enabled" ? "Disable" : "Enable"}
@@ -412,8 +420,12 @@ const CsAssignWriter = () => {
             </h2>
             <p className="text-gray-600 mb-6">
               {selectedItem.accountStatus === "enabled"
-                ? `Are you sure you want to disable ${selectedItem.firstName}${" "}${selectedItem.lastName}? `
-                : `Are you sure you want to enable ${selectedItem.firstName}${" "}${selectedItem.lastName}?`}
+                ? `Are you sure you want to disable ${
+                    selectedItem.firstName
+                  }${" "}${selectedItem.lastName}? `
+                : `Are you sure you want to enable ${
+                    selectedItem.firstName
+                  }${" "}${selectedItem.lastName}?`}
             </p>
             <div className="flex justify-end space-x-4">
               <button
@@ -426,7 +438,7 @@ const CsAssignWriter = () => {
                 onClick={() => {
                   // Implement the actual enable/disable logic here
 
-                  changeUserStatus(selectedItem)
+                  changeUserStatus(selectedItem);
                   handleTogglePopup(selectedItem);
                 }}
                 className={`
@@ -434,10 +446,11 @@ const CsAssignWriter = () => {
             py-2 
             rounded-lg 
             transition-colors
-            ${selectedItem.accountStatus === "enabled"
-                    ? "bg-red-500 text-white hover:bg-red-600"
-                    : "bg-blue-500 text-white hover:bg-blue-600"
-                  }
+            ${
+              selectedItem.accountStatus === "enabled"
+                ? "bg-red-500 text-white hover:bg-red-600"
+                : "bg-blue-500 text-white hover:bg-blue-600"
+            }
           `}
               >
                 {selectedItem.accountStatus === "enabled"

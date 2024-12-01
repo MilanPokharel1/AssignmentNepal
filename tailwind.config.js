@@ -4,12 +4,13 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Poppins", "sans-serif"], // Set Poppins as default for sans font
+        sans: ["Poppins", "sans-serif"],
       },
       screens: {
         SideNavHide: "1000px",
         SideNavHide2: "1159px",
-        dashboardActiveheight:"1537px",
+        dashboardActiveheight: "1537px",
+        tableHide: "1354px",
       },
     },
   },

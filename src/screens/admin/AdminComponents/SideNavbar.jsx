@@ -131,6 +131,18 @@ const SideNavbar = ({ onClose, isMobile }) => {
         </div>
         <div>
           <NavLink
+            to="/admin/adminsettings"
+            className={({ isActive }) =>
+              `${linkStyles} ${isActive ? activeLinkStyles : ""}`
+            }
+            onClick={() => isMobile && onClose?.()}
+          >
+            <FaBell className="w-5 h-5" />
+            <span>Settings</span>
+          </NavLink>
+        </div>
+        <div>
+          <NavLink
             to="/admin/adminpayments"
             className={({ isActive }) =>
               `${linkStyles} ${isActive ? activeLinkStyles : ""}`
