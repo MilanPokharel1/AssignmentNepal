@@ -75,24 +75,6 @@ const AdminWritersManagement = () => {
     setSelectedIndex(index);
     setIsPopupOpen(!isPopupOpen);
   };
-  const highlightText = (text, searchTerm) => {
-    if (!searchTerm) return text;
-
-    const terms = searchTerm.toLowerCase().split(" ").filter(Boolean);
-    const regex = new RegExp(`(${terms.join("|")})`, "gi");
-
-    const parts = text.toString().split(regex);
-
-    return parts.map((part, index) =>
-      terms.includes(part.toLowerCase()) ? (
-        <span key={index} className="bg-yellow-200">
-          {part}
-        </span>
-      ) : (
-        part
-      )
-    );
-  };
 
   const changeUserStatus = async (item) => {
     setIsLoading(true);
@@ -128,6 +110,24 @@ const AdminWritersManagement = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+  const highlightText = (text, searchTerm) => {
+    if (!searchTerm) return text;
+
+    const terms = searchTerm.toLowerCase().split(" ").filter(Boolean);
+    const regex = new RegExp(`(${terms.join("|")})`, "gi");
+
+    const parts = text.toString().split(regex);
+
+    return parts.map((part, index) =>
+      terms.includes(part.toLowerCase()) ? (
+        <span key={index} className="bg-yellow-200">
+          {part}
+        </span>
+      ) : (
+        part
+      )
+    );
   };
 
   const filteredData = writers.filter((item) => {

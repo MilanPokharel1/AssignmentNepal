@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { FaSearch, FaUsers } from "react-icons/fa";
-import { MdApproval, MdChevronLeft, MdChevronRight, MdDisabledByDefault } from "react-icons/md";
+import {
+  MdApproval,
+  MdChevronLeft,
+  MdChevronRight,
+  MdDisabledByDefault,
+} from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { cs_clients, user_status } from "../../../api/Api";
@@ -11,7 +16,10 @@ import Card from "../../client/Dashboard/components/Card";
 import { User2Icon, UserCircle } from "lucide-react";
 import { RiExchangeBoxLine, RiPassPendingFill } from "react-icons/ri";
 import { FcApprove } from "react-icons/fc";
-import { PiExclamationMarkBold } from "react-icons/pi";
+
+import { BiExpandVertical } from "react-icons/bi";
+import { MdOutlineExpandMore } from "react-icons/md";
+import { MdOutlineExpandLess } from "react-icons/md";
 
 const AdminUserManagement = () => {
   const [search, setSearch] = useState("");
@@ -22,9 +30,16 @@ const AdminUserManagement = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [down, setdown] = useState(false);
 
-
-
+  const handleRowClick = (index) => {
+    setExpandedRows((prev) =>
+      prev.includes(index)
+        ? prev.filter((rowIndex) => rowIndex !== index)
+        : [...prev, index]
+    );
+    setdown((prev) => !prev);
+  };
 
   useEffect(() => {
     const fetchclients = async () => {
@@ -44,7 +59,7 @@ const AdminUserManagement = () => {
         }
 
         const data = await response.json();
-        console.log(data)
+        console.log(data);
         setClients(data.clients); // Assuming the key is 'remainder', set it properly
       } catch (error) {
         console.error("Error fetching reminders:", error);
@@ -55,8 +70,6 @@ const AdminUserManagement = () => {
 
     fetchclients();
   }, []);
-
-
 
   const changeUserStatus = async (item) => {
     setIsLoading(true);
@@ -79,24 +92,31 @@ const AdminUserManagement = () => {
       setClients((prevClients) =>
         prevClients.map((client) =>
           client._id === item._id
-            ? { ...client, accountStatus: item.accountStatus === "enabled" ? "disabled" : "enabled" }
+            ? {
+                ...client,
+                accountStatus:
+                  item.accountStatus === "enabled" ? "disabled" : "enabled",
+              }
             : client
         )
       );
     } catch (error) {
       console.error("Error fetching reminders:", error);
     } finally {
-
       setIsLoading(false);
     }
   };
 
-
   const highlightText = (text, searchTerm) => {
     if (!searchTerm) return text;
-    const parts = text.toString().split(new RegExp(`(${searchTerm})`, "gi"));
+
+    const terms = searchTerm.toLowerCase().split(" ").filter(Boolean);
+    const regex = new RegExp(`(${terms.join("|")})`, "gi");
+
+    const parts = text.toString().split(regex);
+
     return parts.map((part, index) =>
-      part.toLowerCase() === searchTerm.toLowerCase() ? (
+      terms.includes(part.toLowerCase()) ? (
         <span key={index} className="bg-yellow-200">
           {part}
         </span>
@@ -105,19 +125,24 @@ const AdminUserManagement = () => {
       )
     );
   };
+
   const filteredData = clients.filter((item) => {
     if (
       search &&
-      !Object.values(item).some(
-        (val) =>
-          typeof val === "string" &&
-          val.toLowerCase().includes(search.toLowerCase())
-      )
+      !search
+        .toLowerCase()
+        .split(" ")
+        .every((term) =>
+          Object.values(item).some(
+            (val) => typeof val === "string" && val.toLowerCase().includes(term)
+          )
+        )
     ) {
       return false;
     }
     return true;
   });
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
@@ -164,10 +189,11 @@ const AdminUserManagement = () => {
         <button
           key={i}
           onClick={() => setCurrentPage(i)}
-          className={`px-3 py-1 mx-0.5 rounded ${currentPage === i
-            ? "bg-blue-600 text-white"
-            : "bg-gray-100 hover:bg-gray-200"
-            }`}
+          className={`px-3 py-1 mx-0.5 rounded ${
+            currentPage === i
+              ? "bg-blue-600 text-white"
+              : "bg-gray-100 hover:bg-gray-200"
+          }`}
         >
           {i}
         </button>
@@ -196,11 +222,10 @@ const AdminUserManagement = () => {
     return pageNumbers;
   };
 
-
   const handleTogglePopup = (item) => {
     setSelectedItem(item);
     setIsPopupOpen(!isPopupOpen);
-  }
+  };
 
   return (
     <div className="min-h-screen p-4">
@@ -219,26 +244,32 @@ const AdminUserManagement = () => {
         <Card
           Icon={RiPassPendingFill}
           heading="Pending Clients"
-          number={`${clients.filter((client) => client.status === "pending").length}`}
+          number={`${
+            clients.filter((client) => client.status === "pending").length
+          }`}
           theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
         />
         <Card
           Icon={RiExchangeBoxLine}
           heading="Approved Clients"
-          number={`${clients.filter((client) => client.status === "approved").length}`}
+          number={`${
+            clients.filter((client) => client.status === "approved").length
+          }`}
           theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
         />
 
         <Card
           Icon={MdDisabledByDefault}
           heading="Declined Clients"
-          number={`${clients.filter((client) => client.status === "declined").length}`}
+          number={`${
+            clients.filter((client) => client.status === "declined").length
+          }`}
           theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
         />
       </div>
       <h1 className="text-2xl font-bold mb-4 text-center">Users</h1>
-      <div className="flex justify-between items-center mb-4">
-        <div className="relative w-[60%] max-w-lg">
+      <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
+        <div className="relative w-[95%] md:w-3/5 max-w-lg">
           <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
           <input
             type="text"
@@ -248,16 +279,16 @@ const AdminUserManagement = () => {
             className="pl-10 pr-4 py-2 w-full text-gray-700 placeholder-gray-500 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
-        <div className="flex gap-11 items-center mr-14">
+        <div className="w-full flex flex-row-reverse md:flex-row justify-between items-center gap-4 md:w-auto">
           <button
-            className="bg-[#5d5fef] text-white py-2 px-4 rounded-lg flex gap-2 items-center"
+            className="bg-[#5d5fef] text-white py-2 px-4 rounded-lg inline-flex gap-2 items-center"
             onClick={() => setShowPopup(true)}
           >
             <FaUsers />
             <span>Create Client+</span>
           </button>
-          <div className="flex items-center space-x-2">
-            <label>Items per page:</label>
+          <div className="flex items-center gap-2">
+            <label className="text-sm">Items per page:</label>
             <select
               value={itemsPerPage}
               onChange={handleItemsPerPageChange}
@@ -271,10 +302,14 @@ const AdminUserManagement = () => {
           </div>
         </div>
       </div>
+
       <div className="flex justify-end mb-6"></div>
       <div className="min-h-96 bg-white">
         <table className="min-w-full">
           <thead>
+          <th className="border-b-2 px-4 py-4 md:hidden">
+                <BiExpandVertical className="w-6 h-6" />
+              </th>
             <tr className="w-32 text-gray-400">
               <th className="border-b-2 pl-10 py-4 text-left">Name</th>
 
@@ -295,7 +330,10 @@ const AdminUserManagement = () => {
                         className="w-8 h-8 rounded-full object-cover"
                         alt={item.name}
                       />
-                      <span>{highlightText(item.firstName, search)}{" "}{highlightText(item.lastName, search)}</span>
+                      <span>
+                        {highlightText(item.firstName, search)}{" "}
+                        {highlightText(item.lastName, search)}
+                      </span>
                     </div>
                   </td>
 
@@ -314,7 +352,12 @@ const AdminUserManagement = () => {
                     </button>
                     <button
                       onClick={() => handleTogglePopup(item, index)}
-                      className={`px-3 py-1 rounded-lg m-1  flex items-center border  text-sm border-gray-500 ${item.accountStatus === "enabled"?"text-red-700":"text-green-700"} bg-gray-100 hover:bg-gray-200 hover:cursor-pointer`}>
+                      className={`px-3 py-1 rounded-lg m-1  flex items-center border  text-sm border-gray-500 ${
+                        item.accountStatus === "enabled"
+                          ? "text-red-700"
+                          : "text-green-700"
+                      } bg-gray-100 hover:bg-gray-200 hover:cursor-pointer`}
+                    >
                       {item.accountStatus === "enabled" ? "Disable" : "Enable"}
                     </button>
                   </td>
@@ -359,8 +402,12 @@ const AdminUserManagement = () => {
             </h2>
             <p className="text-gray-600 mb-6">
               {selectedItem.accountStatus === "enabled"
-                ? `Are you sure you want to disable ${selectedItem.firstName}${" "}${selectedItem.lastName}? `
-                : `Are you sure you want to enable ${selectedItem.firstName}${" "}${selectedItem.lastName}?`}
+                ? `Are you sure you want to disable ${
+                    selectedItem.firstName
+                  }${" "}${selectedItem.lastName}? `
+                : `Are you sure you want to enable ${
+                    selectedItem.firstName
+                  }${" "}${selectedItem.lastName}?`}
             </p>
             <div className="flex justify-end space-x-4">
               <button
@@ -373,7 +420,7 @@ const AdminUserManagement = () => {
                 onClick={() => {
                   // Implement the actual enable/disable logic here
 
-                  changeUserStatus(selectedItem)
+                  changeUserStatus(selectedItem);
                   handleTogglePopup(selectedItem);
                 }}
                 className={`
@@ -381,10 +428,11 @@ const AdminUserManagement = () => {
             py-2 
             rounded-lg 
             transition-colors
-            ${selectedItem.accountStatus === "enabled"
-                    ? "bg-red-500 text-white hover:bg-red-600"
-                    : "bg-blue-500 text-white hover:bg-blue-600"
-                  }
+            ${
+              selectedItem.accountStatus === "enabled"
+                ? "bg-red-500 text-white hover:bg-red-600"
+                : "bg-blue-500 text-white hover:bg-blue-600"
+            }
           `}
               >
                 {selectedItem.accountStatus === "enabled"
@@ -499,7 +547,6 @@ const AdminUserManagement = () => {
             </button>
           </div>
         </div>
-
       )}
     </div>
   );
