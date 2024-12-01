@@ -78,7 +78,7 @@ const AllClientOrder = () => {
         No Results Found
       </h3>
       <p className="text-gray-500 text-center max-w-md">
-        We couldn't find any payments.    </p>
+        We couldn't find any orders.    </p>
 
     </div>
   );
