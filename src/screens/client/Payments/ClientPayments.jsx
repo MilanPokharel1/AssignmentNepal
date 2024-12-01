@@ -5,17 +5,12 @@ import PaymentCard from "./Components/PaymentCard";
 import { get_payment } from "../../../api/Api";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
-
 const ClientPayments = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [paymentData, setPaymentData] = useState([]);
   const [sortOrder, setSortOrder] = useState("Newest");
   const [showOptions, setShowOptions] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
-
-
-
 
   useEffect(() => {
     const fetchPayments = async () => {
@@ -108,8 +103,7 @@ const ClientPayments = () => {
       payment.paymentMethod.toLowerCase().includes(searchStr) ||
       payment.remark.toLowerCase().includes(searchStr) ||
       payment.paidAmount.toString().includes(searchStr) ||
-      payment.
-        createdAt.toLowerCase().includes(searchStr)
+      payment.createdAt.toLowerCase().includes(searchStr)
     );
   });
 
@@ -147,15 +141,8 @@ const ClientPayments = () => {
         No Results Found
       </h3>
       <p className="text-gray-500 text-center max-w-md">
-        We couldn't find any payments matching "{searchTerm}". Try adjusting
-        your search terms or filters.
+        We couldn't find any payments.
       </p>
-      <button
-        onClick={() => setSearchTerm("")}
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-      >
-        Clear Search
-      </button>
     </div>
   );
 

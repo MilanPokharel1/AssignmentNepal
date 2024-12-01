@@ -8,28 +8,30 @@ const Client = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const checkSideNavVisibility = () => {
-      const mediaQuery = window.matchMedia("(min-width: 1159px)");
-      setIsSideNavVisible(mediaQuery.matches);
+    const mediaQuery = window.matchMedia("(min-width: 1159px)");
+
+    const checkSideNavVisibility = (event) => {
+      setIsSideNavVisible(event.matches);
     };
 
-    checkSideNavVisibility();
-    const mediaQuery = window.matchMedia("(min-width: 100px)");
+    // Set initial state
+    setIsSideNavVisible(mediaQuery.matches);
+
+    // Attach the listener
     mediaQuery.addEventListener("change", checkSideNavVisibility);
 
     return () => {
+      // Clean up the listener
       mediaQuery.removeEventListener("change", checkSideNavVisibility);
     };
   }, []);
 
   return (
     <div className="min-h-screen flex gap-2 bg-white">
-
       <div className="w-0 SideNavHide2:w-[19%] h-screen bg-gray-50 fixed invisible SideNavHide2:visible">
         <SideNavbar />
       </div>
 
-      
       {!isSideNavVisible && isMobileMenuOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40"
