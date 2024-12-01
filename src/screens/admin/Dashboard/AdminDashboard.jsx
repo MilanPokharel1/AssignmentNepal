@@ -4,7 +4,7 @@ import { MdShoppingCart } from "react-icons/md";
 import { FaUsers, FaPenFancy, FaMoneyBillWave } from "react-icons/fa";
 import Card from "./components/Card";
 import Chart from "./components/Chart";
-
+import { useNavigate } from "react-router-dom";
 
 import OrderCard from "./components/OrderCard";
 import MainPieChart from "./components/MainPieChart";
@@ -21,7 +21,6 @@ const chartData = [
   { month: "A", thisMonth: 30, lastMonth: 25 },
   { month: "S", thisMonth: 27, lastMonth: 23 },
 ];
-
 
 const orderCancelData = [
   { name: "Order", value: 75 },
@@ -40,8 +39,7 @@ const Dashboard = () => {
   const [adminDashboard, setAdminDashboard] = useState([]);
   const [assignments, setAssignments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCsDashboard = async () => {
@@ -64,10 +62,10 @@ const Dashboard = () => {
         console.log(data.newWriters);
 
         setWriters(data.newWriters);
-        setAssignments(data.recentAssignments)
-        setCs(data.newCs)
-        setAdminDashboard(data)
-        console.log("total amount:", data.totalPayment)
+        setAssignments(data.recentAssignments);
+        setCs(data.newCs);
+        setAdminDashboard(data);
+        console.log("total amount:", data.totalPayment);
       } catch (error) {
         console.error("Error fetching reminders:", error);
       } finally {
@@ -123,43 +121,47 @@ const Dashboard = () => {
       </div>
       <div className="flex flex-col lg:flex-row h-auto lg:h-[45vh] w-full gap-4 rounded-lg mb-5">
         <div className="h-full w-full lg:w-1/2 bg-white">
-          <MainPieChart orderCancelData={[
-            { name: "Orders", value: adminDashboard.totalOrders },
-            { name: "Cancelled", value: adminDashboard.cancelledOrders },
-          ]} />
+          <MainPieChart
+            orderCancelData={[
+              { name: "Orders", value: adminDashboard.totalOrders },
+              { name: "Cancelled", value: adminDashboard.cancelledOrders },
+            ]}
+          />
         </div>
         <div className="w-full lg:w-[60%] h-full flex  ">
-
           <CircularProgress
-
-            value={(adminDashboard.assignedWriters / adminDashboard.totalWriters * 100).toFixed(2)}
+            value={(
+              (adminDashboard.assignedWriters / adminDashboard.totalWriters) *
+              100
+            ).toFixed(2)}
             title={"Assigned Writers"}
           />
 
           <CircularProgress
-
-            value={(adminDashboard.completedOrders / adminDashboard.totalOrders * 100
-            ).toFixed(2)
-            }
+            value={(
+              (adminDashboard.completedOrders / adminDashboard.totalOrders) *
+              100
+            ).toFixed(2)}
             title={"Orders/Completed"}
           />
           <CircularProgress
-
-            value={(adminDashboard.totalPayment / adminDashboard.totalAmount * 100).toFixed(0)}
+            value={(
+              (adminDashboard.totalPayment / adminDashboard.totalAmount) *
+              100
+            ).toFixed(0)}
             title={"Payment Received"}
           />
           {/* <CircularProgress
             value={metric.completed}
             title={metric.name}
           /> */}
-
         </div>
       </div>
       <div className="mb-8">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-semibold mb-4">Orders</h2>
           <div
-            onClick={() => console.log("view all clicked")}
+            onClick={() => navigate("/admin/adminordermanagement")}
             className={`flex items-center gap-1 cursor-pointer hover:text-blue-600 mr-11`}
           >
             View all
@@ -176,7 +178,7 @@ const Dashboard = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-semibold mb-4">writers</h2>
         <div
-          onClick={() => console.log("view all clicked")}
+          onClick={() => navigate("/admin/adminwritermanagement")}
           className={`flex items-center gap-1 cursor-pointer hover:text-blue-600 mr-11`}
         >
           View all
@@ -233,9 +235,11 @@ const Dashboard = () => {
       </div>
       <div>
         <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-semibold mb-4 mt-10">Customer Service</h2>
+          <h2 className="text-2xl font-semibold mb-4 mt-10">
+            Customer Service
+          </h2>
           <div
-            onClick={() => console.log("view all clicked")}
+            onClick={() => navigate("/admin/adminCS")}
             className={`flex items-center gap-1 cursor-pointer hover:text-blue-600 mr-11`}
           >
             View all
@@ -251,7 +255,9 @@ const Dashboard = () => {
                   <thead>
                     <tr className="text-gray-500 ">
                       <th className="border-b-2 pl-10 py-4 text-left">Name</th>
-                      <th className="border-b-2 px-4 py-4 text-left">Subject</th>
+                      <th className="border-b-2 px-4 py-4 text-left">
+                        Subject
+                      </th>
                       <th className="border-b-2 px-4 py-4 text-left">
                         Phone Number
                       </th>
