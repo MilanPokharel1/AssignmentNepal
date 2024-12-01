@@ -15,6 +15,7 @@ export const get_payment = `${url}/user/payments`;
 export const get_payment_dashboard = `${url}/user/payments-dashboard`;
 export const make_payment = `${url}/user/makepayment`;
 export const get_remainder = `${url}/user/remainder`;
+export const create_remainder = `${url}/user/createremainder`;
 export const cs_dashboard = `${url}/cs/dashboard`;
 export const admin_dashboard = `${url}/admin/dashboard`;
 export const cs_writers = `${url}/cs/getWriters`;
