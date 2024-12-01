@@ -16,6 +16,7 @@ export const get_payment_dashboard = `${url}/user/payments-dashboard`;
 export const make_payment = `${url}/user/makepayment`;
 export const get_remainder = `${url}/user/remainder`;
 export const cs_dashboard = `${url}/cs/dashboard`;
+export const admin_dashboard = `${url}/admin/dashboard`;
 export const cs_writers = `${url}/cs/getWriters`;
 export const pending_users = `${url}/user/pendingusers`;
 export const change_pending_user = `${url}/user/changependingstatus`;

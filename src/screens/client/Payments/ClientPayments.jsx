@@ -11,6 +11,7 @@ const ClientPayments = () => {
   const [paymentData, setPaymentData] = useState([]);
   const [sortOrder, setSortOrder] = useState("Newest");
   const [showOptions, setShowOptions] = useState(false);
+  
   const [isLoading, setIsLoading] = useState(true);
 
 

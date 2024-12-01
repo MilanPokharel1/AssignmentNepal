@@ -29,50 +29,6 @@ const chartData = [
   { month: "Dec", lastMonth: 30 },
 ];
 
-const sampleWriters = [
-  {
-    id: 1,
-    name: "Sachet Khatiwdha",
-    phoneNumber: "(225) 555-0118",
-    status: "active",
-    pic: "/api/placeholder/40/40",
-  },
-  {
-    id: 2,
-    name: "Sachet Khatiwdha",
-    phoneNumber: "(225) 555-0118",
-    status: "active",
-    pic: "/api/placeholder/40/40",
-  },
-  {
-    id: 3,
-    name: "Sachet Khatiwdha",
-    phoneNumber: "(225) 555-0118",
-    status: "active",
-    pic: "/api/placeholder/40/40",
-  },
-  {
-    id: 4,
-    name: "Sachet Khatiwdha",
-    phoneNumber: "(225) 555-0118",
-    status: "inactive",
-    pic: "/api/placeholder/40/40",
-  },
-  {
-    id: 5,
-    name: "Sachet Khatiwdha",
-    phoneNumber: "(225) 555-0118",
-    status: "active",
-    pic: "/api/placeholder/40/40",
-  },
-  {
-    id: 6,
-    name: "Sachet Khatiwdha",
-    phoneNumber: "(225) 555-0118",
-    status: "inactive",
-    pic: "/api/placeholder/40/40",
-  },
-];
 
 const Dashboard = () => {
   const [filter, setFilter] = useState("active");
