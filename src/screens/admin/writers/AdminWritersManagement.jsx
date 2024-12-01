@@ -77,9 +77,14 @@ const AdminWritersManagement = () => {
   };
   const highlightText = (text, searchTerm) => {
     if (!searchTerm) return text;
-    const parts = text.toString().split(new RegExp(`(${searchTerm})`, "gi"));
+
+    const terms = searchTerm.toLowerCase().split(" ").filter(Boolean);
+    const regex = new RegExp(`(${terms.join("|")})`, "gi");
+
+    const parts = text.toString().split(regex);
+
     return parts.map((part, index) =>
-      part.toLowerCase() === searchTerm.toLowerCase() ? (
+      terms.includes(part.toLowerCase()) ? (
         <span key={index} className="bg-yellow-200">
           {part}
         </span>
@@ -92,7 +97,7 @@ const AdminWritersManagement = () => {
   const changeUserStatus = async (item) => {
     setIsLoading(true);
     try {
-      const token = localStorage.getItem("token"); // Replace with the actual token
+      const token = localStorage.getItem("token");
 
       const response = await fetch(user_status, {
         method: "POST",
@@ -128,15 +133,17 @@ const AdminWritersManagement = () => {
   const filteredData = writers.filter((item) => {
     if (filter !== "All" && item.writerStatus !== filter) return false;
 
-    if (
-      search &&
-      !Object.values(item).some(
-        (val) =>
-          typeof val === "string" &&
-          val.toLowerCase().includes(search.toLowerCase())
-      )
-    )
-      return false;
+    if (search) {
+      const searchTerms = search.toLowerCase().split(" ").filter(Boolean);
+
+      const matches = searchTerms.every((term) =>
+        Object.values(item).some(
+          (val) => typeof val === "string" && val.toLowerCase().includes(term)
+        )
+      );
+
+      if (!matches) return false;
+    }
 
     return true;
   });
