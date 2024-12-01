@@ -1,55 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ImSearch } from "react-icons/im";
 import { FaChevronDown } from "react-icons/fa";
 import PaymentCard from "./components/PaymentCard";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { get_payment } from "../../../api/Api";
+
 
 const AdminPayments = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("Newest");
   const [showOptions, setShowOptions] = useState(false);
+  const [paymentData, setPaymentData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const paymentData = [
-    {
-      name: "Millu bhaiya",
-      title:
-        "This is my second assignment submission eqwnjkdewnudnqewdnoiqenoandlaskndkaslndkasndklasndlkkasdasnlxnasxlasxnsa",
-      date: "20/02/2024",
-      method: "Fonepay",
-      currency: "NPR",
-      remarks: "First Payment",
-      amount: 8000,
-    },
-    {
-      name: "Dhanan bhai",
-      title:
-        "This is my second assignment submission sndiasncasnclkasncoisdacwslkdcnoisdancosdancosc",
-      date: "20/01/2024",
-      method: "Fonepay",
-      currency: "NPR",
-      remarks: "First Payment",
-      amount: 7000,
-    },
-    {
-      name: "Raju dai",
-      title:
-        "It should be relatively short, but still anxcoilasncxoilasndcxoliasnxnlzkm",
-      date: "20/01/2024",
-      method: "Fonepay",
-      currency: "NPR",
-      remarks: "Mid payment",
-      amount: 8000,
-    },
-    {
-      name: "ram singh",
-      title:
-        "It should be relatively short, but still nsnjakdcnjskdncksdncksdncsdncsd",
-      date: "20/01/2024",
-      method: "Cash",
-      currency: "NPR",
-      remarks: "Last Payment",
-      amount: 7000,
-    },
-  ];
+  useEffect(() => {
+    const fetchPayments = async () => {
+      setIsLoading(true);
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
+
+        const response = await fetch(get_payment, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch payments");
+        }
+
+        const data = await response.json();
+        setPaymentData(data.payments);
+        console.log("this is data: ", data);
+      } catch (error) {
+        console.error("Error fetching payments:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPayments();
+  }, []);
 
   const highlightText = (text, searchTerm) => {
     if (!searchTerm) return text;
@@ -69,18 +61,19 @@ const AdminPayments = () => {
   const filteredPayments = paymentData.filter((payment) => {
     const searchStr = searchTerm.toLowerCase();
     return (
-      payment.title.toLowerCase().includes(searchStr) ||
-      payment.method.toLowerCase().includes(searchStr) ||
-      payment.remarks.toLowerCase().includes(searchStr) ||
-      payment.amount.toString().includes(searchStr) ||
-      payment.date.toLowerCase().includes(searchStr) ||
-      payment.name.toLowerCase().includes(searchStr)
+      payment.assignmentTitle.toLowerCase().includes(searchStr) ||
+      payment.paymentMethod.toLowerCase().includes(searchStr) ||
+      payment.remark.toLowerCase().includes(searchStr) ||
+      payment.paidAmount.toString().includes(searchStr) ||
+      payment.
+        createdAt.toLowerCase().includes(searchStr)
     );
   });
 
+
   const sortedPayments = [...filteredPayments].sort((a, b) => {
-    const dateA = new Date(a.date.split("/").reverse().join("-"));
-    const dateB = new Date(b.date.split("/").reverse().join("-"));
+    const dateA = new Date(a.createdAt.split("-").reverse().join("-"));
+    const dateB = new Date(b.createdAt.split("-").reverse().join("-"));
 
     switch (sortOrder) {
       case "Newest":
@@ -126,6 +119,11 @@ const AdminPayments = () => {
 
   return (
     <div className="p-6 flex-1 bg-[#fafbfc] w-full md:w-[85%]">
+      {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
+          <CircularProgress />
+        </div>
+      )}
       <div className="flex justify-between items-center flex-row-reverse">
         <div className="flex justify-between items-center mb-4 gap-3">
           <div className="relative">
@@ -173,13 +171,14 @@ const AdminPayments = () => {
           sortedPayments.map((payment, index) => (
             <PaymentCard
               key={index}
-              title={highlightText(payment.title, searchTerm)}
-              name={highlightText(payment.name, searchTerm)}
-              date={highlightText(payment.date, searchTerm)}
-              method={highlightText(payment.method, searchTerm)}
-              currency={payment.currency}
-              remarks={highlightText(payment.remarks, searchTerm)}
-              amount={highlightText(`Rs ${payment.amount}`, searchTerm)}
+              title={highlightText(payment.assignmentTitle, searchTerm)}
+              createdAt={highlightText(payment.createdAt, searchTerm)}
+              name={highlightText(payment.firstName, searchTerm)}
+              cast={highlightText(payment.lastName, searchTerm)}
+              method={highlightText(payment.paymentMethod, searchTerm)}
+              currency={payment.paymentCurrency}
+              remarks={highlightText(payment.remark, searchTerm)}
+              amount={highlightText(`Rs ${payment.paidAmount}`, searchTerm)}
             />
           ))
         ) : (

@@ -8,6 +8,7 @@ const PaymentCard = ({
   remarks,
   amount,
   name,
+  cast
 }) => {
   return (
     <div className="bg-white shadow-lg py-4 md:py-7 rounded-lg mb-4 w-full px-4 md:px-7">
@@ -16,7 +17,7 @@ const PaymentCard = ({
         <div className="flex flex-col mb-3 md:mb-0">
           <div className="flex items-center md:text-right text-gray-400">
             Client Name:&nbsp;
-            <span className="font-thin text-black">{name}</span>
+            <span className="font-thin text-black">{name}{" "}{cast}</span>
           </div>
           <div className="flex items-center text-md">
             <span className="text-gray-400">Assignment Title: </span>

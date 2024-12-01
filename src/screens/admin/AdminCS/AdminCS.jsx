@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { FaSearch, FaUsers } from "react-icons/fa";
-import { MdChevronLeft, MdChevronRight } from "react-icons/md";
+import { MdChevronLeft, MdChevronRight, MdDisabledByDefault, MdEventAvailable } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { cs_clients, user_status } from "../../../api/Api";
+
+import { IoBookSharp, IoCheckmarkSharp } from "react-icons/io5";
+import { MdShoppingCart } from "react-icons/md";
+import Card from "../../client/Dashboard/components/Card";
+import { FcCustomerSupport } from "react-icons/fc";
+import { RiCustomerService2Fill, RiExchangeBoxLine } from "react-icons/ri";
 
 const AdminCS = () => {
   const [search, setSearch] = useState("");
@@ -201,6 +207,34 @@ const AdminCS = () => {
           <CircularProgress />
         </div>
       )}
+
+<div className="flex flex-wrap gap-4 justify-center sm:justify-start mb-5">
+        <Card
+          Icon={RiCustomerService2Fill}
+          heading="Total CS"
+          number={`${clients.length}`}
+          theme={{ bgColor: "bg-yellow-100", iconBgColor: "bg-yellow-400" }}
+        />
+        {/* <Card
+          Icon={MdShoppingCart}
+          heading="Assigned Writers"
+          number={`${clients.filter((writer) => writer.status === "assigned").length}`}
+          theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
+        /> */}
+        <Card
+          Icon={RiExchangeBoxLine}
+          heading="Enabled CS"
+          number={`${clients.filter((writer) => writer.accountStatus === "enabled").length}`}
+          theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
+        />
+
+        <Card
+          Icon={MdDisabledByDefault}
+          heading="Disabled CS"
+          number={`${clients.filter((writer) => writer.accountStatus === "disabled").length}`}
+          theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
+        />
+      </div>
       <h1 className="text-2xl font-bold mb-4 text-center">Customer Service</h1>
       <div className="flex justify-between items-center mb-4">
         <div className="relative w-[60%] max-w-lg">
@@ -279,7 +313,7 @@ const AdminCS = () => {
                     </button>
                     <button
                       onClick={() => handleTogglePopup(item, index)}
-                      className={`px-3 py-1 rounded-lg m-1  flex items-center border  text-sm border-gray-500 ${item.accountStatus === "enabled"?"text-red-700":"text-green-700"} bg-gray-100 hover:bg-gray-200 hover:cursor-pointer`}>
+                      className={`px-3 py-1 rounded-lg m-1  flex items-center border  text-sm border-gray-500 ${item.accountStatus === "enabled" ? "text-red-700" : "text-green-700"} bg-gray-100 hover:bg-gray-200 hover:cursor-pointer`}>
                       {item.accountStatus === "enabled" ? "Disable" : "Enable"}
                     </button>
                   </td>

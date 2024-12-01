@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { FaSearch, FaUsers } from "react-icons/fa";
-import { MdChevronLeft, MdChevronRight } from "react-icons/md";
+import { MdApproval, MdChevronLeft, MdChevronRight, MdDisabledByDefault } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { cs_clients, user_status } from "../../../api/Api";
+
+import { IoBookSharp, IoCheckmarkSharp } from "react-icons/io5";
+import { MdShoppingCart } from "react-icons/md";
+import Card from "../../client/Dashboard/components/Card";
+import { User2Icon, UserCircle } from "lucide-react";
+import { RiExchangeBoxLine, RiPassPendingFill } from "react-icons/ri";
+import { FcApprove } from "react-icons/fc";
+import { PiExclamationMarkBold } from "react-icons/pi";
 
 const AdminUserManagement = () => {
   const [search, setSearch] = useState("");
@@ -201,6 +209,33 @@ const AdminUserManagement = () => {
           <CircularProgress />
         </div>
       )}
+      <div className="flex flex-wrap gap-4 justify-center sm:justify-start mb-5">
+        <Card
+          Icon={User2Icon}
+          heading="Total Clients"
+          number={`${clients.length}`}
+          theme={{ bgColor: "bg-yellow-100", iconBgColor: "bg-yellow-400" }}
+        />
+        <Card
+          Icon={RiPassPendingFill}
+          heading="Pending Clients"
+          number={`${clients.filter((client) => client.status === "pending").length}`}
+          theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
+        />
+        <Card
+          Icon={RiExchangeBoxLine}
+          heading="Approved Clients"
+          number={`${clients.filter((client) => client.status === "approved").length}`}
+          theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
+        />
+
+        <Card
+          Icon={MdDisabledByDefault}
+          heading="Declined Clients"
+          number={`${clients.filter((client) => client.status === "declined").length}`}
+          theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
+        />
+      </div>
       <h1 className="text-2xl font-bold mb-4 text-center">Users</h1>
       <div className="flex justify-between items-center mb-4">
         <div className="relative w-[60%] max-w-lg">

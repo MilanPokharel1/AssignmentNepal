@@ -2,10 +2,14 @@ import React, { useState, useEffect } from "react";
 import { ImSearch } from "react-icons/im";
 import { FaChevronDown } from "react-icons/fa";
 import CircularProgress from "@material-ui/core/CircularProgress";
-
+import Card from "../../client/Dashboard/components/Card";
 import FilterButtons from "./components/FilterButtons"; // Ensure this component is implemented
 import OrderCard from "../Dashboard/components/OrderCard";
 import { get_all_orders } from "../../../api/Api";
+
+
+import { IoBookSharp, IoCheckmarkSharp } from "react-icons/io5";
+import { MdShoppingCart } from "react-icons/md";
 
 const AdminOrderManagement = () => {
   const [activeFilter, setActiveFilter] = useState("All");
@@ -129,6 +133,33 @@ const AdminOrderManagement = () => {
           <CircularProgress />
         </div>
       )}
+      <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
+        <Card
+          Icon={IoBookSharp}
+          heading="Total Assignment"
+          number={`${assignments.length}`}
+          theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
+        />
+        <Card
+          Icon={MdShoppingCart}
+          heading="Pending Orders"
+          number={`${assignments.filter((assignment) => assignment.status === "pending").length}`}
+          theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
+        />
+        <Card
+          Icon={IoBookSharp}
+          heading="Active Assignment"
+          number={`${assignments.filter((assignment) => assignment.status === "ongoing" || assignment.status === "approved" || assignment.status === "submitted").length}`}
+          theme={{ bgColor: "bg-yellow-100", iconBgColor: "bg-orange-400" }}
+        />
+
+        <Card
+          Icon={IoCheckmarkSharp}
+          heading="Completed"
+          number={`${assignments.filter((assignment) => assignment.status === "completed").length}`}
+          theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
+        />
+      </div>
       <div className="flex flex-row-reverse px-4 mt-5 w-full md:w-[85%]">
         <div className="flex justify-between items-center mr-5 gap-3">
           <div className="relative">

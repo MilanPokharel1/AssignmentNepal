@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { FaSearch } from "react-icons/fa";
-import { MdChevronLeft, MdChevronRight } from "react-icons/md";
+import { FaPenFancy, FaSearch } from "react-icons/fa";
+import { MdAssignmentTurnedIn, MdChevronLeft, MdChevronRight, MdDisabledByDefault, MdPhoneEnabled } from "react-icons/md";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { cs_writers, user_status } from "../../../api/Api";
 import { FaUsers } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
+import Card from "../../client/Dashboard/components/Card";
+import { IoBookSharp, IoCheckmarkSharp } from "react-icons/io5";
+import { MdShoppingCart } from "react-icons/md";
+import { GrDisabledOutline } from "react-icons/gr";
+import { RiExchangeBoxLine } from "react-icons/ri";
 
 
 const AdminWritersManagement = () => {
@@ -17,6 +22,8 @@ const AdminWritersManagement = () => {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [writers, setWriters] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+
 
 
   useEffect(() => {
@@ -203,6 +210,33 @@ const AdminWritersManagement = () => {
           <CircularProgress />
         </div>
       )}
+      <div className="flex flex-wrap gap-4 justify-center sm:justify-start mb-5">
+        <Card
+          Icon={FaPenFancy}
+          heading="Total Writers"
+          number={`${writers.length}`}
+          theme={{ bgColor: "bg-orange-100", iconBgColor: "bg-orange-400" }}
+        />
+        <Card
+          Icon={MdAssignmentTurnedIn}
+          heading="Assigned Writers"
+          number={`${writers.filter((writer) => writer.status === "assigned").length}`}
+          theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
+        />
+        <Card
+          Icon={RiExchangeBoxLine}
+          heading="Enabled Writers"
+          number={`${writers.filter((writer) => writer.accountStatus === "enabled").length}`}
+          theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
+        />
+
+        <Card
+          Icon={MdDisabledByDefault}
+          heading="Disabled Writers"
+          number={`${writers.filter((writer) => writer.accountStatus === "disabled").length}`}
+          theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
+        />
+      </div>
       <h1 className="text-2xl font-bold mb-4 text-center">Writers</h1>
 
       <div className="flex justify-between items-center mb-6 ">
