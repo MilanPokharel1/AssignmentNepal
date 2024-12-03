@@ -31,7 +31,7 @@ const AdminUserManagement = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [down, setdown] = useState(false);
-
+  const [expandedRows, setExpandedRows] = useState([]);
   const handleRowClick = (index) => {
     setExpandedRows((prev) =>
       prev.includes(index)
@@ -307,61 +307,132 @@ const AdminUserManagement = () => {
       <div className="min-h-96 bg-white">
         <table className="min-w-full">
           <thead>
-          <th className="border-b-2 px-4 py-4 md:hidden">
+            <tr className="w-32 text-gray-400">
+              <th className="border-b-2 px-4 py-4 md:hidden">
                 <BiExpandVertical className="w-6 h-6" />
               </th>
-            <tr className="w-32 text-gray-400">
               <th className="border-b-2 pl-10 py-4 text-left">Name</th>
 
               <th className="border-b-2 px-4 py-4">Phone Number</th>
-              <th className="border-b-2 px-4 py-4">Email</th>
-              <th className="border-b-2 px-4 py-4">Locations</th>
-              <th className="border-b-2 px-4 py-4 text-left">Actions</th>
+              <th className="border-b-2 px-4 py-4 max-md:hidden">Email</th>
+              <th className="border-b-2 px-4 py-4 max-md:hidden">Locations</th>
+              <th className="border-b-2 px-4 py-4 text-left max-md:hidden">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
             {currentItems.length > 0 ? (
               currentItems.map((item, index) => (
-                <tr key={index}>
-                  <td className="border-b-2 px-4 py-3 text-center border-gray-200">
-                    <div className="flex justify-start items-center gap-3">
-                      <img
-                        src="https://static.vecteezy.com/system/resources/previews/025/220/125/non_2x/picture-a-captivating-scene-of-a-tranquil-lake-at-sunset-ai-generative-photo.jpg"
-                        className="w-8 h-8 rounded-full object-cover"
-                        alt={item.name}
-                      />
-                      <span>
-                        {highlightText(item.firstName, search)}{" "}
-                        {highlightText(item.lastName, search)}
-                      </span>
-                    </div>
-                  </td>
-
-                  <td className="border-b-2 px-4 py-3 text-center border-gray-200">
-                    {highlightText(item.phone, search)}
-                  </td>
-                  <td className="border-b-2 px-4 py-3 text-center border-gray-200">
-                    {highlightText(item.email, search)}
-                  </td>
-                  <td className="border-b-2 px-4 py-3 text-center border-gray-200">
-                    {highlightText(item.address, search)}
-                  </td>
-                  <td className="border-b-2 px-0 py-3 text-center border-gray-200 flex items-center">
-                    <button className="rounded-lg m-1 flex items-center  border text-sm border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-200 hover:cursor-pointer px-3 py-1">
-                      Login
-                    </button>
-                    <button
-                      onClick={() => handleTogglePopup(item, index)}
-                      className={`px-3 py-1 rounded-lg m-1  flex items-center border  text-sm border-gray-500 ${
-                        item.accountStatus === "enabled"
-                          ? "text-red-700"
-                          : "text-green-700"
-                      } bg-gray-100 hover:bg-gray-200 hover:cursor-pointer`}
-                    >
-                      {item.accountStatus === "enabled" ? "Disable" : "Enable"}
-                    </button>
-                  </td>
-                </tr>
+                <React.Fragment key={index}>
+                  <tr w-52>
+                    {" "}
+                    <td className="border-b-2 px-4 py-3 text-center border-gray-200 md:hidden">
+                      {down ? (
+                        <MdOutlineExpandLess
+                          className="w-6 h-6 cursor-pointer"
+                          onClick={() => handleRowClick(index)}
+                        />
+                      ) : (
+                        <MdOutlineExpandMore
+                          className="w-6 h-6 cursor-pointer"
+                          onClick={() => handleRowClick(index)}
+                        />
+                      )}
+                    </td>
+                    <td className="border-b-2 px-4 py-3 text-center border-gray-200">
+                      <div className="flex justify-start items-center gap-3">
+                        <img
+                          src="https://static.vecteezy.com/system/resources/previews/025/220/125/non_2x/picture-a-captivating-scene-of-a-tranquil-lake-at-sunset-ai-generative-photo.jpg"
+                          className="w-8 h-8 rounded-full object-cover"
+                          alt={item.name}
+                        />
+                        <span>
+                          {highlightText(item.firstName, search)}{" "}
+                          {highlightText(item.lastName, search)}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="border-b-2 px-4 py-3 text-center border-gray-200">
+                      {highlightText(item.phone, search)}
+                    </td>
+                    <td className="border-b-2 px-4 py-3 text-center border-gray-200 max-md:hidden">
+                      {highlightText(item.email, search)}
+                    </td>
+                    <td className="border-b-2 px-4 py-3 text-center border-gray-200 max-md:hidden">
+                      {highlightText(item.address, search)}
+                    </td>
+                    <td className="border-b-2 px-0 py-3 text-center border-gray-200 flex items-center max-md:hidden">
+                      <button className="rounded-lg m-1 flex items-center  border text-sm border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-200 hover:cursor-pointer px-3 py-1">
+                        Login
+                      </button>
+                      <button
+                        onClick={() => handleTogglePopup(item, index)}
+                        className={`px-3 py-1 rounded-lg m-1  flex items-center border  text-sm border-gray-500 ${
+                          item.accountStatus === "enabled"
+                            ? "text-red-700"
+                            : "text-green-700"
+                        } bg-gray-100 hover:bg-gray-200 hover:cursor-pointer`}
+                      >
+                        {item.accountStatus === "enabled"
+                          ? "Disable"
+                          : "Enable"}
+                      </button>
+                    </td>
+                  </tr>
+                  {expandedRows.includes(index) && (
+                    <tr>
+                      <td
+                        colSpan="6"
+                        className="border-b-2 px-4 py-3 bg-gray-100"
+                      >
+                        <div className="flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
+                          <div className="flex items-center space-x-4">
+                            <p className="flex items-center space-x-4 p-2 bg-white rounded-lg shadow-sm">
+                              <div className="flex flex-col space-y-2 w-full">
+                                <div className="flex items-center space-x-2">
+                                  <span className="font-bold text-gray-600 min-w-[60px]">
+                                    Email-
+                                  </span>{" "}
+                                  <span className="text-gray-800">
+                                    {highlightText(item.email, search)}
+                                  </span>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <span className="text-gray-600">
+                                    <span className="font-bold text-gray-600 min-w-[60px]">
+                                      Loaction-
+                                    </span>{" "}
+                                    {highlightText(item.address, search)}
+                                  </span>
+                                </div>
+                                <div className="flex space-x-2">
+                                  <button className="rounded-lg px-3 py-1 text-sm border border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors">
+                                    Login
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      handleTogglePopup(item, index)
+                                    }
+                                    className={`px-3 py-1 rounded-lg text-sm border transition-colors ${
+                                      item.accountStatus === "enabled"
+                                        ? "border-red-500 text-red-700 bg-red-50 hover:bg-red-100"
+                                        : "border-green-500 text-green-700 bg-green-50 hover:bg-green-100"
+                                    }`}
+                                  >
+                                    {item.accountStatus === "enabled"
+                                      ? "Disable"
+                                      : "Enable"}
+                                  </button>
+                                </div>
+                              </div>
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
               ))
             ) : (
               <tr>
