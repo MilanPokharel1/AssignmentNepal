@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { FaWallet, FaBell, FaCog, FaSignOutAlt, FaTimes } from "react-icons/fa";
+import { FaWallet, FaBell, FaCog, FaSignOutAlt, FaTimes, FaUserPlus } from "react-icons/fa";
 import logo from "../../../assets/random-logo.png";
 import { RiPieChart2Fill } from "react-icons/ri";
 import { MdShoppingCart } from "react-icons/md";
@@ -42,13 +42,13 @@ const SideNavbar = ({ onClose, isMobile }) => {
         <img src={logo} className="w-full object-cover" alt="logo" />
       </div>
 
-      <div className="w-[98%]  gap-7 flex-col flex h-[50%] justify-between navbarClass2">
+      <div className="w-[98%]  gap-4 flex-col flex h-[50%] justify-between navbarClass2">
         <div>
           <NavLink
             to="/admin"
             end
             className={({ isActive }) =>
-              `${linkStyles} ${isActive ? activeLinkStyles : ""} mb-3`
+              `${linkStyles} ${isActive ? activeLinkStyles : ""} mb-8`
             }
             onClick={() => isMobile && onClose?.()}
           >
@@ -95,6 +95,18 @@ const SideNavbar = ({ onClose, isMobile }) => {
         </div>
         <div>
           <NavLink
+            to="/admin/clientrequest"
+            className={({ isActive }) =>
+              `${linkStyles} ${isActive ? activeLinkStyles : ""}`
+            }
+            onClick={() => isMobile && onClose?.()}
+          >
+            <FaUserPlus className="w-5 h-5" />
+            <span>Client Request</span>
+          </NavLink>
+        </div>
+        <div>
+          <NavLink
             to="/admin/adminCS"
             className={({ isActive }) =>
               `${linkStyles} ${isActive ? activeLinkStyles : ""}`
@@ -130,18 +142,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
             <span>Reminders</span>
           </NavLink>
         </div>
-        <div>
-          <NavLink
-            to="/admin/adminsettings"
-            className={({ isActive }) =>
-              `${linkStyles} ${isActive ? activeLinkStyles : ""}`
-            }
-            onClick={() => isMobile && onClose?.()}
-          >
-            <Settings className="w-5 h-5" />
-            <span>Settings</span>
-          </NavLink>
-        </div>
+
         <div>
           <NavLink
             to="/admin/adminpayments"
@@ -152,6 +153,18 @@ const SideNavbar = ({ onClose, isMobile }) => {
           >
             <FaWallet className="w-5 h-5" />
             <span>Payments</span>
+          </NavLink>
+        </div>
+        <div>
+          <NavLink
+            to="/admin/adminsettings"
+            className={({ isActive }) =>
+              `${linkStyles} ${isActive ? activeLinkStyles : ""}`
+            }
+            onClick={() => isMobile && onClose?.()}
+          >
+            <Settings className="w-5 h-5" />
+            <span>Settings</span>
           </NavLink>
         </div>
         <div className="mt-9 pl-7">

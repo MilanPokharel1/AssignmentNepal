@@ -86,6 +86,7 @@ function App() {
               path="adminordermanagement/adminorderview/:orderId"
               element={<AdminOrderView />}
             />
+            <Route path="clientrequest" element={<CsClientRequest />} />
             <Route path="adminsettings" element={<Settings />} />
           </Route>
           <Route path="/cs" element={<CustomerService />}>

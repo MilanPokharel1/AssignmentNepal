@@ -3,14 +3,18 @@ import { MdOutlineNotifications, MdMenu } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const pathToTitleMap = {
-  "/admin": "Admin",
-  "/cs/ordermanagement": "Order Management",
-  "/cs/assignwriter": "Assign Writers",
-  "/admin/adminusermanagement": "User Management",
+  "/admin": "Admin Dashboard",
+  "/admin/adminordermanagement": "Order Management",
+  "/admin/adminwritermanagement": "Writers",
+  "/admin/adminusermanagement": "Clients",
+  "/admin/clientrequest": "Client Request",
+  "/admin/adminCS": "Customer Service",
+  "/admin/adminWithdrawal": "Withdrawl Request",
+
   "/cs/assignmentrequest": "Assignment Request",
-  "/cs/withdrawlrequest": "Withdrawl Request",
-  "/cs/reminders": "Reminders",
-  "/cs/payments": "Payments",
+  "/admin/adminreminders": "Reminders",
+  "/admin/adminpayments": "Payments",
+  "/admin/adminsettings": "Settings",
 };
 
 const TopNavbar = ({
