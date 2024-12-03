@@ -114,13 +114,23 @@ const AdminWritersManagement = () => {
   const highlightText = (text, searchTerm) => {
     if (!searchTerm) return text;
 
-    const terms = searchTerm.toLowerCase().split(" ").filter(Boolean);
-    const regex = new RegExp(`(${terms.join("|")})`, "gi");
+    // Create search terms, both with and without spaces
+    const originalTerms = searchTerm.toLowerCase().split(" ").filter(Boolean);
+    const spacelessTerms = originalTerms.join("").toLowerCase();
+    const terms = [...originalTerms, spacelessTerms];
 
+    // Create a regex that matches any of the terms
+    const regex = new RegExp(
+      `(${terms
+        .map((term) => term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
+        .join("|")})`,
+      "gi"
+    );
+
+    // Split and map the text
     const parts = text.toString().split(regex);
-
     return parts.map((part, index) =>
-      terms.includes(part.toLowerCase()) ? (
+      terms.some((term) => part.toLowerCase() === term.toLowerCase()) ? (
         <span key={index} className="bg-yellow-200">
           {part}
         </span>
@@ -131,21 +141,25 @@ const AdminWritersManagement = () => {
   };
 
   const filteredData = writers.filter((item) => {
+    // Filter by writer status if a specific status is selected
     if (filter !== "All" && item.writerStatus !== filter) return false;
 
-    if (search) {
-      const searchTerms = search.toLowerCase().split(" ").filter(Boolean);
+    // If no search term, return all items
+    if (!search) return true;
 
-      const matches = searchTerms.every((term) =>
-        Object.values(item).some(
-          (val) => typeof val === "string" && val.toLowerCase().includes(term)
-        )
-      );
+    // Create search terms, both with and without spaces
+    const searchTerms = search.toLowerCase().split(" ").filter(Boolean);
+    const spacelessSearch = searchTerms.join("").toLowerCase();
+    const allSearchTerms = [...searchTerms, spacelessSearch];
 
-      if (!matches) return false;
-    }
+    // Check if all search terms match any string value in the item
+    const matches = allSearchTerms.every((term) =>
+      Object.values(item).some(
+        (val) => typeof val === "string" && val.toLowerCase().includes(term)
+      )
+    );
 
-    return true;
+    return matches;
   });
 
   const indexOfLastItem = currentPage * itemsPerPage;

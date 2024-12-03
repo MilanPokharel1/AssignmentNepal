@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 
 import OrderCard from "./components/OrderCard";
 import MainPieChart from "./components/MainPieChart";
-import CircularProgress from "./components/CircularProgress";
+import CircularChart from "./components/CircularChart";
 import { admin_dashboard } from "../../../api/Api";
 const chartData = [
   { month: "J", thisMonth: 20, lastMonth: 30 },
@@ -79,7 +79,7 @@ const Dashboard = () => {
     <div className="w-full min-h-screen p-6 bg-gray-50">
       {isLoading && (
         <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
-          <CircularProgress />
+          <CircularChart />
         </div>
       )}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-1 mb-3">
@@ -119,44 +119,31 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col lg:flex-row h-auto lg:h-[45vh] w-full gap-4 rounded-lg mb-5">
-        <div className="h-full w-full lg:w-1/2 bg-white">
-          <MainPieChart
-            orderCancelData={[
-              { name: "Orders", value: adminDashboard.totalOrders },
-              { name: "Cancelled", value: adminDashboard.cancelledOrders },
-            ]}
-          />
-        </div>
-        <div className="w-full lg:w-[60%] h-full flex  ">
-          <CircularProgress
-            value={(
-              (adminDashboard.assignedWriters / adminDashboard.totalWriters) *
-              100
-            ).toFixed(2)}
-            title={"Assigned Writers"}
-          />
-
-          <CircularProgress
-            value={(
-              (adminDashboard.completedOrders / adminDashboard.totalOrders) *
-              100
-            ).toFixed(2)}
-            title={"Orders/Completed"}
-          />
-          <CircularProgress
-            value={(
-              (adminDashboard.totalPayment / adminDashboard.totalAmount) *
-              100
-            ).toFixed(0)}
-            title={"Payment Received"}
-          />
-          {/* <CircularProgress
-            value={metric.completed}
-            title={metric.name}
-          /> */}
-        </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+      <div className="bg-white p-4 shadow-md rounded-lg flex items-center justify-center">
+        <MainPieChart
+          orderCancelData={[
+            { name: "Orders", value: adminDashboard.totalOrders },
+            { name: "Cancelled", value: adminDashboard.cancelledOrders },
+          ]}
+        />
       </div>
+      <div className="bg-white p-4 shadow-md rounded-lg grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <CircularChart
+          value={((adminDashboard.assignedWriters / adminDashboard.totalWriters) * 100).toFixed(2)}
+          title="Assigned Writers"
+        />
+        <CircularChart
+          value={((adminDashboard.completedOrders / adminDashboard.totalOrders) * 100).toFixed(2)}
+          title="Orders Completed"
+        />
+        <CircularChart
+          value={((adminDashboard.totalPayment / adminDashboard.totalAmount) * 100).toFixed(0)}
+          title="Payment Received"
+        />
+      </div>
+    </div>
+
       <div className="mb-8">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-semibold mb-4">Orders</h2>
