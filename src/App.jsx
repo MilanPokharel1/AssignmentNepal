@@ -40,6 +40,8 @@ import AdminCS from "./screens/admin/AdminCS/AdminCS";
 import AdminWithdrawal from "./screens/admin/AdminWithdrawal/AdminWithdrawal";
 import AdminOrderView from "./screens/admin/AdminOrderView/AdminOrderView";
 import Settings from "./screens/admin/Settings/Settings";
+import WriterOrderView from "./screens/writer/WriterOrderView/WriterOrderView";
+import AccountPending from "./screens/login/AccountPending";
 
 function App() {
   return (
@@ -47,6 +49,10 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route
+              path="/pending"
+              element={<AccountPending />}
+            />
           <Route path="/client" element={<Client />}>
             <Route index element={<ClientDashboard />} />
             <Route path="orders" element={<ClientOrder />}>
@@ -107,6 +113,10 @@ function App() {
             <Route
               path="writerorder/writerView/:orderId"
               element={<WriterView />}
+            />
+            <Route
+              path="writermytask/writerView/:orderId"
+              element={<WriterOrderView />}
             />
           </Route>
         </Routes>

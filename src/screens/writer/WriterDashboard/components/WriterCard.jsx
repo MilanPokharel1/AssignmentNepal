@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
+import { writer_accept } from "../../../../api/Api";
 
 const WriterCard = ({
   _id,
@@ -8,18 +9,51 @@ const WriterCard = ({
   description,
   status,
   totalAmount,
-  paidAmount = 400,
+  paidAmount,
   payments,
   deadline,
-  writerName = "Not Assigned",
+  firstName,
+  lastName,
+  writerName,
   writerPic = "https://unsplash.com/photos/a-close-up-of-a-motherboard-and-a-pen-on-a-table-boMKfQkphro",
   writerId = "",
 }) => {
   const navigate = useNavigate();
+  const [acceptStatus, setIsAccepted] = useState("approved");
+
   paidAmount = payments[0].paidAmount;
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
+  };
+
+
+  const handleAccept = async () => {
+    try {
+      const token = localStorage.getItem("token"); // Replace with the actual token
+      const response = await fetch(writer_accept, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          orderId: _id,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error updating status:", errorData);
+        return;
+      }
+
+      const data = await response.json();
+      setIsAccepted("accepted")
+      console.log("Order Accepted successfully:", data);
+    } catch (error) {
+      console.error("Failed to accept order:", error);
+    }
   };
 
   return (
@@ -35,7 +69,7 @@ const WriterCard = ({
 
           <div className="flex flex-col gap-0">
             <span className="text-base font-medium text-gray-900">
-              {writerName}
+              {firstName}{" "}{lastName}
             </span>
           </div>
         </div>
@@ -62,20 +96,21 @@ const WriterCard = ({
       </div>
       {/* Writer Info */}
       <div className="flex justify-between items-center">
-        {status === "Pending" ? (
+        {status === "approved" ? (
           <div className="flex gap-2">
             <button
-              className="px-3 py-1 text-sm font-semibold text-emerald-700 bg-emerald-200 
-                   hover:bg-emerald-700 hover:text-white rounded-md transition-all duration-200 
-                   border-2 border-emerald-700"
-              onClick={() => console.log("Approved")}
+              className="px-3 py-1 text-sm text-emerald-600 bg-emerald-200 
+                           hover:bg-emerald-400 hover:text-white rounded-md transition-all duration-200 
+                           border-2 border-emerald-400"
+              onClick={() => handleAccept()}
+              disabled={acceptStatus == "accepted"}
             >
-              Accept
+              {acceptStatus == "approved"? "Accept":"Accepted"}
             </button>
             <button
-              className="px-3 py-1 text-sm font-semibold text-red-700 bg-red-200
-                   hover:bg-red-700 hover:text-white rounded-md transition-all duration-200
-                   border-2 border-red-700"
+              className={`px-3 py-1 text-sm text-red-600 bg-red-200 
+                           hover:bg-red-400 hover:text-white ${acceptStatus == "accepted"? "hidden":""} rounded-md transition-all duration-200 
+                           border-2 border-red-400`}
               onClick={() => console.log("Declined")}
             >
               Decline
@@ -86,12 +121,11 @@ const WriterCard = ({
         )}
         <div>
           <button
-            className={`px-3 py-1 text-sm text-white bg-[#9E9FEE] rounded-md transition-colors ${
-              status === "Pending"
-                ? "hover:bg-purple-400"
-                : "bg-gray-300 cursor-not-allowed"
-            }`}
-            disabled={status !== "Pending"}
+            className={`px-3 py-1 text-sm text-white bg-[#9E9FEE] rounded-md transition-colors ${status === "approved"
+              ? "hover:bg-purple-400"
+              : "bg-gray-300 cursor-not-allowed"
+              }`}
+            disabled={status !== "approved"}
             onClick={() =>
               navigate(`/writer/writerorder/writerView/:orderId${_id}`)
             }

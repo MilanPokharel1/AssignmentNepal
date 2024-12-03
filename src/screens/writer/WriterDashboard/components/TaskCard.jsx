@@ -5,14 +5,16 @@ const TaskCard = ({ task }) => {
   const navigate = useNavigate();
   const {
     _id,
-    title,
+    assignmentTitle,
     status,
-    amount,
-    dueDate,
-    assignee,
+    deadline,
+    firstName,
+    lastName,
     payments = [{ paidAmount: 400 }],
     totalAmount = amount ? parseInt(amount.replace("Rs ", "")) : 5000,
-    writer,
+    writerName,
+    writerId,
+    price
   } = task;
   const statusColors = {
     ongoing: "bg-blue-100 text-blue-600", // Blue for tasks in progress
@@ -32,14 +34,13 @@ const TaskCard = ({ task }) => {
           />
           <div className="flex flex-col gap-0">
             <span className="text-base font-medium text-gray-900 truncate max-w-[120px] sm:max-w-[200px]">
-              {assignee.name}
+              {firstName}{" "}{lastName}
             </span>
           </div>
         </div>
         <div
-          className={`px-2 py-1 rounded-full text-sm capitalize ${
-            statusColors[status.toLowerCase()]
-          }`}
+          className={`px-2 py-1 rounded-full text-sm capitalize ${statusColors[status.toLowerCase()]
+            }`}
         >
           {status}
         </div>
@@ -52,16 +53,16 @@ const TaskCard = ({ task }) => {
               Assignment title:
             </div>
             <span className="text-gray-900 sm:ml-2 truncate w-64 sm:w-64 inline-block overflow-hidden whitespace-nowrap text-ellipsis">
-              {title}
+              {assignmentTitle}
             </span>
           </div>
         </div>
 
-        <span className="text-xs text-red-500">Due {dueDate}</span>
+        <span className="text-xs text-red-500">Due {deadline}</span>
 
         <div className="mb-2">
           <div className="text-sm text-gray-600">
-            Total Amount: <span className="font-medium">{totalAmount}</span>
+            Total Amount: <span className="font-medium">{price ? price : "-"}</span>
           </div>
         </div>
       </div>
@@ -75,14 +76,14 @@ const TaskCard = ({ task }) => {
           />
           <div className="flex flex-col gap-0">
             <span className="text-base font-medium text-gray-900 truncate max-w-[120px] sm:max-w-[200px]">
-              {writer}
+              {writerName}
             </span>
             <span className="text-sm text-gray-600">Writer</span>
           </div>
         </div>
         <div>
           <button
-            onClick={() => navigate(`/writer/writerView/${_id}`)}
+            onClick={() => navigate(`writerView/${_id}`)}
             className="px-3 py-1 text-sm text-white bg-[#9E9FEE] hover:bg-purple-400 rounded-md transition-colors"
           >
             View

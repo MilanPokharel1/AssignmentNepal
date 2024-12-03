@@ -18,7 +18,18 @@ export const get_remainder = `${url}/user/remainder`;
 export const create_remainder = `${url}/user/createremainder`;
 export const cs_dashboard = `${url}/cs/dashboard`;
 export const admin_dashboard = `${url}/admin/dashboard`;
+
 export const cs_writers = `${url}/cs/getWriters`;
 export const pending_users = `${url}/user/pendingusers`;
 export const change_pending_user = `${url}/user/changependingstatus`;
 export const cs_clients = `${url}/cs/getClients`;
+
+
+
+//writer
+export const writer_dashboard = `${url}/writer/dashboard`;
+export const writer_orders = `${url}/writer/orders`;
+export const writer_tasks = `${url}/writer/mytask`;
+
+export const writer_accept = `${url}/writer/acceptorder`;
+export const writer_submit = `${url}/writer/submitorder`;

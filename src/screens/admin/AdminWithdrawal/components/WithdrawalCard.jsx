@@ -46,13 +46,17 @@ const WithdrawalCard = ({ item }) => {
           <div className="font-semibold text-[#00b087]">{amount}</div>
         </div>
       </div>
-      <div className="flex gap-4 justify-end mt-2">
+      <div className="flex gap-4 justify-end mt-7">
         {status === "pending" && (
           <>
-            <button className="border border-gray-500 bg-blue-500 px-2 py-1 text-white rounded-lg">
+            <button className="px-3 py-1 text-sm text-emerald-600 bg-emerald-200 
+                           hover:bg-emerald-400 hover:text-white rounded-md transition-all duration-200 
+                           border-2 border-emerald-400">
               Approve
             </button>
-            <button className="border border-gray-500 bg-blue-500 px-2 py-1 text-white rounded-lg">
+            <button className="px-3 py-1 text-sm text-red-600 bg-red-200 
+                           hover:bg-red-400 hover:text-white rounded-md transition-all duration-200 
+                           border-2 border-red-400">
               Decline
             </button>
           </>

@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TaskCard from "../WriterDashboard/components/TaskCard";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { writer_tasks } from "../../../api/Api";
+
 
 const FilterButton = ({ label, active, onClick }) => (
   <button
     onClick={onClick}
-    className={`px-4 py-1.5 rounded-lg text-lg ${
-      active
-        ? "text-white font-light bg-indigo-500"
-        : "border font-thin border-indigo-500"
-    }`}
+    className={`px-4 py-1.5 rounded-lg text-lg ${active
+      ? "text-white font-light bg-indigo-500"
+      : "border font-thin border-indigo-500"
+      }`}
   >
     {label}
   </button>
@@ -91,6 +93,39 @@ const taskData = [
 
 const WriterMyTask = () => {
   const [activeFilter, setActiveFilter] = useState("all");
+  const [taskData, setTaskData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      setIsLoading(true);
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
+
+        const response = await fetch(writer_tasks, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch orders");
+        }
+
+        const data = await response.json();
+        setTaskData(data?.myTask);
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
 
   const filters = [
     { id: "all", label: "All" },
@@ -108,7 +143,11 @@ const WriterMyTask = () => {
   return (
     <div>
       <div className="mt-6">
-     
+        {isLoading && (
+          <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
+            <CircularProgress />
+          </div>
+        )}
 
         <div className="p-6">
           <div className="mb-6 space-x-2">
@@ -124,7 +163,7 @@ const WriterMyTask = () => {
 
           <div className="flex gap-4 flex-wrap">
             {filteredTasks.map((task) => (
-              <TaskCard key={task.id} task={task} />
+              <TaskCard key={task._id} task={task} />
             ))}
           </div>
 

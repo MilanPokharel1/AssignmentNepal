@@ -3,7 +3,7 @@ import React from "react";
 const Card = ({ Icon, heading, number, theme }) => {
   return (
     <div
-      className={`flex items-center ${theme.bgColor} p-4 rounded-lg shadow-md  h-32 w-[30%] min-w-[220px]`}
+      className={`flex items-center ${theme.bgColor} p-4 rounded-lg shadow-md  h-36 sm:h-32 lg:h-36 sm:mb-0 w-[43vw] sm:w-[23rem] md:w-[20rem] sm:max-md:w-[25rem] `}
     >
       {/* Icon with background */}
       <div className={`${theme.iconBgColor} p-2 rounded-full`}>

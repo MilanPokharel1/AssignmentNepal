@@ -8,6 +8,7 @@ import { MdShoppingCart } from "react-icons/md";
 import { FaUser, FaUsers } from "react-icons/fa";
 import { FaMoneyBillWave } from "react-icons/fa6";
 import { RiShieldUserFill } from "react-icons/ri";
+import { Settings } from "lucide-react";
 const SideNavbar = ({ onClose, isMobile }) => {
   const navigate = useNavigate();
 
@@ -137,7 +138,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
             }
             onClick={() => isMobile && onClose?.()}
           >
-            <FaBell className="w-5 h-5" />
+            <Settings className="w-5 h-5" />
             <span>Settings</span>
           </NavLink>
         </div>

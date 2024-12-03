@@ -35,8 +35,13 @@ const GoogleLoginComponent = () => {
       localStorage.setItem('firstName', data.user.firstName);
       localStorage.setItem('lastName', data.user.lastName);
       localStorage.setItem('picture', data.user.picture);
-
-      navigate(`/${data.user.role}`);
+      localStorage.setItem('status', data.user.status);
+      console.log(data.user.status)
+      if (data.user.status === "pending") {
+        navigate("/pending");
+      } else {
+        navigate(`/${data.user.role}`);
+      }
     } catch (error) {
       console.error('Error during login process:', error);
     }

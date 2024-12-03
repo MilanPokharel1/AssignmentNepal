@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Download, Loader, Loader2 } from "lucide-react";
 import { FolderIcon } from "@heroicons/react/solid";
-import { create_remainder, download_file, file_status, get_orderById, send_comment } from "../../../api/Api";
+import { download_file, file_status, get_orderById, send_comment, writer_submit } from "../../../api/Api";
 import { useParams } from "react-router-dom";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { FiBell } from "react-icons/fi";
-const OrdertView = () => {
+const WriterOrderView = () => {
   const [comments, setComments] = useState("");
   const [assignment, setAssignment] = useState({
     files: [], // Initialize with empty array
@@ -19,35 +18,54 @@ const OrdertView = () => {
   const commentAreaRef = useRef(null);
   const [downloadingFiles, setDownloadingFiles] = useState({});
   const [newComment, setNewComment] = useState("");
-  const [remainderTitile, setRemainderTitle] = useState("");
-  const [remainderType, setRemainderType] = useState("update");
-  const [remainderDescription, setRemainderDescription] = useState("");
   const commentsContainerRef = useRef(null);
   const { orderId } = useParams(); // Get orderId from the URL
   const [isLoading, setIsLoading] = useState(true);
-  const [status, setStatus] = useState("Ongoing");
+  
   const [isOpen, setIsOpen] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(false);
+
+  // const [isSubmittedOpen, setIsSubmittedOpen] = useState(false);
 
   const toggleModal = () => {
     setIsOpen(!isOpen);
   };
 
+  const handleAccept = async () => {
+    try {
+      const token = localStorage.getItem("token"); // Replace with the actual token
+      const response = await fetch(writer_submit, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          orderId: assignment._id,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error updating status:", errorData);
+        return;
+      }
+
+      const data = await response.json();
+      setSubmitStatus(true)
+      setIsOpen(false)
+      console.log("Order Submitted successfully:", data);
+    } catch (error) {
+      console.error("Failed to submit order:", error);
+    }
+  };
+
+
   const scrollToBottom = () => {
     commentsContainerRef.current.scrollTop =
       commentsContainerRef.current.scrollHeight;
   };
-  const dummyData = [
-    {
-      date: "20/01/2024",
-      paymentMethod: "Fonepay",
-      amount: "Rs 8000",
-    },
-    {
-      date: "20/01/2024",
-      paymentMethod: "Fonepay",
-      amount: "Rs 8000",
-    },
-  ];
+ 
   useEffect(() => {
     scrollToBottom();
     if (commenttextareaRef.current) {
@@ -77,6 +95,9 @@ const OrdertView = () => {
         const data = await response.json();
         setAssignment(data);
         setComments(data.comments);
+        if(data.status === "submitted"){
+          setSubmitStatus(true)
+        }
       } catch (error) {
         console.error("Error fetching orders:", error);
       } finally {
@@ -131,85 +152,7 @@ const OrdertView = () => {
   };
 
 
-  const changeFileStatus = async (fileId, status) => {
-    try {
-      // Ensure fileId and status are provided
-      if (!fileId || !status) {
-        console.error("File ID or status missing");
-        return;
-      }
-
-      const token = localStorage.getItem("token");
-      console.log("Hit the API");
-
-      // Make the API request to update the file status
-      const response = await fetch(file_status, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ fileId, status }),
-      });
-
-      // Check for a successful response
-      if (!response.ok) {
-        throw new Error("Failed to update file status");
-      }
-
-      // Process the response data
-      const res = await response.json();
-      console.log(res);
-
-
-      // Optionally, handle any UI updates based on response here
-
-    } catch (error) {
-      console.error("Failed to update file status:", error);
-    }
-  };
-
-
-  const sendRemainder = async (fileId, status) => {
-    try {
-      const token = localStorage.getItem("token");
-      console.log("Hit the API");
-
-      // Make the API request to update the file status
-      const response = await fetch(create_remainder, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          userId:assignment.userId,
-          assignmentTitle: assignment.assignmentTitle,
-          instagramTitle: assignment.firstName + " " + assignment.lastName,
-          type:remainderType,
-          title:remainderTitile,
-          description:remainderDescription
-          
-        }),
-      });
-
-      // Check for a successful response
-      if (!response.ok) {
-        throw new Error("Failed to update file status");
-      }
-
-      // Process the response data
-      const res = await response.json();
-      console.log(res);
-      setIsOpen(false)
-
-
-      // Optionally, handle any UI updates based on response here
-
-    } catch (error) {
-      console.error("Failed to send remainder:", error);
-    }
-  };
+  
 
 
   function formatTimeRemaining(timeRemaining) {
@@ -348,27 +291,14 @@ const OrdertView = () => {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold ">Assignment</h2>
         <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2">
-            <span className="font-medium">Status:</span>
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              className="border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="Pending">Pending</option>
-              <option value="Ongoing">Ongoing</option>
-              <option value="Completed">Completed</option>
-            </select>
-          </div>
-          <button className="bg-[#5D5FEF] text-white  px-2 py-1 hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 rounded-lg focus:outline-none">
-            Change
-          </button>
+
           <button
-            className="flex items-center bg-[#5D5FEF] text-white  px-2 py-1 hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 rounded-lg"
+            className={`flex items-center bg-[#5D5FEF] text-white  px-3 py-2 mr-10 hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 rounded-lg`}
             onClick={toggleModal}
+            disabled={submitStatus}
           >
-            <FiBell className="w-5 h-5 mr-2" />
-            Send Reminders
+            {/* <submit className="w-5 h-5 mr-2" /> */}
+            {submitStatus?"Submittd": "Submit Assignment"}
           </button>
         </div>
       </div>
@@ -597,12 +527,7 @@ const OrdertView = () => {
                       </div>
                     </div>
                     {file.fileStatus === "pending" ? (
-                      <button className="focus:outline-none flex gap-2 items-center">
-                        <span onClick={() => changeFileStatus(file.fileId, "approved")} className="px-1 py-0 rounded-xl text-sm  border border-white bg-white text-blue-500">
-                          Approve
-                        </span>
-                        <Download className="w-4 h-4 " />
-                      </button>
+                      <div></div>
                     ) : (
                       <button
                         className="focus:outline-none"
@@ -621,96 +546,33 @@ const OrdertView = () => {
                 ))}
             </div>
           </div>
-          <div className="space-y-4 text-sm">
-            <h2 className="text-2xl font-bold">Payments</h2>
-            {dummyData.map((payment, index) => (
-              <div key={index} className="bg-white shadow-md rounded-lg p-4 ">
-                <div className="flex items-center gap-2 ">
-                  <p className="text-gray-600">Payment Date:</p>
-                  <p>{payment.date}</p>
-                </div>
-                <div className="flex items-center gap-2 ">
-                  <p className="text-gray-600">Payment Method:</p>
-                  <p>{payment.paymentMethod}</p>
-                </div>
-                <div className="flex items-center gap-2 ">
-                  <p className="text-gray-600">Amount:</p>
-                  <p className="text-[#00b087] font-semibold">
-                    {payment.amount}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="max-w-sm mx-auto mt-8 p-4 border rounded-md shadow-md bg-white">
-            <h2 className="text-lg font-semibold mb-4">Pay Writer</h2>
-            <input
-              type="text"
-              placeholder="Enter amount"
-              className="w-full px-3 py-2 border rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
-              Save
-            </button>
-          </div>
+          
+          
         </div>
       </div>
       {isOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-lg">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">
-              Send Reminder
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30">
+          <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">
+              Confirm Action
             </h2>
-            {/* Title Input */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Title
-              </label>
-              <input
-                onChange={(e) => setRemainderTitle(e.target.value)}
-                value={remainderTitile}
-                type="text"
-                className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-              />
-            </div>
-            {/* Description Textarea */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Description
-              </label>
-              <textarea
-                rows="5"
-                onChange={(e) => setRemainderDescription(e.target.value)}
-                value={remainderDescription}
-                className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-              ></textarea>
-            </div>
-            {/* Category Dropdown */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Category
-              </label>
-              <select
-                onChange={(e) => setRemainderType(e.target.value)}
-                value={remainderType}
-                className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                <option value="alert">Alert</option>
-                <option value="warning">Warning</option>
-                <option value="update">Update</option>
-              </select>
-            </div>
-            {/* Buttons */}
-            <div className="flex justify-end gap-4">
+            <p className="text-gray-600 mb-6">
+              Are you sure you want to submit the assignment
+            </p>
+            <div className="flex justify-end space-x-4">
               <button
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg shadow-md hover:bg-gray-300 focus:outline-none"
                 onClick={toggleModal}
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
               >
                 Cancel
               </button>
-              <button 
-              onClick={()=>sendRemainder()}
-              className="px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg shadow-md hover:opacity-90 focus:outline-none">
-                Send
+              <button
+                onClick={() => {
+                  handleAccept()
+                }}
+                className={`px-4 py-2 rounded-lg transition-colors bg-blue-500 text-white hover:bg-blue-600`}
+              >
+                Submit
               </button>
             </div>
           </div>
@@ -720,4 +582,4 @@ const OrdertView = () => {
   );
 };
 
-export default OrdertView;
+export default WriterOrderView;

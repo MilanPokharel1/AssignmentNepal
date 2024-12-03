@@ -56,18 +56,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
           </NavLink>
         </div>
 
-        <div>
-          <NavLink
-            to="/writer/writerwithdrawl"
-            className={({ isActive }) =>
-              `${linkStyles} ${isActive ? activeLinkStyles : ""}`
-            }
-            onClick={() => isMobile && onClose?.()}
-          >
-            <FaMoneyBillWave className="w-5 h-5" />
-            <span>Withdrawl Requests</span>
-          </NavLink>
-        </div>
+        
         <div>
           <NavLink
             to="/writer/writerorder"
@@ -89,7 +78,19 @@ const SideNavbar = ({ onClose, isMobile }) => {
             onClick={() => isMobile && onClose?.()}
           >
             <FaPenAlt className="w-5 h-5" />
-            <span>Task</span>
+            <span>My Task</span>
+          </NavLink>
+        </div>
+        <div>
+          <NavLink
+            to="/writer/writerwithdrawl"
+            className={({ isActive }) =>
+              `${linkStyles} ${isActive ? activeLinkStyles : ""}`
+            }
+            onClick={() => isMobile && onClose?.()}
+          >
+            <FaMoneyBillWave className="w-5 h-5" />
+            <span>Withdrawl Requests</span>
           </NavLink>
         </div>
         <div>

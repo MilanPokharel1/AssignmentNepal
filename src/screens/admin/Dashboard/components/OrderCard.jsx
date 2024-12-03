@@ -61,6 +61,8 @@ const OrderCard = ({
   };
 
   const handleStatusChange = async (newStatus) => {
+    console.log("New: ",newStatus)
+    console.log("Current: ",currentStatus)
     try {
       const token = localStorage.getItem("token"); // Replace with the actual token
       console.log(newStatus);
@@ -189,13 +191,15 @@ const OrderCard = ({
                 className="px-3 py-1 text-sm text-red-600 bg-red-200 
                            hover:bg-red-400 hover:text-white rounded-md transition-all duration-200 
                            border-2 border-red-400"
-                onClick={() => handleStatusChange("cancelled")}
+                onClick={() => handleStatusChange(
+                  currentStatus === "submitted" ? "ongoing" : "cancelled"
+                )}
               >
                 Decline
               </button>
             </>
           ) : currentStatus === "approved" ||
-            currentStatus === "ongoing" ||
+            
             currentStatus === "completed" ? (
             <button
               className="px-3 py-1 text-sm text-gray-400 bg-gray-200 

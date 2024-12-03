@@ -41,8 +41,13 @@ const Login = () => {
         localStorage.setItem('firstName', data.user.firstName);
         localStorage.setItem('lastName', data.user.lastName);
         localStorage.setItem('picture', data.user.picture);
+        localStorage.setItem('status', data.user.status);
 
-        navigate(`/${data.user.role}`);
+        if (data.user.status === "pending") {
+          navigate("/pending");
+        } else {
+          navigate(`/${data.user.role}`);
+        }
 
       } else {
         setIsLoading(false);

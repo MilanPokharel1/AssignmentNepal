@@ -9,6 +9,8 @@ import { useNavigate } from "react-router-dom";
 import OrderCard from "./components/OrderCard";
 import MainPieChart from "./components/MainPieChart";
 import CircularChart from "./components/CircularChart";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
 import { admin_dashboard } from "../../../api/Api";
 const chartData = [
   { month: "J", thisMonth: 20, lastMonth: 30 },
@@ -79,7 +81,7 @@ const Dashboard = () => {
     <div className="w-full min-h-screen p-6 bg-gray-50">
       {isLoading && (
         <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
-          <CircularChart />
+          <CircularProgress />
         </div>
       )}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-1 mb-3">
