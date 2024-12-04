@@ -10,7 +10,7 @@ import FilterButtons from "./components/FilterButtons";
 import { HiArrowRight } from "react-icons/hi";
 import PaymentCard from "../Payments/Components/PaymentCard";
 import ClientOrderPopup from "../Order/Components/ClientOrderPopup.jsx";
-import { UseTheme } from "../../../contexts/ThemeContext/UseTheme.js";
+// import { UseTheme } from "../../../contexts/ThemeContext/UseTheme.js";
 import { get_orders, get_payment_dashboard } from "../../../api/Api.jsx";
 
 const Dashboard = () => {
@@ -20,10 +20,10 @@ const Dashboard = () => {
   const [assignments, setAssignments] = useState([]);
   const [paymentData, setPaymentData] = useState([]);
 
-  const { currentTheme, themes } = UseTheme();
+  // const { currentTheme, themes } = UseTheme();
   const [isLoading, setIsLoading] = useState(false);
 
-  const theme = themes[currentTheme];
+  // const theme = themes[currentTheme];
 
   const countAssignments = () => {
     const totalAssignments = assignments.length;
