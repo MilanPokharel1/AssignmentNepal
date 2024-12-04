@@ -5,6 +5,7 @@ import {
   download_file,
   file_status,
   get_orderById,
+  order_status,
   send_comment,
 } from "../../../api/Api";
 import { useParams } from "react-router-dom";
@@ -27,7 +28,7 @@ const OrdertView = () => {
   const commentsContainerRef = useRef(null);
   const { orderId } = useParams(); // Get orderId from the URL
   const [isLoading, setIsLoading] = useState(true);
-  const [status, setStatus] = useState("Ongoing");
+  const [status, setStatus] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleModal = () => {
@@ -38,18 +39,7 @@ const OrdertView = () => {
     commentsContainerRef.current.scrollTop =
       commentsContainerRef.current.scrollHeight;
   };
-  const dummyData = [
-    {
-      date: "20/01/2024",
-      paymentMethod: "Fonepay",
-      amount: "Rs 8000",
-    },
-    {
-      date: "20/01/2024",
-      paymentMethod: "Fonepay",
-      amount: "Rs 8000",
-    },
-  ];
+
   useEffect(() => {
     scrollToBottom();
     if (commenttextareaRef.current) {
@@ -57,6 +47,36 @@ const OrdertView = () => {
       commenttextareaRef.current.style.height = `${commenttextareaRef.current.scrollHeight}px`; // Set height to match content
     }
   }, [comments]);
+
+
+  const handleStatusChange = async () => {
+    try {
+      const token = localStorage.getItem("token"); // Replace with the actual token
+      const response = await fetch(order_status, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          orderId: assignment._id,
+          status,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error updating status:", errorData);
+        return;
+      }
+
+      const data = await response.json();
+      console.log("Status updated successfully:", data);
+      setStatus(data.assignment.status); // Update the local status state
+    } catch (error) {
+      console.error("Failed to update status:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchOrderById = async () => {
@@ -78,6 +98,8 @@ const OrdertView = () => {
 
         const data = await response.json();
         setAssignment(data);
+        console.log(data)
+        setStatus(data.status);
         setComments(data.comments);
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -311,12 +333,15 @@ const OrdertView = () => {
               onChange={(e) => setStatus(e.target.value)}
               className="border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="Pending">Pending</option>
-              <option value="Ongoing">Ongoing</option>
-              <option value="Completed">Completed</option>
+              <option value="approved">Approved</option>
+              <option value="ongoing">Ongoing</option>
+              <option value="completed">Completed</option>
             </select>
           </div>
-          <button className="bg-[#5D5FEF] text-white  px-2 py-1 hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 rounded-lg focus:outline-none">
+          <button onClick={
+            handleStatusChange
+          }
+            className="bg-[#5D5FEF] text-white  px-2 py-1 hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 rounded-lg focus:outline-none">
             Change
           </button>
           <button
@@ -446,11 +471,10 @@ const OrdertView = () => {
                   .map((file, index) => (
                     <div key={index} className="relative">
                       <div
-                        className={`flex flex-col p-2 rounded border ${
-                          file.fileUrl
-                            ? "bg-white border-gray-200"
-                            : "bg-gray-100 border-gray-300"
-                        }`}
+                        className={`flex flex-col p-2 rounded border ${file.fileUrl
+                          ? "bg-white border-gray-200"
+                          : "bg-gray-100 border-gray-300"
+                          }`}
                       >
                         <div className="flex items-center justify-between w-full">
                           <div className="flex items-center space-x-2 min-w-0 flex-grow">
@@ -475,7 +499,7 @@ const OrdertView = () => {
                               }
                               disabled={
                                 downloadingFiles[
-                                  new URL(file.fileUrl).searchParams.get("id")
+                                new URL(file.fileUrl).searchParams.get("id")
                                 ]
                               }
                             >
@@ -491,7 +515,7 @@ const OrdertView = () => {
                         </div>
                         {file.fileUrl &&
                           downloadingFiles[
-                            new URL(file.fileUrl).searchParams.get("id")
+                          new URL(file.fileUrl).searchParams.get("id")
                           ] && (
                             <div className="mt-2 ml-7">
                               <div className="text-xs text-gray-500 mb-1">
@@ -511,13 +535,12 @@ const OrdertView = () => {
                                 <div
                                   className="h-2 bg-blue-500 rounded-full"
                                   style={{
-                                    width: `${
-                                      downloadingFiles[
-                                        new URL(file.fileUrl).searchParams.get(
-                                          "id"
-                                        )
-                                      ].progress
-                                    }%`,
+                                    width: `${downloadingFiles[
+                                      new URL(file.fileUrl).searchParams.get(
+                                        "id"
+                                      )
+                                    ].progress
+                                      }%`,
                                   }}
                                 ></div>
                               </div>
@@ -592,20 +615,20 @@ const OrdertView = () => {
           </div>
           <div className="space-y-4 text-sm">
             <h2 className="text-2xl font-bold">Payments</h2>
-            {dummyData.map((payment, index) => (
+            {assignment.payments && assignment.payments.map((payment, index) => (
               <div key={index} className="bg-white shadow-md rounded-lg p-4 ">
                 <div className="flex items-center gap-2 ">
                   <p className="text-gray-600">Payment Date:</p>
-                  <p>{payment.date}</p>
+                  <p>{formatDate(payment.date)}</p>
                 </div>
                 <div className="flex items-center gap-2 ">
                   <p className="text-gray-600">Payment Method:</p>
-                  <p>{payment.paymentMethod}</p>
+                  <p>{payment.method}</p>
                 </div>
                 <div className="flex items-center gap-2 ">
                   <p className="text-gray-600">Amount:</p>
                   <p className="text-[#00b087] font-semibold">
-                    {payment.amount}
+                    {payment.paidAmount}
                   </p>
                 </div>
               </div>

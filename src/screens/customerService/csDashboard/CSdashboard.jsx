@@ -15,18 +15,18 @@ import { cs_dashboard } from "../../../api/Api";
 
 // Dummy chart data
 const chartData = [
-  { month: "Jan", thisMonth: 20, lastMonth: 30 },
-  { month: "Feb", thisMonth: 22, lastMonth: 35 },
-  { month: "Mar", thisMonth: 25, lastMonth: 32 },
-  { month: "Apr", thisMonth: 28, lastMonth: 30 },
-  { month: "May", thisMonth: 26, lastMonth: 33 },
-  { month: "Jun", thisMonth: 29, lastMonth: 45 },
-  { month: "Jul", thisMonth: 31, lastMonth: 28 },
-  { month: "Aug", thisMonth: 30, lastMonth: 25 },
-  { month: "Sep", thisMonth: 27, lastMonth: 23 },
-  { month: "Oct", thisMonth: 29, lastMonth: 27 },
-  { month: "Nov", thisMonth: 30, lastMonth: 23 },
-  { month: "Dec", lastMonth: 30 },
+  { month: "Jan", thisMonth: 0, lastMonth: 0 },
+  { month: "Fev", thisMonth: 0, lastMonth: 0 },
+  { month: "Mar", thisMonth: 0, lastMonth: 0 },
+  { month: "Apr", thisMonth: 0, lastMonth: 0 },
+  { month: "May", thisMonth: 0, lastMonth: 0 },
+  { month: "Jun", thisMonth: 0, lastMonth: 0 },
+  { month: "Jul", thisMonth: 0, lastMonth: 0 },
+  { month: "Aug", thisMonth: 0, lastMonth: 0 },
+  { month: "Sep", thisMonth: 0, lastMonth: 0 },
+  { month: "Oct", thisMonth: 0, lastMonth: 0 },
+  { month: "Nov", thisMonth: 0, lastMonth: 0 },
+  { month: "Dec", thisMonth: 3, lastMonth: 0 },
 ];
 
 

@@ -1,5 +1,5 @@
-// const url = "https://www.andemo.tridevinnovation.com/api/v1";
-const url = "http://46.202.164.135:3000/api/v1";
+// const url = "http://46.202.164.135:3000/api/v1";
+const url = "http://localhost:3000/api/v1";
 export const google_login = `${url}/auth/google-login`;
 export const manual_login = `${url}/auth/login`;
 export const upload_file = `${url}/user/createorder`;
@@ -8,6 +8,7 @@ export const get_all_orders = `${url}/user/allorders`;
 export const send_comment = `${url}/user/order/sendcomment`;
 export const get_orderById = `${url}/user/orderbyid`;
 export const order_status = `${url}/user/orderstatus`;
+
 export const download_file = `${url}/user/file/download`;
 export const file_status = `${url}/user/file/changestatus`;
 export const user_status = `${url}/user/userstatus`;

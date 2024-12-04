@@ -116,6 +116,10 @@ function App() {
               element={<WriterView />}
             />
             <Route
+              path="writer/writerView/:orderId"
+              element={<WriterOrderView />}
+            />
+            <Route
               path="writermytask/writerView/:orderId"
               element={<WriterOrderView />}
             />

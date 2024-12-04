@@ -13,15 +13,18 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 import { admin_dashboard } from "../../../api/Api";
 const chartData = [
-  { month: "J", thisMonth: 20, lastMonth: 30 },
-  { month: "F", thisMonth: 22, lastMonth: 35 },
-  { month: "M", thisMonth: 25, lastMonth: 32 },
-  { month: "A", thisMonth: 28, lastMonth: 30 },
-  { month: "M", thisMonth: 26, lastMonth: 33 },
-  { month: "J", thisMonth: 29, lastMonth: 98 },
-  { month: "J", thisMonth: 31, lastMonth: 28 },
-  { month: "A", thisMonth: 30, lastMonth: 25 },
-  { month: "S", thisMonth: 27, lastMonth: 23 },
+  { month: "Jan", thisMonth: 0, lastMonth: 0 },
+  { month: "Fev", thisMonth: 0, lastMonth: 0 },
+  { month: "Mar", thisMonth: 0, lastMonth: 0 },
+  { month: "Apr", thisMonth: 0, lastMonth: 0 },
+  { month: "May", thisMonth: 0, lastMonth: 0 },
+  { month: "Jun", thisMonth: 0, lastMonth: 0 },
+  { month: "Jul", thisMonth: 0, lastMonth: 0 },
+  { month: "Aug", thisMonth: 0, lastMonth: 0 },
+  { month: "Sep", thisMonth: 0, lastMonth: 0 },
+  { month: "Oct", thisMonth: 0, lastMonth: 0 },
+  { month: "Nov", thisMonth: 0, lastMonth: 0 },
+  { month: "Dec", thisMonth: 3, lastMonth: 0 },
 ];
 
 const orderCancelData = [

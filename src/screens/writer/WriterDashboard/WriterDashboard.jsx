@@ -8,41 +8,6 @@ import { HiArrowRight } from "react-icons/hi";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { writer_dashboard } from "../../../api/Api";
 
-
-const assignments = [
-  {
-    _id: "1",
-    assignmentTitle:
-      "It should be relatively short, but still management, and dedication.dcscdscfdcvfdvfdvfdvfdvfdvfdvfdvdfvdfvcdssssssssssssssssssssssssssssss",
-    status: "Pending",
-    totalAmount: 15000,
-    payments: [{ paidAmount: 7000 }],
-    deadline: "2023-10-06",
-    writerName: "Sachet Khatiwada",
-    writerPic: "path_to_image.jpg",
-  },
-  {
-    _id: "2",
-    assignmentTitle: "Another assignment with similar details.",
-    status: "Pending",
-    totalAmount: 15000,
-    payments: [{ paidAmount: 7000 }],
-    deadline: "2023-10-06",
-    writerName: "Sachet Khatiwada",
-    writerPic: "path_to_image.jpg",
-  },
-  {
-    _id: "2",
-    assignmentTitle: "Another assignment with similar details.",
-    status: "Assigned",
-    totalAmount: 15000,
-    payments: [{ paidAmount: 7000 }],
-    deadline: "2023-10-06",
-    writerName: "Sachet Khatiwada",
-    writerPic: "path_to_image.jpg",
-  },
-];
-
 const taskData = [
   {
     id: 1,
@@ -144,6 +109,7 @@ const WriterDashboard = () => {
 
         const data = await response.json();
         setWriterDashboard(data);
+        console.log(data)
       } catch (error) {
         console.error("Error fetching reminders:", error);
       } finally {
@@ -219,20 +185,17 @@ const WriterDashboard = () => {
             <HiArrowRight className="text-lg mr-14" />
           </div>
         </div>
-        <div className="p-6">
+        <div className="">
           <div className="flex gap-4 flex-wrap">
-            {writerDashboard.myTask && writerDashboard.myTask.map((task) => (
-              writerDashboard.myTask > 0?(
+            {writerDashboard.myTask && writerDashboard.myTask.map((task) => (writerDashboard.myTask.length > 0?(
               <TaskCard key={task.id} task={task} />
-              ):(<p>No data</p>)
+              ):(<div className="text-center text-gray-500 py-8">
+                No tasks found for this status
+              </div>)
             ))}
           </div>
 
-          {taskData.length === 0 && (
-            <div className="text-center text-gray-500 py-8">
-              No tasks found for this status
-            </div>
-          )}
+
         </div>
       </div>
     </div>
