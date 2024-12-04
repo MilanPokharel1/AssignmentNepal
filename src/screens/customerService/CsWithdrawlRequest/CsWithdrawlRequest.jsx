@@ -19,34 +19,7 @@ const withdrawalData = [
     writerName: "Bob Johnson",
     writerEmail: "bob.johnson@example.com",
     amount: "Rs 5000",
-  },
-  {
-    id: 3,
-    date: "18/01/2024",
-    time: "11:30AM",
-    status: "approved",
-    writerName: "Charlie Brown",
-    writerEmail: "charlie.brown@example.com",
-    amount: "Rs 12000",
-  },
-  {
-    id: 4,
-    date: "17/01/2024",
-    time: "09:45AM",
-    status: "approved",
-    writerName: "Diana Prince",
-    writerEmail: "diana.prince@example.com",
-    amount: "Rs 7000",
-  },
-  {
-    id: 5,
-    date: "16/01/2024",
-    time: "05:30PM",
-    status: "declined",
-    writerName: "Ethan Hunt",
-    writerEmail: "ethan.hunt@example.com",
-    amount: "Rs 3000",
-  },
+  }
 ];
 
 const FilterButton = ({ label, active, onClick }) => (

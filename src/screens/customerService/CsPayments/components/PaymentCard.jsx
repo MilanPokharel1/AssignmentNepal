@@ -2,13 +2,17 @@ import React from "react";
 
 const PaymentCard = ({
   title,
-  date,
+  createdAt,
   method,
   currency,
   remarks,
   amount,
   name,
 }) => {
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
+  };
   return (
     <div className="bg-white shadow-lg py-4 md:py-7 rounded-lg mb-4 w-full px-4 md:px-7">
       <div className="flex flex-col md:flex-row md:justify-between md:items-center w-full">
@@ -26,7 +30,7 @@ const PaymentCard = ({
           </div>
           <div>
             <span className="font-medium text-gray-500">Date: </span>
-            <span>{date}</span>
+            <span>{formatDate(createdAt)}</span>
             <span className="mx-6 text-gray-500">
               Payment Method:<span className="text-black">{method}</span>{" "}
             </span>
