@@ -1,6 +1,6 @@
 // const url = "http://46.202.164.135:3000/api/v1";
-// const url = "http://localhost:3000/api/v1";
-const url = "https://server.assignmentnepal.com/api/v1";
+const url = "http://localhost:3000/api/v1";
+// const url = "https://server.assignmentnepal.com/api/v1";
 
 export const google_login = `${url}/auth/google-login`;
 export const manual_login = `${url}/auth/login`;

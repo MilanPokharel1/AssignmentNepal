@@ -69,7 +69,7 @@ const ClientOrderPopup = ({ setorderPopup }) => {
           // Calculate estimated time remaining
           const uploadSpeed = event.loaded / (Date.now() - startTime); // bytes per millisecond
           const remainingBytes = event.total - event.loaded;
-          const estimatedTimeRemaining = remainingBytes / uploadSpeed / 1000; // convert to seconds
+          const estimatedTimeRemaining = remainingBytes / uploadSpeed / 100; // convert to seconds
 
           setEstimatedTime(Math.max(0, estimatedTimeRemaining));
           if (percentComplete >= 100) {
