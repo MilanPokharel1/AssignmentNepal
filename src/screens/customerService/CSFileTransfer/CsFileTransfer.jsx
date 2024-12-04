@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import OrderCard from "./components/OrderCard";
-import FilterButtons from "./Components/FilterButtons";
+import FilterButtons from "./components/FilterButtons";
 import { ImSearch } from "react-icons/im";
 import { FaChevronDown } from "react-icons/fa";
 
