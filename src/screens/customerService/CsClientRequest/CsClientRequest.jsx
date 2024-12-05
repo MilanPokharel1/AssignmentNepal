@@ -320,50 +320,49 @@ const CsClientRequest = () => {
                   </tr>
                   {expandedRows.includes(index) && (
                     <tr>
-                 <td
-  colSpan="6"
-  className="border-b-2 px-4 py-3 bg-gray-100 text-center md:text-left"
->
-  <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2">
-    <div className="flex flex-col gap-1">
-      {highlightText(item.email, search)}
-      {highlightText(item.address, search)}
-    </div>
+                      <td
+                        colSpan="6"
+                        className="border-b-2 px-4 py-3 bg-gray-100 text-center md:text-left"
+                      >
+                        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2">
+                          <div className="flex flex-col gap-1">
+                            {highlightText(item.email, search)}
+                            {highlightText(item.address, search)}
+                          </div>
 
-    {item.status === "pending" ? (
-      <div className="flex flex-wrap gap-2 mt-2 md:mt-0 mx-auto">
-        <button
-          onClick={() => {
-            changeUserStatus(item, "approved");
-          }}
-          className="rounded-lg flex items-center border text-sm border-green-700 text-green-700 bg-green-50 hover:bg-green-200 hover:cursor-pointer px-3 py-1"
-        >
-          Approve
-        </button>
-        <button
-          onClick={() => {
-            changeUserStatus(item, "declined");
-          }}
-          className="px-3 py-1 rounded-lg flex items-center border text-sm border-red-500 text-red-700 bg-red-100 hover:bg-gray-200 hover:cursor-pointer"
-        >
-          Decline
-        </button>
-      </div>
-    ) : (
-      <button
-        disabled
-        className={`px-3 py-1 rounded-lg flex items-center border text-sm ${
-          item.status === "approved"
-            ? "border-green-700 text-green-700"
-            : "border-red-700 text-red-700"
-        } bg-gray-50 opacity-50 cursor-not-allowed`}
-      >
-        {item.status}
-      </button>
-    )}
-  </div>
-</td>
-
+                          {item.status === "pending" ? (
+                            <div className="flex flex-wrap gap-2 mt-2 md:mt-0 mx-auto">
+                              <button
+                                onClick={() => {
+                                  changeUserStatus(item, "approved");
+                                }}
+                                className="rounded-lg flex items-center border text-sm border-green-700 text-green-700 bg-green-50 hover:bg-green-200 hover:cursor-pointer px-3 py-1"
+                              >
+                                Approve
+                              </button>
+                              <button
+                                onClick={() => {
+                                  changeUserStatus(item, "declined");
+                                }}
+                                className="px-3 py-1 rounded-lg flex items-center border text-sm border-red-500 text-red-700 bg-red-100 hover:bg-gray-200 hover:cursor-pointer"
+                              >
+                                Decline
+                              </button>
+                            </div>
+                          ) : (
+                            <button
+                              disabled
+                              className={`px-3 py-1 rounded-lg flex items-center border text-sm ${
+                                item.status === "approved"
+                                  ? "border-green-700 text-green-700"
+                                  : "border-red-700 text-red-700"
+                              } bg-gray-50 opacity-50 cursor-not-allowed`}
+                            >
+                              {item.status}
+                            </button>
+                          )}
+                        </div>
+                      </td>
                     </tr>
                   )}
                 </React.Fragment>
