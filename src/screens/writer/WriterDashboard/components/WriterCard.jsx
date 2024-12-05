@@ -27,7 +27,6 @@ const WriterCard = ({
     return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
   };
 
-
   const handleAccept = async () => {
     try {
       const token = localStorage.getItem("token"); // Replace with the actual token
@@ -49,7 +48,7 @@ const WriterCard = ({
       }
 
       const data = await response.json();
-      setIsAccepted("accepted")
+      setIsAccepted("accepted");
       console.log("Order Accepted successfully:", data);
     } catch (error) {
       console.error("Failed to accept order:", error);
@@ -69,7 +68,7 @@ const WriterCard = ({
 
           <div className="flex flex-col gap-0">
             <span className="text-base font-medium text-gray-900">
-              {firstName}{" "}{lastName}
+              {firstName} {lastName}
             </span>
           </div>
         </div>
@@ -80,7 +79,7 @@ const WriterCard = ({
             <div className="text-sm font-medium text-gray-700 flex-shrink-0">
               Assignment title:
             </div>
-            <span className="text-gray-900 ml-2 truncate w-72 inline-block overflow-hidden whitespace-nowrap text-ellipsis">
+            <span className="text-gray-900 ml-2 w-72 line-clamp-2 overflow-hidden text-ellipsis">
               {assignmentTitle}
             </span>
           </div>
@@ -105,11 +104,13 @@ const WriterCard = ({
               onClick={() => handleAccept()}
               disabled={acceptStatus == "accepted"}
             >
-              {acceptStatus == "approved"? "Accept":"Accepted"}
+              {acceptStatus == "approved" ? "Accept" : "Accepted"}
             </button>
             <button
               className={`px-3 py-1 text-sm text-red-600 bg-red-200 
-                           hover:bg-red-400 hover:text-white ${acceptStatus == "accepted"? "hidden":""} rounded-md transition-all duration-200 
+                           hover:bg-red-400 hover:text-white ${
+                             acceptStatus == "accepted" ? "hidden" : ""
+                           } rounded-md transition-all duration-200 
                            border-2 border-red-400`}
               onClick={() => console.log("Declined")}
             >
@@ -121,10 +122,11 @@ const WriterCard = ({
         )}
         <div>
           <button
-            className={`px-3 py-1 text-sm text-white bg-[#9E9FEE] rounded-md transition-colors ${status === "approved"
-              ? "hover:bg-purple-400"
-              : "bg-gray-300 cursor-not-allowed"
-              }`}
+            className={`px-3 py-1 text-sm text-white bg-[#9E9FEE] rounded-md transition-colors ${
+              status === "approved"
+                ? "hover:bg-purple-400"
+                : "bg-gray-300 cursor-not-allowed"
+            }`}
             disabled={status !== "approved"}
             onClick={() =>
               navigate(`/writer/writerorder/writerView/:orderId${_id}`)

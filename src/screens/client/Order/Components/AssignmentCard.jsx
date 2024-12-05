@@ -66,7 +66,6 @@ const AssignmentCard = ({
     pending: "bg-orange-100 text-orange-600",
     approved: "bg-gray-300 text-gray-600",
     cancelled: "bg-red-300 text-red-600",
-
   };
 
   const [showPaymentPopup, setShowPaymentPopup] = useState(false);
@@ -85,7 +84,7 @@ const AssignmentCard = ({
           <div className="text-sm font-medium text-gray-700 flex-shrink-0">
             Assignment title:
           </div>
-          <span className="text-gray-900 ml-2 truncate w-60 inline-block overflow-hidden whitespace-nowrap text-ellipsis">
+          <span className="text-gray-900 ml-2 w-72 line-clamp-2 overflow-hidden text-ellipsis">
             {assignmentTitle}
           </span>
         </div>
