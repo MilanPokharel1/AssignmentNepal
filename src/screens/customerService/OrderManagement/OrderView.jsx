@@ -498,18 +498,19 @@ const OrdertView = () => {
                                 handleDownload(file.fileUrl, file.fileName)
                               }
                               disabled={
-                                downloadingFiles[
-                                new URL(file.fileUrl).searchParams.get("id")
-                                ]
+                                file.fileUrl
+                                  ? downloadingFiles[new URL(file.fileUrl).searchParams.get("id")]
+                                  : false
                               }
                             >
-                              {downloadingFiles[
-                                new URL(file.fileUrl).searchParams.get("id")
-                              ] ? (
-                                <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
-                              ) : (
-                                <Download className="w-4 h-4 text-gray-700 hover:cursor-pointer" />
-                              )}
+                              {
+                                file?.fileUrl && downloadingFiles[new URL(file.fileUrl).searchParams.get("id")] ? (
+                                  <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
+                                ) : (
+                                  <Download className="w-4 h-4 text-gray-700 hover:cursor-pointer" />
+                                )
+                              }
+
                             </button>
                           </div>
                         </div>
@@ -572,10 +573,10 @@ const OrdertView = () => {
                       key={index}
                       className="flex items-center justify-between p-2 bg-white rounded border border-gray-200"
                     >
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-2 min-w-0 flex-grow">
                         <FolderIcon className="h-5 w-5 text-yellow-500" />
-                        <div>
-                          <p className="text-sm font-medium text-gray-700">
+                        <div className="flex flex-col min-w-0 overflow-hidden flex-grow">
+                          <p className="text-sm font-medium text-gray-700 truncate">
                             {file.fileName}
                           </p>
                           <p className="text-xs text-gray-500">

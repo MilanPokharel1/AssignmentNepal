@@ -523,9 +523,9 @@ const WriterOrderView = () => {
                       key={index}
                       className="flex items-center justify-between p-2 bg-white rounded border border-gray-200"
                     >
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-2 min-w-0 flex-grow">
                       <FolderIcon className="h-5 w-5 text-yellow-500" />
-                        <div>
+                        <div className="flex flex-col min-w-0 overflow-hidden flex-grow">
                           <p className="text-sm font-medium text-gray-700 truncate">
                             {file.fileName}
                           </p>
@@ -563,7 +563,7 @@ const WriterOrderView = () => {
               Confirm Action
             </h2>
             <p className="text-gray-600 mb-6">
-              Are you sure you want to submit the assignment
+              Are you sure you want to submit the assignment?
             </p>
             <div className="flex justify-end space-x-4">
               <button
