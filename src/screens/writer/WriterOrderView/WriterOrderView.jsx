@@ -348,7 +348,7 @@ const WriterOrderView = () => {
                 comments.map((comment) => (
                   <div key={comment._id} className="flex items-top">
                     <img
-                      src={comment.picture}
+                      src="https://cdn-icons-png.flaticon.com/512/9187/9187604.png"
                       alt={comment.name}
                       className="w-8 h-8 rounded-full"
                     />
