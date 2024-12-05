@@ -16,6 +16,10 @@ const TaskCard = ({ task }) => {
     writerId,
     price
   } = task;
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
+  };
   const statusColors = {
     ongoing: "bg-blue-100 text-blue-600", // Blue for tasks in progress
     submitted: "bg-yellow-100 text-yellow-600", // Yellow for tasks submitted but not finalized
@@ -58,7 +62,7 @@ const TaskCard = ({ task }) => {
           </div>
         </div>
 
-        <span className="text-xs text-red-500">Due {deadline}</span>
+        <span className="text-xs text-red-500">Due {formatDate(deadline)}</span>
 
         <div className="mb-2">
           <div className="text-sm text-gray-600">
