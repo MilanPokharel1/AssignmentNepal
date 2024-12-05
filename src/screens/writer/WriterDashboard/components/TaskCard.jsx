@@ -14,7 +14,7 @@ const TaskCard = ({ task }) => {
     totalAmount = amount ? parseInt(amount.replace("Rs ", "")) : 5000,
     writerName,
     writerId,
-    price
+    price,
   } = task;
 
   const formatDate = (dateString) => {
@@ -38,13 +38,14 @@ const TaskCard = ({ task }) => {
           />
           <div className="flex flex-col gap-0">
             <span className="text-base font-medium text-gray-900 truncate max-w-[120px] sm:max-w-[200px]">
-              {firstName}{" "}{lastName}
+              {firstName} {lastName}
             </span>
           </div>
         </div>
         <div
-          className={`px-2 py-1 rounded-full text-sm capitalize ${statusColors[status.toLowerCase()]
-            }`}
+          className={`px-2 py-1 rounded-full text-sm capitalize ${
+            statusColors[status.toLowerCase()]
+          }`}
         >
           {status}
         </div>
@@ -66,7 +67,8 @@ const TaskCard = ({ task }) => {
 
         <div className="mb-2">
           <div className="text-sm text-gray-600">
-            Total Amount: <span className="font-medium">{price ? price : "-"}</span>
+            Total Amount:{" "}
+            <span className="font-medium">{price ? price : "-"}</span>
           </div>
         </div>
       </div>
@@ -87,7 +89,7 @@ const TaskCard = ({ task }) => {
         </div>
         <div>
           <button
-            onClick={() => navigate(`writerView/${_id}`)}
+            onClick={() => navigate(`/writer/writermytask/writerView/${_id}`)}
             className="px-3 py-1 text-sm text-white bg-[#9E9FEE] hover:bg-purple-400 rounded-md transition-colors"
           >
             View
