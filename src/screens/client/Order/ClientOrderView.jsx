@@ -353,10 +353,13 @@ const AssignmentView = () => {
 
         <div className="space-y-6 col-span-2 mr-9">
           <div>
-            <FileUploaderWithPopup />
+            <div className="flex justify-between">
             <h3 className="text-sm font-medium text-gray-700 mb-2">
               Uploaded Files
             </h3>
+            <FileUploaderWithPopup />
+
+            </div>
             <div className="space-y-2">
               {assignment &&
                 assignment.files

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import OrderCard from "./components/OrderCard";
 import FilterButtons from "./components/FilterButtons";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
 import { ImSearch } from "react-icons/im";
 import { FaChevronDown } from "react-icons/fa";
+import { file_requests } from "../../../api/Api";
 
 const assignments = [
   {
@@ -54,10 +57,47 @@ const assignments = [
 ];
 
 const CsFileTransfer = () => {
+  const [assignments, setAssignments] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
   const [activeFilter, setActiveFilter] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("Newest");
   const [showOptions, setShowOptions] = useState(false);
+
+
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      setIsLoading(true);
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
+
+        const response = await fetch(file_requests, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch orders");
+        }
+
+        const data = await response.json();
+        setAssignments(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
+
 
   const handleFilterChange = (filter) => {
     setActiveFilter(filter);
@@ -110,7 +150,7 @@ const CsFileTransfer = () => {
       const search = normalizeText(searchTerm);
       return (
         normalizeText(assignment.assignmentTitle).includes(search) ||
-        normalizeText(assignment.folderName).includes(search) ||
+        normalizeText(assignment.instagramTitle).includes(search) ||
         normalizeText(assignment.deadline).includes(search) ||
         (assignment.writerName &&
           normalizeText(assignment.writerName).includes(search))

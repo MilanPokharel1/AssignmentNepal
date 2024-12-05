@@ -2,28 +2,63 @@ import React, { useState } from "react";
 import { FolderIcon } from "@heroicons/react/solid";
 import { useNavigate } from "react-router-dom";
 import { Download } from "lucide-react";
+import { all_file_status } from "../../../../api/Api";
 const OrderCard = ({
   _id,
   assignmentTitle,
   status,
+  files,
   totalAmount,
   paidAmount = 400,
   payments,
   deadline,
   writerName = "Not Assigned",
   writerPic = "https://unsplash.com/photos/a-close-up-of-a-motherboard-and-a-pen-on-a-table-boMKfQkphro",
-
-  folderName,
+  writerId = "",
 }) => {
   const navigate = useNavigate();
+  const [currentStatus, setCurrentStatus] = useState("pending");
   paidAmount = payments[0].paidAmount;
 
-  const handleView = () => {
-    navigate(`/client/orders/view/${_id}`);
-  };
+
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
+  };
+  const handleView = () => {
+    navigate(`/cs/OrderManagement/OrderView/${_id}`);
+  };
+
+  const handleStatusChange = async (newStatus) => {
+    console.log("New: ", newStatus)
+    try {
+      const token = localStorage.getItem("token"); // Replace with the actual token
+      console.log(newStatus);
+      const response = await fetch(all_file_status, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          orderId: _id,
+          fileStatus: newStatus,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error updating status:", errorData);
+        return;
+      }
+
+      const data = await response.json();
+      console.log("Status updated successfully:", data);
+      setCurrentStatus(newStatus);
+
+    } catch (error) {
+      console.error("Failed to update status:", error);
+    }
   };
 
   return (
@@ -74,20 +109,20 @@ const OrderCard = ({
             {" "}
             <FolderIcon className="h-8 w-8 text-yellow-500" />
           </span>
-          <span> {folderName}</span>
+          <span> {files[0].fileName}</span>
         </div>
         <div>
-          <Download className="w-5 h-5  hover:cursor-pointer" />
+          {/* <Download className="w-5 h-5  hover:cursor-pointer" /> */}
         </div>
       </div>
       <div className="flex justify-between items-center">
-        {status === "Requested" ? (
+        {currentStatus === "pending" ? (
           <div className="flex gap-2">
             <button
               className="px-3 py-1 text-sm font-semibold text-emerald-700 bg-emerald-200 
                    hover:bg-emerald-700 hover:text-white rounded-md transition-all duration-200 
                    border-2 border-emerald-700"
-              onClick={() => console.log("Approved")}
+              onClick={() => handleStatusChange("approved")}
             >
               Approve
             </button>
@@ -95,12 +130,12 @@ const OrderCard = ({
               className="px-3 py-1 text-sm font-semibold text-red-700 bg-red-200
                    hover:bg-red-700 hover:text-white rounded-md transition-all duration-200
                    border-2 border-red-700"
-              onClick={() => console.log("Declined")}
+              onClick={() => handleStatusChange("declined")}
             >
               Decline
             </button>
           </div>
-        ) : status === "Approved" ? (
+        ) : currentStatus === "approved" ? (
           <div>
             <button
               className="px-3 py-1 text-sm  text-white bg-[#333333]
@@ -110,9 +145,21 @@ const OrderCard = ({
               Approved
             </button>
           </div>
+        ) : currentStatus === "declined" ? (
+          <div>
+            <button
+              className="px-3 py-1 text-sm  text-white bg-[#333333]
+                    rounded-md cursor-not-allowed opacity-50"
+              disabled
+            >
+              Declined
+            </button>
+          </div>
         ) : null}
         <div>
-          <button className="px-3 py-1 text-sm text-white bg-[#9E9FEE] hover:bg-purple-400 rounded-md transition-colors">
+          <button
+            onClick={handleView}
+            className="px-3 py-1 text-sm text-white bg-[#9E9FEE] hover:bg-purple-400 rounded-md transition-colors">
             View
           </button>
         </div>

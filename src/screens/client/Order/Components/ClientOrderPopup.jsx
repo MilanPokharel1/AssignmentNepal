@@ -90,7 +90,7 @@ const ClientOrderPopup = ({ setorderPopup }) => {
           if (xhr.status >= 200 && xhr.status < 300) {
             resolve(xhr.response);
           } else {
-            reject(new Error("Upload failed 2"));
+            reject(new Error("Upload failed"));
           }
         };
 
@@ -130,22 +130,7 @@ const ClientOrderPopup = ({ setorderPopup }) => {
     }
   };
 
-  // Format time remaining
-  const formatTimeRemaining = (seconds) => {
-    if (seconds < 60) {
-      return `${Math.round(seconds)}s`;
-    }
-    return `${Math.floor(seconds / 60)}m ${Math.round(seconds % 60)}s`;
-  };
 
-  // Format file size
-  const formatFileSize = (bytes) => {
-    if (bytes === 0) return "0 Bytes";
-    const k = 1024;
-    const sizes = ["Bytes", "KB", "MB", "GB"];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
-  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

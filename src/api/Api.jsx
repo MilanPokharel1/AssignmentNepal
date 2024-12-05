@@ -1,6 +1,6 @@
 // const url = "http://46.202.164.135:3000/api/v1";
-// const url = "http://localhost:3000/api/v1";
-const url = "https://server.assignmentnepal.com/api/v1";
+const url = "http://localhost:3000/api/v1";
+// const url = "https://server.assignmentnepal.com/api/v1";
 
 export const google_login = `${url}/auth/google-login`;
 export const manual_login = `${url}/auth/login`;
@@ -12,7 +12,6 @@ export const get_orderById = `${url}/user/orderbyid`;
 export const order_status = `${url}/user/orderstatus`;
 
 export const download_file = `${url}/user/file/download`;
-export const file_status = `${url}/user/file/changestatus`;
 export const user_status = `${url}/user/userstatus`;
 export const get_payment = `${url}/user/payments`;
 export const get_payment_dashboard = `${url}/user/payments-dashboard`;
@@ -29,6 +28,9 @@ export const cs_clients = `${url}/cs/getClients`;
 
 
 
+
+
+
 //writer
 export const writer_dashboard = `${url}/writer/dashboard`;
 export const writer_orders = `${url}/writer/orders`;
@@ -36,3 +38,11 @@ export const writer_tasks = `${url}/writer/mytask`;
 
 export const writer_accept = `${url}/writer/acceptorder`;
 export const writer_submit = `${url}/writer/submitorder`;
+
+
+//file upload
+export const file_upload = `${url}/user/uploadfile`;
+export const file_requests = `${url}/files/requests`;
+export const file_status = `${url}/file/changestatus`;
+export const all_file_status = `${url}/file/changeallfilestatus`;
+

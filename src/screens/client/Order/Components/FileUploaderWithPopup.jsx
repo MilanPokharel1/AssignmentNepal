@@ -8,6 +8,11 @@ const FileUploaderWithPopup = () => {
   const [isSubmittedPopupOpen, setIsSubmittedPopupOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
+  const [formData, setFormData] = useState({
+    orderId:"",
+    file: null,
+  });
+
   const handleFileChange = (event) => {
     const selectedFiles = Array.from(event.target.files);
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
@@ -27,7 +32,15 @@ const FileUploaderWithPopup = () => {
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+
+    e.preventDefault();
+    if (!files) {
+      setError("Please select a file to upload");
+      return;
+    }
+
+
     setIsUploading(true);
 
     const newProgress = {};
@@ -58,7 +71,7 @@ const FileUploaderWithPopup = () => {
     <div>
       {/* Upload Button */}
       <button
-        className="bg-[#5d5fef] text-white p-3 rounded-lg"
+        className=" text-[#5d5fef] text-sm mb-3 rounded-lg"
         onClick={() => setIsPopupOpen(true)}
       >
         <FiUpload className="inline-block mr-2" />
