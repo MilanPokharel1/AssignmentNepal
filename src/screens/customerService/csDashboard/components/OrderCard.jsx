@@ -61,8 +61,8 @@ const OrderCard = ({
   };
 
   const handleStatusChange = async (newStatus) => {
-    console.log("New: ",newStatus)
-    console.log("Current: ",currentStatus)
+    console.log("New: ", newStatus);
+    console.log("Current: ", currentStatus);
     try {
       const token = localStorage.getItem("token"); // Replace with the actual token
       console.log(newStatus);
@@ -136,7 +136,7 @@ const OrderCard = ({
             <div className="text-sm font-medium text-gray-700 flex-shrink-0">
               Assignment title:
             </div>
-            <span className="text-gray-900 ml-2 truncate w-72 inline-block overflow-hidden whitespace-nowrap text-ellipsis">
+            <span className="text-gray-900 ml-2 w-72 line-clamp-2 overflow-hidden text-ellipsis">
               {assignmentTitle}
             </span>
           </div>
@@ -191,16 +191,16 @@ const OrderCard = ({
                 className="px-3 py-1 text-sm text-red-600 bg-red-200 
                            hover:bg-red-400 hover:text-white rounded-md transition-all duration-200 
                            border-2 border-red-400"
-                onClick={() => handleStatusChange(
-                  currentStatus === "submitted" ? "ongoing" : "cancelled"
-                )}
+                onClick={() =>
+                  handleStatusChange(
+                    currentStatus === "submitted" ? "ongoing" : "cancelled"
+                  )
+                }
               >
                 Decline
               </button>
             </>
-          ) : currentStatus === "approved" ||
-            
-            currentStatus === "completed" ? (
+          ) : currentStatus === "approved" || currentStatus === "completed" ? (
             <button
               className="px-3 py-1 text-sm text-gray-400 bg-gray-200 
                          rounded-md border-2 border-gray-300 cursor-not-allowed"
