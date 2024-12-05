@@ -136,7 +136,7 @@ const OrderCard = ({
             <div className="text-sm font-medium text-gray-700 flex-shrink-0">
               Assignment title:
             </div>
-            <span className="text-gray-900 ml-2 w-96 line-clamp-2 overflow-hidden text-ellipsis">
+            <span className="text-gray-900 ml-2 w-96  line-clamp-2 overflow-hidden text-ellipsis">
               {assignmentTitle}
             </span>
           </div>
