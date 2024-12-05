@@ -57,7 +57,7 @@ const TaskCard = ({ task }) => {
             <div className="text-sm font-medium text-gray-700 flex-shrink-0">
               Assignment title:
             </div>
-            <span className="text-gray-900 sm:ml-2 truncate w-64 sm:w-64 inline-block overflow-hidden whitespace-nowrap text-ellipsis">
+            <span className="text-gray-900 ml-2 w-96 line-clamp-2 overflow-hidden text-ellipsis">
               {assignmentTitle}
             </span>
           </div>
