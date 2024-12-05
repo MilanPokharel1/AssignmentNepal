@@ -9,6 +9,7 @@ import { FaUser, FaUsers } from "react-icons/fa";
 import { FaMoneyBillWave } from "react-icons/fa6";
 import { RiShieldUserFill } from "react-icons/ri";
 import { Settings } from "lucide-react";
+import { FaFolder } from "react-icons/fa";
 const SideNavbar = ({ onClose, isMobile }) => {
   const navigate = useNavigate();
 
@@ -140,6 +141,18 @@ const SideNavbar = ({ onClose, isMobile }) => {
           >
             <FaBell className="w-5 h-5" />
             <span>Reminders</span>
+          </NavLink>
+        </div>
+        <div>
+          <NavLink
+            to="/admin/adminfile"
+            className={({ isActive }) =>
+              `${linkStyles} ${isActive ? activeLinkStyles : ""}`
+            }
+            onClick={() => isMobile && onClose?.()}
+          >
+             <FaFolder className="w-5 h-5" />
+            <span>File Transfer</span>
           </NavLink>
         </div>
 
