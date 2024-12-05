@@ -20,17 +20,15 @@ const OrderCard = ({
   const [currentStatus, setCurrentStatus] = useState("pending");
   paidAmount = payments[0].paidAmount;
 
-
-
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
   };
   const handleView = () => {
-    navigate(`/cs/OrderManagement/OrderView/${_id}`);
+    navigate(`/admin/adminordermanagement/adminorderview/${_id}`);
   };
 
   const handleStatusChange = async (newStatus) => {
-    console.log("New: ", newStatus)
+    console.log("New: ", newStatus);
     try {
       const token = localStorage.getItem("token"); // Replace with the actual token
       console.log(newStatus);
@@ -55,7 +53,6 @@ const OrderCard = ({
       const data = await response.json();
       console.log("Status updated successfully:", data);
       setCurrentStatus(newStatus);
-
     } catch (error) {
       console.error("Failed to update status:", error);
     }
@@ -159,7 +156,8 @@ const OrderCard = ({
         <div>
           <button
             onClick={handleView}
-            className="px-3 py-1 text-sm text-white bg-[#9E9FEE] hover:bg-purple-400 rounded-md transition-colors">
+            className="px-3 py-1 text-sm text-white bg-[#9E9FEE] hover:bg-purple-400 rounded-md transition-colors"
+          >
             View
           </button>
         </div>

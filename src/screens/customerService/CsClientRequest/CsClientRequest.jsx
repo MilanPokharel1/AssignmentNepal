@@ -3,139 +3,9 @@ import { FaSearch, FaUsers } from "react-icons/fa";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { change_pending_user, pending_users } from "../../../api/Api";
-
-
-
-const data = [
-  {
-    id: 1,
-    name: "Jane Cooper",
-    phone: "(225) 555-0118",
-    email: "jane@microsoft.com",
-    country: "United States",
-    status: "approved",
-  },
-  {
-    id: 2,
-    name: "Floyd Miles",
-    phone: "(205) 555-0100",
-    email: "floyd@yahoo.com",
-    country: "Kiribati",
-    status: "pending",
-  },
-  {
-    id: 3,
-    name: "Ronald Richards",
-    phone: "(302) 555-0107",
-    email: "ronald@adobe.com",
-    country: "Israel",
-    status: "pending",
-  },
-  {
-    id: 4,
-    name: "Marvin McKinney",
-    phone: "(252) 555-0126",
-    email: "marvin@tesla.com",
-    country: "Iran",
-    status: "approved",
-  },
-  {
-    id: 5,
-    name: "Jerome Bell",
-    phone: "(629) 555-0129",
-    email: "jerome@google.com",
-    country: "Reunion",
-    status: "approved",
-  },
-  {
-    id: 6,
-    name: "Kathryn Murphy",
-    phone: "(406) 555-0120",
-    email: "kathryn@microsoft.com",
-    country: "Curacao",
-    status: "pending",
-  },
-  {
-    id: 7,
-    name: "Jacob Jones",
-    phone: "(208) 555-0112",
-    email: "jacob@yahoo.com",
-    country: "Brazil",
-    status: "approved",
-  },
-  {
-    id: 8,
-    name: "Kristin Watson",
-    phone: "(704) 555-0127",
-    email: "kristin@facebook.com",
-    country: "Aland Islands",
-    status: "pending",
-  },
-  {
-    id: 9,
-    name: "Jane Cooper", // Duplicate entry
-    phone: "(225) 555-0118",
-    email: "jane@microsoft.com",
-    country: "United States",
-    status: "approved",
-  },
-  {
-    id: 10,
-    name: "Floyd Miles", // Duplicate entry
-    phone: "(205) 555-0100",
-    email: "floyd@yahoo.com",
-    country: "Kiribati",
-    status: "pending",
-  },
-  {
-    id: 11,
-    name: "Ronald Richards", // Duplicate entry
-    phone: "(302) 555-0107",
-    email: "ronald@adobe.com",
-    country: "Israel",
-    status: "pending",
-  },
-  {
-    id: 12,
-    name: "Marvin McKinney", // Duplicate entry
-    phone: "(252) 555-0126",
-    email: "marvin@tesla.com",
-    country: "Iran",
-    status: "approved",
-  },
-  {
-    id: 13,
-    name: "Jerome Bell", // Duplicate entry
-    phone: "(629) 555-0129",
-    email: "jerome@google.com",
-    country: "Reunion",
-    status: "approved",
-  },
-  {
-    id: 14,
-    name: "Kathryn Murphy", // Duplicate entry
-    phone: "(406) 555-0120",
-    email: "kathryn@microsoft.com",
-    country: "Curacao",
-    status: "pending",
-  },
-  {
-    id: 15,
-    name: "Jacob Jones", // Duplicate entry
-    phone: "(208) 555-0112",
-    email: "jacob@yahoo.com",
-    country: "Brazil",
-    status: "approved",
-  },
-  {
-    id: 16,
-    name: "sachet Khatiwada",
-    phone: "(704) 555-0127",
-    email: "kristin@facebook.com",
-    country: "Aland Islands",
-    status: "pending",
-  },
-];
+import { BiExpandVertical } from "react-icons/bi";
+import { MdOutlineExpandMore } from "react-icons/md";
+import { MdOutlineExpandLess } from "react-icons/md";
 
 const CsClientRequest = () => {
   const [search, setSearch] = useState("");
@@ -144,7 +14,16 @@ const CsClientRequest = () => {
 
   const [clients, setClients] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [down, setdown] = useState(false);
+  const [expandedRows, setExpandedRows] = useState([]);
+  const handleRowClick = (index) => {
+    setExpandedRows((prev) =>
+      prev.includes(index)
+        ? prev.filter((rowIndex) => rowIndex !== index)
+        : [...prev, index]
+    );
+    setdown((prev) => !prev);
+  };
 
   useEffect(() => {
     const fetchclients = async () => {
@@ -164,7 +43,7 @@ const CsClientRequest = () => {
         }
 
         const data = await response.json();
-        console.log(data)
+        console.log(data);
         setClients(data.pendingUsers);
       } catch (error) {
         console.error("Error fetching clients:", error);
@@ -175,8 +54,6 @@ const CsClientRequest = () => {
 
     fetchclients();
   }, []);
-
-
 
   const changeUserStatus = async (item, status) => {
     setIsLoading(true);
@@ -198,24 +75,15 @@ const CsClientRequest = () => {
 
       setClients((prevClients) =>
         prevClients.map((client) =>
-          client._id === item._id
-            ? { ...client, status }
-            : client
+          client._id === item._id ? { ...client, status } : client
         )
       );
     } catch (error) {
       console.error("Error fetching reminders:", error);
     } finally {
-
       setIsLoading(false);
     }
   };
-
-
-
-
-
-
 
   const highlightText = (text, searchTerm) => {
     if (!searchTerm) return text;
@@ -289,10 +157,11 @@ const CsClientRequest = () => {
         <button
           key={i}
           onClick={() => setCurrentPage(i)}
-          className={`px-3 py-1 mx-0.5 rounded ${currentPage === i
-            ? "bg-blue-600 text-white"
-            : "bg-gray-100 hover:bg-gray-200"
-            }`}
+          className={`px-3 py-1 mx-0.5 rounded ${
+            currentPage === i
+              ? "bg-blue-600 text-white"
+              : "bg-gray-100 hover:bg-gray-200"
+          }`}
         >
           {i}
         </button>
@@ -361,67 +230,142 @@ const CsClientRequest = () => {
         <table className="min-w-full">
           <thead>
             <tr className="w-32 text-gray-400">
+              <th className="border-b-2 px-4 py-4 md:hidden">
+                <BiExpandVertical className="w-6 h-6" />
+              </th>
               <th className="border-b-2 pl-10 py-4 text-left">Name</th>
 
               <th className="border-b-2 px-4 py-4">Phone Number</th>
-              <th className="border-b-2 px-4 py-4">Email</th>
-              <th className="border-b-2 px-4 py-4">Locations</th>
-              <th className="border-b-2 px-4 py-4 text-left">Actions</th>
+              <th className="border-b-2 px-4 py-4 max-md:hidden">Email</th>
+              <th className="border-b-2 px-4 py-4 max-md:hidden">Locations</th>
+              <th className="border-b-2 px-4 py-4 text-left max-md:hidden">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
             {currentItems.length > 0 ? (
               currentItems.map((item, index) => (
-                <tr key={index}>
-                  <td className="border-b-2 px-4 py-3 text-center border-gray-200">
-                    <div className="flex justify-start items-center gap-3">
-                      <img
-                        src="https://static.vecteezy.com/system/resources/previews/025/220/125/non_2x/picture-a-captivating-scene-of-a-tranquil-lake-at-sunset-ai-generative-photo.jpg"
-                        className="w-8 h-8 rounded-full object-cover"
-                        alt={item.name}
-                      />
-                      <span>{highlightText(item.firstName, search)}{" "}{highlightText(item.lastName, search)}</span>
-                    </div>
-                  </td>
+                <React.Fragment key={index}>
+                  <tr className="w-52">
+                    <td className="border-b-2 px-4 py-3 text-center border-gray-200 md:hidden">
+                      {down ? (
+                        <MdOutlineExpandLess
+                          className="w-6 h-6 cursor-pointer"
+                          onClick={() => handleRowClick(index)}
+                        />
+                      ) : (
+                        <MdOutlineExpandMore
+                          className="w-6 h-6 cursor-pointer"
+                          onClick={() => handleRowClick(index)}
+                        />
+                      )}
+                    </td>
+                    <td className="border-b-2 px-4 py-3 text-center border-gray-200">
+                      <div className="flex justify-start items-center gap-3">
+                        <img
+                          src="https://static.vecteezy.com/system/resources/previews/025/220/125/non_2x/picture-a-captivating-scene-of-a-tranquil-lake-at-sunset-ai-generative-photo.jpg"
+                          className="w-8 h-8 rounded-full object-cover"
+                          alt={item.name}
+                        />
+                        <span>
+                          {highlightText(item.firstName, search)}{" "}
+                          {highlightText(item.lastName, search)}
+                        </span>
+                      </div>
+                    </td>
 
-                  <td className="border-b-2 px-4 py-3 text-center border-gray-200">
-                    {highlightText(item.phone, search)}
-                  </td>
-                  <td className="border-b-2 px-4 py-3 text-center border-gray-200">
-                    {highlightText(item.email, search)}
-                  </td>
-                  <td className="border-b-2 px-4 py-3 text-center border-gray-200">
-                    {highlightText(item.address, search)}
-                  </td>
-                  <td className="border-b-2 px-0 py-3 text-center border-gray-200 flex items-center">
-                    {item.status === "pending" ? (
-                      <>
+                    <td className="border-b-2 px-4 py-3 text-center border-gray-200">
+                      {highlightText(item.phone, search)}
+                    </td>
+                    <td className="border-b-2 px-4 py-3 text-center border-gray-200 max-md:hidden">
+                      {highlightText(item.email, search)}
+                    </td>
+                    <td className="border-b-2 px-4 py-3 text-center border-gray-200 max-md:hidden">
+                      {highlightText(item.address, search)}
+                    </td>
+                    <td className="border-b-2 px-0 py-3 text-center border-gray-200 flex items-center max-md:hidden">
+                      {item.status === "pending" ? (
+                        <>
+                          <button
+                            onClick={() => {
+                              changeUserStatus(item, "approved");
+                            }}
+                            className="rounded-lg m-1 flex items-center border text-sm border-green-700 text-green-700 bg-green-50 hover:bg-green-200 hover:cursor-pointer px-3 py-1"
+                          >
+                            Approve
+                          </button>
+                          <button
+                            onClick={() => {
+                              changeUserStatus(item, "declined");
+                            }}
+                            className="px-3 py-1 rounded-lg m-1 flex items-center border text-sm border-red-500 text-red-700 bg-red-100 hover:bg-gray-200 hover:cursor-pointer"
+                          >
+                            Decline
+                          </button>
+                        </>
+                      ) : (
                         <button
-                          onClick={() => {
-                            changeUserStatus(item, "approved")
-                          }}
-                          className="rounded-lg m-1 flex items-center border text-sm border-green-700 text-green-700 bg-green-50 hover:bg-green-200 hover:cursor-pointer px-3 py-1"
+                          disabled
+                          className={`px-3 py-1 rounded-lg m-1 flex${
+                            item.status == "approved"
+                              ? "border-green-700 text-green-700"
+                              : "border-red-700 text-red-700"
+                          } items-center border text-sm  bg-green-50 opacity-50 cursor-not-allowed`}
                         >
-                          Approve
+                          {item.status}
                         </button>
-                        <button
-                          onClick={() => {
-                            changeUserStatus(item, "declined")
-                          }}
-                          className="px-3 py-1 rounded-lg m-1 flex items-center border text-sm border-red-500 text-red-700 bg-red-100 hover:bg-gray-200 hover:cursor-pointer">
-                          Decline
-                        </button>
-                      </>
-                    ) : (
-                      <button
-                        disabled
-                        className={`px-3 py-1 rounded-lg m-1 flex${item.status == "approved" ? "border-green-700 text-green-700" : "border-red-700 text-red-700"} items-center border text-sm  bg-green-50 opacity-50 cursor-not-allowed`}
+                      )}
+                    </td>
+                  </tr>
+                  {expandedRows.includes(index) && (
+                    <tr>
+                      <td
+                        colSpan="6"
+                        className="border-b-2 px-4 py-3 bg-gray-100 text-center md:text-left"
                       >
-                        {item.status}
-                      </button>
-                    )}
-                  </td>
-                </tr>
+                        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-2">
+                          <div className="flex flex-col gap-1">
+                            {highlightText(item.email, search)}
+                            {highlightText(item.address, search)}
+                          </div>
+
+                          {item.status === "pending" ? (
+                            <div className="flex flex-wrap gap-2 mt-2 md:mt-0 mx-auto">
+                              <button
+                                onClick={() => {
+                                  changeUserStatus(item, "approved");
+                                }}
+                                className="rounded-lg flex items-center border text-sm border-green-700 text-green-700 bg-green-50 hover:bg-green-200 hover:cursor-pointer px-3 py-1"
+                              >
+                                Approve
+                              </button>
+                              <button
+                                onClick={() => {
+                                  changeUserStatus(item, "declined");
+                                }}
+                                className="px-3 py-1 rounded-lg flex items-center border text-sm border-red-500 text-red-700 bg-red-100 hover:bg-gray-200 hover:cursor-pointer"
+                              >
+                                Decline
+                              </button>
+                            </div>
+                          ) : (
+                            <button
+                              disabled
+                              className={`px-3 py-1 rounded-lg flex items-center border text-sm ${
+                                item.status === "approved"
+                                  ? "border-green-700 text-green-700"
+                                  : "border-red-700 text-red-700"
+                              } bg-gray-50 opacity-50 cursor-not-allowed`}
+                            >
+                              {item.status}
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
               ))
             ) : (
               <tr>

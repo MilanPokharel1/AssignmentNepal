@@ -1,11 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Download, Loader, Loader2 } from "lucide-react";
 import { FolderIcon } from "@heroicons/react/solid";
-import { create_remainder, download_file, file_status, get_orderById, send_comment } from "../../../api/Api";
+import {
+  download_file,
+  file_status,
+  get_orderById,
+  order_status,
+  send_comment,
+} from "../../../api/Api";
 import { useParams } from "react-router-dom";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { FiBell } from "react-icons/fi";
-const OrdertView = () => {
+const AdminOrderView = () => {
   const [comments, setComments] = useState("");
   const [assignment, setAssignment] = useState({
     files: [], // Initialize with empty array
@@ -19,13 +25,10 @@ const OrdertView = () => {
   const commentAreaRef = useRef(null);
   const [downloadingFiles, setDownloadingFiles] = useState({});
   const [newComment, setNewComment] = useState("");
-  const [remainderTitile, setRemainderTitle] = useState("");
-  const [remainderType, setRemainderType] = useState("update");
-  const [remainderDescription, setRemainderDescription] = useState("");
   const commentsContainerRef = useRef(null);
   const { orderId } = useParams(); // Get orderId from the URL
   const [isLoading, setIsLoading] = useState(true);
-  const [status, setStatus] = useState("Ongoing");
+  const [status, setStatus] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleModal = () => {
@@ -36,18 +39,7 @@ const OrdertView = () => {
     commentsContainerRef.current.scrollTop =
       commentsContainerRef.current.scrollHeight;
   };
-  const dummyData = [
-    {
-      date: "20/01/2024",
-      paymentMethod: "Fonepay",
-      amount: "Rs 8000",
-    },
-    {
-      date: "20/01/2024",
-      paymentMethod: "Fonepay",
-      amount: "Rs 8000",
-    },
-  ];
+
   useEffect(() => {
     scrollToBottom();
     if (commenttextareaRef.current) {
@@ -55,6 +47,35 @@ const OrdertView = () => {
       commenttextareaRef.current.style.height = `${commenttextareaRef.current.scrollHeight}px`; // Set height to match content
     }
   }, [comments]);
+
+  const handleStatusChange = async () => {
+    try {
+      const token = localStorage.getItem("token"); // Replace with the actual token
+      const response = await fetch(order_status, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          orderId: assignment._id,
+          status,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error updating status:", errorData);
+        return;
+      }
+
+      const data = await response.json();
+      console.log("Status updated successfully:", data);
+      setStatus(data.assignment.status); // Update the local status state
+    } catch (error) {
+      console.error("Failed to update status:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchOrderById = async () => {
@@ -76,6 +97,8 @@ const OrdertView = () => {
 
         const data = await response.json();
         setAssignment(data);
+        console.log(data);
+        setStatus(data.status);
         setComments(data.comments);
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -130,7 +153,6 @@ const OrdertView = () => {
     }
   };
 
-
   const changeFileStatus = async (fileId, status) => {
     try {
       // Ensure fileId and status are provided
@@ -161,56 +183,11 @@ const OrdertView = () => {
       const res = await response.json();
       console.log(res);
 
-
       // Optionally, handle any UI updates based on response here
-
     } catch (error) {
       console.error("Failed to update file status:", error);
     }
   };
-
-
-  const sendRemainder = async (fileId, status) => {
-    try {
-      const token = localStorage.getItem("token");
-      console.log("Hit the API");
-
-      // Make the API request to update the file status
-      const response = await fetch(create_remainder, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          userId:assignment.userId,
-          assignmentTitle: assignment.assignmentTitle,
-          instagramTitle: assignment.firstName + " " + assignment.lastName,
-          type:remainderType,
-          title:remainderTitile,
-          description:remainderDescription
-          
-        }),
-      });
-
-      // Check for a successful response
-      if (!response.ok) {
-        throw new Error("Failed to update file status");
-      }
-
-      // Process the response data
-      const res = await response.json();
-      console.log(res);
-      setIsOpen(false)
-
-
-      // Optionally, handle any UI updates based on response here
-
-    } catch (error) {
-      console.error("Failed to send remainder:", error);
-    }
-  };
-
 
   function formatTimeRemaining(timeRemaining) {
     if (timeRemaining < 60) {
@@ -355,12 +332,15 @@ const OrdertView = () => {
               onChange={(e) => setStatus(e.target.value)}
               className="border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="Pending">Pending</option>
-              <option value="Ongoing">Ongoing</option>
-              <option value="Completed">Completed</option>
+              <option value="approved">Approved</option>
+              <option value="ongoing">Ongoing</option>
+              <option value="completed">Completed</option>
             </select>
           </div>
-          <button className="bg-[#5D5FEF] text-white  px-2 py-1 hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 rounded-lg focus:outline-none">
+          <button
+            onClick={handleStatusChange}
+            className="bg-[#5D5FEF] text-white  px-2 py-1 hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 rounded-lg focus:outline-none"
+          >
             Change
           </button>
           <button
@@ -484,95 +464,104 @@ const OrdertView = () => {
               Client Upload
             </h3>
             <div className="space-y-2">
-              {assignment.files &&
-                assignment.files.filter(file => file.uploadedBy === 'client').map((file, index) => (
-                  <div key={index} className="relative">
-                    <div
-                      className={`flex flex-col p-2 rounded border ${file.fileUrl
-                        ? "bg-white border-gray-200"
-                        : "bg-gray-100 border-gray-300"
+              {assignment &&
+                assignment.files
+                  .filter((file) => file.uploadedBy === "client")
+                  .map((file, index) => (
+                    <div key={index} className="relative">
+                      <div
+                        className={`flex flex-col p-2 rounded border ${
+                          file.fileUrl
+                            ? "bg-white border-gray-200"
+                            : "bg-gray-100 border-gray-300"
                         }`}
-                    >
-                      <div className="flex items-center justify-between w-full">
-                        <div className="flex items-center space-x-2 min-w-0 flex-grow">
-                          <FolderIcon className="h-5 w-5 text-yellow-500 flex-shrink-0" />
-                          <div className="flex flex-col min-w-0 overflow-hidden flex-grow">
-                            <p
-                              className="text-sm font-medium text-gray-700 truncate"
-                              title={file.fileName}
+                      >
+                        <div className="flex items-center justify-between w-full">
+                          <div className="flex items-center space-x-2 min-w-0 flex-grow">
+                            <FolderIcon className="h-5 w-5 text-yellow-500 flex-shrink-0" />
+                            <div className="flex flex-col min-w-0 overflow-hidden flex-grow">
+                              <p
+                                className="text-sm font-medium text-gray-700 truncate"
+                                title={file.fileName}
+                              >
+                                {file.fileName}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {file.fileSize}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="ml-2 flex-shrink-0">
+                            <button
+                              className="focus:outline-none"
+                              onClick={() =>
+                                handleDownload(file.fileUrl, file.fileName)
+                              }
+                              disabled={
+                                file.fileUrl
+                                  ? downloadingFiles[
+                                      new URL(file.fileUrl).searchParams.get(
+                                        "id"
+                                      )
+                                    ]
+                                  : false
+                              }
                             >
-                              {file.fileName}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              {file.fileSize}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="ml-2 flex-shrink-0">
-                          <button
-                            className="focus:outline-none"
-                            onClick={() =>
-                              handleDownload(file.fileUrl, file.fileName)
-                            }
-                            disabled={
+                              {file?.fileUrl &&
                               downloadingFiles[
-                              new URL(file.fileUrl).searchParams.get("id")
-                              ]
-                            }
-                          >
-                            {downloadingFiles[
-                              new URL(file.fileUrl).searchParams.get("id")
-                            ] ? (
-                              <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
-                            ) : (
-                              <Download className="w-4 h-4 text-gray-700 hover:cursor-pointer" />
-                            )}
-                          </button>
-                        </div>
-                      </div>
-                      {file.fileUrl &&
-                        downloadingFiles[
-                        new URL(file.fileUrl).searchParams.get("id")
-                        ] && (
-                          <div className="mt-2 ml-7">
-                            <div className="text-xs text-gray-500 mb-1">
-                              {
-                                downloadingFiles[
-                                  new URL(file.fileUrl).searchParams.get("id")
-                                ].progress
-                              }
-                              % •{" "}
-                              {
-                                downloadingFiles[
-                                  new URL(file.fileUrl).searchParams.get("id")
-                                ].timeRemaining
-                              }
-                            </div>
-                            <div className="w-full h-2 bg-gray-200 rounded-full">
-                              <div
-                                className="h-2 bg-blue-500 rounded-full"
-                                style={{
-                                  width: `${downloadingFiles[
-                                    new URL(file.fileUrl).searchParams.get(
-                                      "id"
-                                    )
-                                  ].progress
-                                    }%`,
-                                }}
-                              ></div>
-                            </div>
+                                new URL(file.fileUrl).searchParams.get("id")
+                              ] ? (
+                                <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
+                              ) : (
+                                <Download className="w-4 h-4 text-gray-700 hover:cursor-pointer" />
+                              )}
+                            </button>
                           </div>
-                        )}
-                    </div>
-
-                    {/* Overlay for blur and loader */}
-                    {!file.fileUrl && (
-                      <div className="absolute inset-0 bg-white/5 opacity-85 backdrop-blur flex items-center justify-center rounded">
-                        <Loader className="w-5 h-5 text-gray-500 animate-spin" />
+                        </div>
+                        {file.fileUrl &&
+                          downloadingFiles[
+                            new URL(file.fileUrl).searchParams.get("id")
+                          ] && (
+                            <div className="mt-2 ml-7">
+                              <div className="text-xs text-gray-500 mb-1">
+                                {
+                                  downloadingFiles[
+                                    new URL(file.fileUrl).searchParams.get("id")
+                                  ].progress
+                                }
+                                % •{" "}
+                                {
+                                  downloadingFiles[
+                                    new URL(file.fileUrl).searchParams.get("id")
+                                  ].timeRemaining
+                                }
+                              </div>
+                              <div className="w-full h-2 bg-gray-200 rounded-full">
+                                <div
+                                  className="h-2 bg-blue-500 rounded-full"
+                                  style={{
+                                    width: `${
+                                      downloadingFiles[
+                                        new URL(file.fileUrl).searchParams.get(
+                                          "id"
+                                        )
+                                      ].progress
+                                    }%`,
+                                  }}
+                                ></div>
+                              </div>
+                            </div>
+                          )}
                       </div>
-                    )}
-                  </div>
-                ))}
+
+                      {/* Overlay for blur and loader */}
+                      {!file.fileUrl && (
+                        <div className="absolute inset-0 bg-white/5 opacity-85 backdrop-blur flex items-center justify-center rounded">
+                          <Loader className="w-5 h-5 text-gray-500 animate-spin" />
+                        </div>
+                      )}
+                    </div>
+                  ))}
             </div>
           </div>
 
@@ -581,66 +570,76 @@ const OrdertView = () => {
               Writer Upload
             </h3>
             <div className="space-y-2">
-              {assignment.files &&
-                assignment.files.filter(file => file.uploadedBy === 'client').map((file, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-2 bg-white rounded border border-gray-200"
-                  >
-                    <div className="flex items-center space-x-2">
-                      <FolderIcon className="h-5 w-5 text-yellow-500" />
-                      <div>
-                        <p className="text-sm font-medium text-gray-700">
-                          {file.fileName}
-                        </p>
-                        <p className="text-xs text-gray-500">{file.fileSize}</p>
+              {assignment &&
+                assignment.files
+                  .filter((file) => file.uploadedBy === "client")
+                  .map((file, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-2 bg-white rounded border border-gray-200"
+                    >
+                      <div className="flex items-center space-x-2 min-w-0 flex-grow">
+                        <FolderIcon className="h-5 w-5 text-yellow-500" />
+                        <div className="flex flex-col min-w-0 overflow-hidden flex-grow">
+                          <p className="text-sm font-medium text-gray-700 truncate">
+                            {file.fileName}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {file.fileSize}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                    {file.fileStatus === "pending" ? (
-                      <button className="focus:outline-none flex gap-2 items-center">
-                        <span onClick={() => changeFileStatus(file.fileId, "approved")} className="px-1 py-0 rounded-xl text-sm  border border-white bg-white text-blue-500">
-                          Approve
-                        </span>
-                        <Download className="w-4 h-4 " />
-                      </button>
-                    ) : (
-                      <button
-                        className="focus:outline-none"
-                        onClick={() => {
-                          setisDownloading(true);
-                        }}
-                      >
-                        {!isDownloading ? (
+                      {file.fileStatus === "pending" ? (
+                        <button className="focus:outline-none flex gap-2 items-center">
+                          <span
+                            onClick={() =>
+                              changeFileStatus(file.fileId, "approved")
+                            }
+                            className="px-1 py-0 rounded-xl text-sm  border border-white bg-white text-blue-500"
+                          >
+                            Approve
+                          </span>
                           <Download className="w-4 h-4 " />
-                        ) : (
-                          <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
-                        )}
-                      </button>
-                    )}
-                  </div>
-                ))}
+                        </button>
+                      ) : (
+                        <button
+                          className="focus:outline-none"
+                          onClick={() => {
+                            setisDownloading(true);
+                          }}
+                        >
+                          {!isDownloading ? (
+                            <Download className="w-4 h-4 " />
+                          ) : (
+                            <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
+                          )}
+                        </button>
+                      )}
+                    </div>
+                  ))}
             </div>
           </div>
           <div className="space-y-4 text-sm">
             <h2 className="text-2xl font-bold">Payments</h2>
-            {assignment.payments && assignment.payments.map((payment, index) => (
-              <div key={index} className="bg-white shadow-md rounded-lg p-4 ">
-                <div className="flex items-center gap-2 ">
-                  <p className="text-gray-600">Payment Date:</p>
-                  <p>{formatDate(payment.date)}</p>
+            {assignment.payments &&
+              assignment.payments.map((payment, index) => (
+                <div key={index} className="bg-white shadow-md rounded-lg p-4 ">
+                  <div className="flex items-center gap-2 ">
+                    <p className="text-gray-600">Payment Date:</p>
+                    <p>{formatDate(payment.date)}</p>
+                  </div>
+                  <div className="flex items-center gap-2 ">
+                    <p className="text-gray-600">Payment Method:</p>
+                    <p>{payment.method}</p>
+                  </div>
+                  <div className="flex items-center gap-2 ">
+                    <p className="text-gray-600">Amount:</p>
+                    <p className="text-[#00b087] font-semibold">
+                      {payment.paidAmount}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 ">
-                  <p className="text-gray-600">Payment Method:</p>
-                  <p>{payment.method}</p>
-                </div>
-                <div className="flex items-center gap-2 ">
-                  <p className="text-gray-600">Amount:</p>
-                  <p className="text-[#00b087] font-semibold">
-                    {payment.paidAmount}
-                  </p>
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
           <div className="max-w-sm mx-auto mt-8 p-4 border rounded-md shadow-md bg-white">
             <h2 className="text-lg font-semibold mb-4">Pay Writer</h2>
@@ -667,8 +666,6 @@ const OrdertView = () => {
                 Title
               </label>
               <input
-                onChange={(e) => setRemainderTitle(e.target.value)}
-                value={remainderTitile}
                 type="text"
                 className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               />
@@ -680,8 +677,6 @@ const OrdertView = () => {
               </label>
               <textarea
                 rows="5"
-                onChange={(e) => setRemainderDescription(e.target.value)}
-                value={remainderDescription}
                 className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               ></textarea>
             </div>
@@ -690,13 +685,10 @@ const OrdertView = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Category
               </label>
-              <select
-                onChange={(e) => setRemainderType(e.target.value)}
-                value={remainderType}
-                className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <select className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                 <option value="alert">Alert</option>
                 <option value="warning">Warning</option>
-                <option value="update">Update</option>
+                <option value="notice">Notice</option>
               </select>
             </div>
             {/* Buttons */}
@@ -707,9 +699,7 @@ const OrdertView = () => {
               >
                 Cancel
               </button>
-              <button 
-              onClick={()=>sendRemainder()}
-              className="px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg shadow-md hover:opacity-90 focus:outline-none">
+              <button className="px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg shadow-md hover:opacity-90 focus:outline-none">
                 Send
               </button>
             </div>
@@ -720,4 +710,4 @@ const OrdertView = () => {
   );
 };
 
-export default OrdertView;
+export default AdminOrderView;

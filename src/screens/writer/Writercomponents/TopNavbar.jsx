@@ -5,12 +5,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 const pathToTitleMap = {
   "/writer": "Dashboard",
   "/writer/writerorder": "Order",
-  "/cs/assignwriter": "Assign Writers",
-  "/cs/usermanagement": "User Management",
-  "/cs/assignmentrequest": "Assignment Request",
-  "/writter/writerwithdrawl": "Withdrawl",
-  "/cs/reminders": "Reminders",
-  "/cs/payments": "Payments",
+  "/writer/writermytask": "My Task",
+
+  "/writer/writerwithdrawl": "Withdrawl",
+  "/writer/writerRemainder": "Reminders",
+  "/writer/writerPayments": "Payments",
 };
 
 const TopNavbar = ({

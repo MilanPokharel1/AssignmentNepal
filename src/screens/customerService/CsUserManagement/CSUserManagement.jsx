@@ -1,11 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { FaSearch, FaUsers } from "react-icons/fa";
-import { MdChevronLeft, MdChevronRight } from "react-icons/md";
+import {
+  MdApproval,
+  MdChevronLeft,
+  MdChevronRight,
+  MdDisabledByDefault,
+} from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { cs_clients, user_status } from "../../../api/Api";
 
-const CSUserManagement = () => {
+import { IoBookSharp, IoCheckmarkSharp } from "react-icons/io5";
+import { MdShoppingCart } from "react-icons/md";
+import Card from "../../client/Dashboard/components/Card";
+import { User2Icon, UserCircle } from "lucide-react";
+import { RiExchangeBoxLine, RiPassPendingFill } from "react-icons/ri";
+import { FcApprove } from "react-icons/fc";
+
+import { BiExpandVertical } from "react-icons/bi";
+import { MdOutlineExpandMore } from "react-icons/md";
+import { MdOutlineExpandLess } from "react-icons/md";
+
+const CsUserManagement = () => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(30);
@@ -14,9 +30,16 @@ const CSUserManagement = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-
-
-
+  const [down, setdown] = useState(false);
+  const [expandedRows, setExpandedRows] = useState([]);
+  const handleRowClick = (index) => {
+    setExpandedRows((prev) =>
+      prev.includes(index)
+        ? prev.filter((rowIndex) => rowIndex !== index)
+        : [...prev, index]
+    );
+    setdown((prev) => !prev);
+  };
 
   useEffect(() => {
     const fetchclients = async () => {
@@ -36,7 +59,7 @@ const CSUserManagement = () => {
         }
 
         const data = await response.json();
-        console.log(data)
+        console.log(data);
         setClients(data.clients); // Assuming the key is 'remainder', set it properly
       } catch (error) {
         console.error("Error fetching reminders:", error);
@@ -47,8 +70,6 @@ const CSUserManagement = () => {
 
     fetchclients();
   }, []);
-
-
 
   const changeUserStatus = async (item) => {
     setIsLoading(true);
@@ -71,24 +92,31 @@ const CSUserManagement = () => {
       setClients((prevClients) =>
         prevClients.map((client) =>
           client._id === item._id
-            ? { ...client, accountStatus: item.accountStatus === "enabled" ? "disabled" : "enabled" }
+            ? {
+                ...client,
+                accountStatus:
+                  item.accountStatus === "enabled" ? "disabled" : "enabled",
+              }
             : client
         )
       );
     } catch (error) {
       console.error("Error fetching reminders:", error);
     } finally {
-
       setIsLoading(false);
     }
   };
 
-
   const highlightText = (text, searchTerm) => {
     if (!searchTerm) return text;
-    const parts = text.toString().split(new RegExp(`(${searchTerm})`, "gi"));
+
+    const terms = searchTerm.toLowerCase().split(" ").filter(Boolean);
+    const regex = new RegExp(`(${terms.join("|")})`, "gi");
+
+    const parts = text.toString().split(regex);
+
     return parts.map((part, index) =>
-      part.toLowerCase() === searchTerm.toLowerCase() ? (
+      terms.includes(part.toLowerCase()) ? (
         <span key={index} className="bg-yellow-200">
           {part}
         </span>
@@ -97,19 +125,24 @@ const CSUserManagement = () => {
       )
     );
   };
+
   const filteredData = clients.filter((item) => {
     if (
       search &&
-      !Object.values(item).some(
-        (val) =>
-          typeof val === "string" &&
-          val.toLowerCase().includes(search.toLowerCase())
-      )
+      !search
+        .toLowerCase()
+        .split(" ")
+        .every((term) =>
+          Object.values(item).some(
+            (val) => typeof val === "string" && val.toLowerCase().includes(term)
+          )
+        )
     ) {
       return false;
     }
     return true;
   });
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredData.slice(indexOfFirstItem, indexOfLastItem);
@@ -156,10 +189,11 @@ const CSUserManagement = () => {
         <button
           key={i}
           onClick={() => setCurrentPage(i)}
-          className={`px-3 py-1 mx-0.5 rounded ${currentPage === i
-            ? "bg-blue-600 text-white"
-            : "bg-gray-100 hover:bg-gray-200"
-            }`}
+          className={`px-3 py-1 mx-0.5 rounded ${
+            currentPage === i
+              ? "bg-blue-600 text-white"
+              : "bg-gray-100 hover:bg-gray-200"
+          }`}
         >
           {i}
         </button>
@@ -188,11 +222,10 @@ const CSUserManagement = () => {
     return pageNumbers;
   };
 
-
   const handleTogglePopup = (item) => {
     setSelectedItem(item);
     setIsPopupOpen(!isPopupOpen);
-  }
+  };
 
   return (
     <div className="min-h-screen p-4">
@@ -201,9 +234,42 @@ const CSUserManagement = () => {
           <CircularProgress />
         </div>
       )}
+      <div className="flex flex-wrap gap-4 justify-center sm:justify-start mb-5">
+        <Card
+          Icon={User2Icon}
+          heading="Total Clients"
+          number={`${clients.length}`}
+          theme={{ bgColor: "bg-yellow-100", iconBgColor: "bg-yellow-400" }}
+        />
+        <Card
+          Icon={RiPassPendingFill}
+          heading="Pending Clients"
+          number={`${
+            clients.filter((client) => client.status === "pending").length
+          }`}
+          theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
+        />
+        <Card
+          Icon={RiExchangeBoxLine}
+          heading="Approved Clients"
+          number={`${
+            clients.filter((client) => client.status === "approved").length
+          }`}
+          theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
+        />
+
+        <Card
+          Icon={MdDisabledByDefault}
+          heading="Declined Clients"
+          number={`${
+            clients.filter((client) => client.status === "declined").length
+          }`}
+          theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
+        />
+      </div>
       <h1 className="text-2xl font-bold mb-4 text-center">Users</h1>
-      <div className="flex justify-between items-center mb-4">
-        <div className="relative w-[60%] max-w-lg">
+      <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
+        <div className="relative w-[95%] md:w-3/5 max-w-lg">
           <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
           <input
             type="text"
@@ -213,16 +279,16 @@ const CSUserManagement = () => {
             className="pl-10 pr-4 py-2 w-full text-gray-700 placeholder-gray-500 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
-        <div className="flex gap-11 items-center mr-14">
+        <div className="w-full flex flex-row-reverse md:flex-row justify-between items-center gap-4 md:w-auto">
           <button
-            className="bg-[#5d5fef] text-white py-2 px-4 rounded-lg flex gap-2 items-center"
+            className="bg-[#5d5fef] text-white py-2 px-4 rounded-lg inline-flex gap-2 items-center"
             onClick={() => setShowPopup(true)}
           >
             <FaUsers />
             <span>Create Client+</span>
           </button>
-          <div className="flex items-center space-x-2">
-            <label>Items per page:</label>
+          <div className="flex items-center gap-2">
+            <label className="text-sm">Items per page:</label>
             <select
               value={itemsPerPage}
               onChange={handleItemsPerPageChange}
@@ -236,54 +302,137 @@ const CSUserManagement = () => {
           </div>
         </div>
       </div>
+
       <div className="flex justify-end mb-6"></div>
       <div className="min-h-96 bg-white">
         <table className="min-w-full">
           <thead>
             <tr className="w-32 text-gray-400">
+              <th className="border-b-2 px-4 py-4 md:hidden">
+                <BiExpandVertical className="w-6 h-6" />
+              </th>
               <th className="border-b-2 pl-10 py-4 text-left">Name</th>
 
               <th className="border-b-2 px-4 py-4">Phone Number</th>
-              <th className="border-b-2 px-4 py-4">Email</th>
-              <th className="border-b-2 px-4 py-4">Locations</th>
-              <th className="border-b-2 px-4 py-4 text-left">Actions</th>
+              <th className="border-b-2 px-4 py-4 max-md:hidden">Email</th>
+              <th className="border-b-2 px-4 py-4 max-md:hidden">Locations</th>
+              <th className="border-b-2 px-4 py-4 text-left max-md:hidden">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
             {currentItems.length > 0 ? (
               currentItems.map((item, index) => (
-                <tr key={index}>
-                  <td className="border-b-2 px-4 py-3 text-center border-gray-200">
-                    <div className="flex justify-start items-center gap-3">
-                      <img
-                        src="https://static.vecteezy.com/system/resources/previews/025/220/125/non_2x/picture-a-captivating-scene-of-a-tranquil-lake-at-sunset-ai-generative-photo.jpg"
-                        className="w-8 h-8 rounded-full object-cover"
-                        alt={item.name}
-                      />
-                      <span>{highlightText(item.firstName, search)}{" "}{highlightText(item.lastName, search)}</span>
-                    </div>
-                  </td>
-
-                  <td className="border-b-2 px-4 py-3 text-center border-gray-200">
-                    {highlightText(item.phone, search)}
-                  </td>
-                  <td className="border-b-2 px-4 py-3 text-center border-gray-200">
-                    {highlightText(item.email, search)}
-                  </td>
-                  <td className="border-b-2 px-4 py-3 text-center border-gray-200">
-                    {highlightText(item.address, search)}
-                  </td>
-                  <td className="border-b-2 px-0 py-3 text-center border-gray-200 flex items-center">
-                    <button className="rounded-lg m-1 flex items-center  border text-sm border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-200 hover:cursor-pointer px-3 py-1">
-                      Login
-                    </button>
-                    <button
-                      onClick={() => handleTogglePopup(item, index)}
-                      className={`px-3 py-1 rounded-lg m-1  flex items-center border  text-sm border-gray-500 ${item.accountStatus === "enabled"?"text-red-700":"text-green-700"} bg-gray-100 hover:bg-gray-200 hover:cursor-pointer`}>
-                      {item.accountStatus === "enabled" ? "Disable" : "Enable"}
-                    </button>
-                  </td>
-                </tr>
+                <React.Fragment key={index}>
+                  <tr w-52>
+                    {" "}
+                    <td className="border-b-2 px-4 py-3 text-center border-gray-200 md:hidden">
+                      {down ? (
+                        <MdOutlineExpandLess
+                          className="w-6 h-6 cursor-pointer"
+                          onClick={() => handleRowClick(index)}
+                        />
+                      ) : (
+                        <MdOutlineExpandMore
+                          className="w-6 h-6 cursor-pointer"
+                          onClick={() => handleRowClick(index)}
+                        />
+                      )}
+                    </td>
+                    <td className="border-b-2 px-4 py-3 text-center border-gray-200">
+                      <div className="flex justify-start items-center gap-3">
+                        <img
+                          src="https://static.vecteezy.com/system/resources/previews/025/220/125/non_2x/picture-a-captivating-scene-of-a-tranquil-lake-at-sunset-ai-generative-photo.jpg"
+                          className="w-8 h-8 rounded-full object-cover"
+                          alt={item.name}
+                        />
+                        <span>
+                          {highlightText(item.firstName, search)}{" "}
+                          {highlightText(item.lastName, search)}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="border-b-2 px-4 py-3 text-center border-gray-200">
+                      {highlightText(item.phone, search)}
+                    </td>
+                    <td className="border-b-2 px-4 py-3 text-center border-gray-200 max-md:hidden">
+                      {highlightText(item.email, search)}
+                    </td>
+                    <td className="border-b-2 px-4 py-3 text-center border-gray-200 max-md:hidden">
+                      {highlightText(item.address, search)}
+                    </td>
+                    <td className="border-b-2 px-0 py-3 text-center border-gray-200 flex items-center max-md:hidden">
+                      <button className="rounded-lg m-1 flex items-center  border text-sm border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-200 hover:cursor-pointer px-3 py-1">
+                        Login
+                      </button>
+                      <button
+                        onClick={() => handleTogglePopup(item, index)}
+                        className={`px-3 py-1 rounded-lg m-1  flex items-center border  text-sm border-gray-500 ${
+                          item.accountStatus === "enabled"
+                            ? "text-red-700"
+                            : "text-green-700"
+                        } bg-gray-100 hover:bg-gray-200 hover:cursor-pointer`}
+                      >
+                        {item.accountStatus === "enabled"
+                          ? "Disable"
+                          : "Enable"}
+                      </button>
+                    </td>
+                  </tr>
+                  {expandedRows.includes(index) && (
+                    <tr>
+                      <td
+                        colSpan="6"
+                        className="border-b-2 px-4 py-3 bg-gray-100"
+                      >
+                        <div className="flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0">
+                          <div className="flex items-center space-x-4">
+                            <p className="flex items-center space-x-4 p-2 bg-white rounded-lg shadow-sm">
+                              <div className="flex flex-col space-y-2 w-full">
+                                <div className="flex items-center space-x-2">
+                                  <span className="font-bold text-gray-600 min-w-[60px]">
+                                    Email-
+                                  </span>{" "}
+                                  <span className="text-gray-800">
+                                    {highlightText(item.email, search)}
+                                  </span>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <span className="text-gray-600">
+                                    <span className="font-bold text-gray-600 min-w-[60px]">
+                                      Loaction-
+                                    </span>{" "}
+                                    {highlightText(item.address, search)}
+                                  </span>
+                                </div>
+                                <div className="flex space-x-2">
+                                  <button className="rounded-lg px-3 py-1 text-sm border border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors">
+                                    Login
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      handleTogglePopup(item, index)
+                                    }
+                                    className={`px-3 py-1 rounded-lg text-sm border transition-colors ${
+                                      item.accountStatus === "enabled"
+                                        ? "border-red-500 text-red-700 bg-red-50 hover:bg-red-100"
+                                        : "border-green-500 text-green-700 bg-green-50 hover:bg-green-100"
+                                    }`}
+                                  >
+                                    {item.accountStatus === "enabled"
+                                      ? "Disable"
+                                      : "Enable"}
+                                  </button>
+                                </div>
+                              </div>
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
               ))
             ) : (
               <tr>
@@ -324,8 +473,12 @@ const CSUserManagement = () => {
             </h2>
             <p className="text-gray-600 mb-6">
               {selectedItem.accountStatus === "enabled"
-                ? `Are you sure you want to disable ${selectedItem.firstName}${" "}${selectedItem.lastName}? `
-                : `Are you sure you want to enable ${selectedItem.firstName}${" "}${selectedItem.lastName}?`}
+                ? `Are you sure you want to disable ${
+                    selectedItem.firstName
+                  }${" "}${selectedItem.lastName}? `
+                : `Are you sure you want to enable ${
+                    selectedItem.firstName
+                  }${" "}${selectedItem.lastName}?`}
             </p>
             <div className="flex justify-end space-x-4">
               <button
@@ -338,7 +491,7 @@ const CSUserManagement = () => {
                 onClick={() => {
                   // Implement the actual enable/disable logic here
 
-                  changeUserStatus(selectedItem)
+                  changeUserStatus(selectedItem);
                   handleTogglePopup(selectedItem);
                 }}
                 className={`
@@ -346,10 +499,11 @@ const CSUserManagement = () => {
             py-2 
             rounded-lg 
             transition-colors
-            ${selectedItem.accountStatus === "enabled"
-                    ? "bg-red-500 text-white hover:bg-red-600"
-                    : "bg-blue-500 text-white hover:bg-blue-600"
-                  }
+            ${
+              selectedItem.accountStatus === "enabled"
+                ? "bg-red-500 text-white hover:bg-red-600"
+                : "bg-blue-500 text-white hover:bg-blue-600"
+            }
           `}
               >
                 {selectedItem.accountStatus === "enabled"
@@ -464,10 +618,9 @@ const CSUserManagement = () => {
             </button>
           </div>
         </div>
-
       )}
     </div>
   );
 };
 
-export default CSUserManagement;
+export default CsUserManagement;
