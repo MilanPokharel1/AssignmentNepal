@@ -9,7 +9,7 @@ const WriterOrder = () => {
 
   const [assignments, setAssignments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  
+
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -55,6 +55,9 @@ const WriterOrder = () => {
           <WriterCard key={assignment._id} {...assignment} />
         ))}
       </div>
+      {assignments.length < 1 && <p className="text-gray-500 h-[5rem] py-[10rem] text-center mr-[16%] items-center">
+        No order found
+      </p>}
     </div>
   );
 };

@@ -7,83 +7,12 @@ import TaskCard from "./components/TaskCard";
 import { HiArrowRight } from "react-icons/hi";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { writer_dashboard } from "../../../api/Api";
+import { useNavigate } from "react-router-dom";
 
-const taskData = [
-  {
-    id: 1,
-    title: "Design homepage UI",
-    status: "ongoing", // Can also be called "ongoing"
-    dueDate: "Oct 6",
-    amount: "Rs 5000",
-    assignee: {
-      name: "Sachet Khatiwdha",
-      avatar: "/api/placeholder/32/32",
-    },
-    writer: "Millu bhaiya",
-  },
-  {
-    id: 2,
-    title: "Complete API integration",
-    status: "completed",
-    dueDate: "Oct 6",
-    amount: "Rs 5000",
-    assignee: {
-      name: "Jane Cooper",
-      avatar: "/api/placeholder/32/32",
-    },
-    writer: "Millu bhaiya",
-  },
-  {
-    id: 3,
-    title: "Fix UI bugs in login page",
-    status: "completed",
-    dueDate: "Oct 8",
-    amount: "Rs 6000",
-    assignee: {
-      name: "Sachet Khatiwdha",
-      avatar:
-        "https://unsplash.com/photos/a-close-up-of-a-motherboard-and-a-pen-on-a-table-boMKfQkphro",
-    },
-    writer: "Millu bhaiya",
-  },
-  {
-    id: 4,
-    title: "Submit project documentation",
-    status: "submitted",
-    dueDate: "Oct 10",
-    amount: "Rs 4500",
-    assignee: {
-      name: "Emily Brown",
-      avatar: "/api/placeholder/32/32",
-    },
-    writer: "Shreya Singh",
-  },
-  {
-    id: 5,
-    title: "Prepare project presentation",
-    status: "ongoing",
-    dueDate: "Oct 12",
-    amount: "Rs 4000",
-    assignee: {
-      name: "Rahul Verma",
-      avatar: "/api/placeholder/32/32",
-    },
-    writer: "Millu bhaiya",
-  },
-  {
-    id: 6,
-    title: "Review test cases",
-    status: "cancelled",
-    dueDate: "Oct 15",
-    amount: "Rs 3000",
-    assignee: {
-      name: "Aisha Khan",
-      avatar: "/api/placeholder/32/32",
-    },
-    writer: "Shreya Singh",
-  },
-];
+
+
 const WriterDashboard = () => {
+  const navigate = useNavigate();
 
   const [writerDashboard, setWriterDashboard] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -160,7 +89,7 @@ const WriterDashboard = () => {
         <div className="flex mb-4 justify-between">
           <h2 className="text-2xl font-semibold">Orders</h2>
           <div
-            onClick={() => console.log("view all clicked")}
+            onClick={() => navigate(`/writer/writerorder`)}
             className={`flex items-center gap-1 cursor-pointer hover:text-blue-600 mr-14`}
           >
             View all
@@ -178,7 +107,7 @@ const WriterDashboard = () => {
         <div className="flex mb-4 justify-between">
           <h2 className="text-2xl font-semibold">My Tasks</h2>
           <div
-            onClick={() => console.log("view all clicked")}
+            onClick={() => navigate(`/writer/writermytask`)}
             className={`flex items-center gap-1 cursor-pointer hover:text-blue-600 mr-`}
           >
             View all
@@ -187,11 +116,11 @@ const WriterDashboard = () => {
         </div>
         <div className="">
           <div className="flex gap-4 flex-wrap">
-            {writerDashboard.myTask && writerDashboard.myTask.map((task) => (writerDashboard.myTask.length > 0?(
+            {writerDashboard.myTask && writerDashboard.myTask.map((task) => (writerDashboard.myTask.length > 0 ? (
               <TaskCard key={task.id} task={task} />
-              ):(<div className="text-center text-gray-500 py-8">
-                No tasks found for this status
-              </div>)
+            ) : (<div className="text-center text-gray-500 py-8">
+              No tasks found for this status
+            </div>)
             ))}
           </div>
 
