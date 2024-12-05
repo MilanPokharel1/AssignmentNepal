@@ -2,15 +2,18 @@ import React, { useState, useEffect } from "react";
 import TaskCard from "../WriterDashboard/components/TaskCard";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { writer_tasks } from "../../../api/Api";
-
-
+import { IoBookSharp, IoCheckmarkSharp } from "react-icons/io5";
+import { MdOutlinePendingActions } from "react-icons/md";
+import Card from "./components/Card";
+import { FaHourglassEnd } from "react-icons/fa";
 const FilterButton = ({ label, active, onClick }) => (
   <button
     onClick={onClick}
-    className={`px-4 py-1.5 rounded-lg text-lg ${active
-      ? "text-white font-light bg-indigo-500"
-      : "border font-thin border-indigo-500"
-      }`}
+    className={`px-4 py-1.5 rounded-lg text-lg ${
+      active
+        ? "text-white font-light bg-indigo-500"
+        : "border font-thin border-indigo-500"
+    }`}
   >
     {label}
   </button>
@@ -20,7 +23,6 @@ const WriterMyTask = () => {
   const [activeFilter, setActiveFilter] = useState("all");
   const [taskData, setTaskData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -73,7 +75,33 @@ const WriterMyTask = () => {
             <CircularProgress />
           </div>
         )}
+        <div className="flex flex-wrap gap-7 justify-center sm:justify-start mb-14">
+          <Card
+            Icon={IoBookSharp}
+            heading="Total"
+            number={40}
+            theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
+          />
+          <Card
+            Icon={MdOutlinePendingActions}
+            heading="Ongoing"
+            number={40}
+            theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
+          />
+          <Card
+            Icon={FaHourglassEnd}
+            heading="Submitted"
+            number={40}
+            theme={{ bgColor: "bg-yellow-100", iconBgColor: "bg-orange-400" }}
+          />
 
+          <Card
+            Icon={IoCheckmarkSharp}
+            heading="Completed"
+            number={40}
+            theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
+          />
+        </div>
         <div className="p-6">
           <div className="mb-6 space-x-2">
             {filters.map((filter) => (
