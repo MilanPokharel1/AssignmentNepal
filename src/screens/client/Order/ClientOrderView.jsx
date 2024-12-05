@@ -4,7 +4,7 @@ import { FolderIcon } from "@heroicons/react/solid";
 import { download_file, get_orderById, send_comment } from "../../../api/Api";
 import { useParams } from "react-router-dom";
 import CircularProgress from "@material-ui/core/CircularProgress";
-
+import FileUploaderWithPopup from "../Order/Components/FileUploaderWithPopup";
 const AssignmentView = () => {
   const [comments, setComments] = useState("");
   const [assignment, setAssignment] = useState({
@@ -353,6 +353,7 @@ const AssignmentView = () => {
 
         <div className="space-y-6 col-span-2 mr-9">
           <div>
+            <FileUploaderWithPopup />
             <h3 className="text-sm font-medium text-gray-700 mb-2">
               Uploaded Files
             </h3>
