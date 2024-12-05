@@ -623,20 +623,20 @@ const OrdertView = () => {
           </div>
           <div className="space-y-4 text-sm">
             <h2 className="text-2xl font-bold">Payments</h2>
-            {dummyData.map((payment, index) => (
+            {assignment.payments && assignment.payments.map((payment, index) => (
               <div key={index} className="bg-white shadow-md rounded-lg p-4 ">
                 <div className="flex items-center gap-2 ">
                   <p className="text-gray-600">Payment Date:</p>
-                  <p>{payment.date}</p>
+                  <p>{formatDate(payment.date)}</p>
                 </div>
                 <div className="flex items-center gap-2 ">
                   <p className="text-gray-600">Payment Method:</p>
-                  <p>{payment.paymentMethod}</p>
+                  <p>{payment.method}</p>
                 </div>
                 <div className="flex items-center gap-2 ">
                   <p className="text-gray-600">Amount:</p>
                   <p className="text-[#00b087] font-semibold">
-                    {payment.amount}
+                    {payment.paidAmount}
                   </p>
                 </div>
               </div>
