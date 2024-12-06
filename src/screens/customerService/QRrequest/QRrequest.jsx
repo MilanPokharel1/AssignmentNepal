@@ -50,7 +50,7 @@ const QRRequest = () => {
   ];
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-4 space-y-4 w-[81%]">
       {data.map((item) => (
         <div
           key={item.id}
