@@ -10,6 +10,7 @@ import { FaMoneyBillWave } from "react-icons/fa6";
 import { RiShieldUserFill } from "react-icons/ri";
 import { Settings } from "lucide-react";
 import { FaFolder } from "react-icons/fa";
+import { BsQrCode } from "react-icons/bs";
 const SideNavbar = ({ onClose, isMobile }) => {
   const navigate = useNavigate();
 
@@ -155,7 +156,18 @@ const SideNavbar = ({ onClose, isMobile }) => {
             <span>File Transfer</span>
           </NavLink>
         </div>
-
+        <div>
+          <NavLink
+            to="/admin/adminqrrequest"
+            className={({ isActive }) =>
+              `${linkStyles} ${isActive ? activeLinkStyles : ""}`
+            }
+            onClick={() => isMobile && onClose?.()}
+          >
+            <BsQrCode className="w-5 h-5" />
+            <span>QR request</span>
+          </NavLink>
+        </div>
         <div>
           <NavLink
             to="/admin/adminpayments"

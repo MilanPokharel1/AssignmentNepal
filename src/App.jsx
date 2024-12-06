@@ -88,6 +88,7 @@ function App() {
             <Route path="clientrequest" element={<CsClientRequest />} />
             <Route path="adminfile" element={<AdminFiletransfer />} />
             <Route path="adminsettings" element={<Settings />} />
+            <Route path="adminqrrequest" element={<QRrequest />} />
           </Route>
           <Route path="/cs" element={<CustomerService />}>
             <Route index element={<CSdashboard />} />
@@ -103,7 +104,7 @@ function App() {
             <Route path="payments" element={<CsPayments />} />
             <Route path="filetransfer" element={<CsFileTransfer />} />
             <Route path="clientrequest" element={<CsClientRequest />} />
-            <Route path="csqrreuest" element={<QRrequest />} />
+            <Route path="csqrrequest" element={<QRrequest />} />
           </Route>
           <Route path="/writer" element={<Writer />}>
             <Route index element={<WriterDashboard />} />

@@ -11,7 +11,7 @@ const pathToTitleMap = {
   "/admin/adminCS": "Customer Service",
   "/admin/adminWithdrawal": "Withdrawl Request",
 
-  "/cs/assignmentrequest": "Assignment Request",
+  "/admin/adminqrrequest": "QR request",
   "/admin/adminreminders": "Reminders",
   "/admin/adminpayments": "Payments",
   "/admin/adminsettings": "Settings",

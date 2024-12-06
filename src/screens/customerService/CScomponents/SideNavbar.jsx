@@ -145,7 +145,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
         </div>
         <div>
           <NavLink
-            to="/cs/csqrreuest"
+            to="/cs/csqrrequest"
             className={({ isActive }) =>
               `${linkStyles} ${isActive ? activeLinkStyles : ""}`
             }
