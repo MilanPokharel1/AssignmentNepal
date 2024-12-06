@@ -50,7 +50,7 @@ const QRRequest = () => {
   ];
 
   return (
-    <div className="p-4 space-y-4 w-[81%]">
+    <div className="p-4 space-y-4 w-full md:w-[81%]">
       {data.map((item) => (
         <div
           key={item.id}
@@ -58,27 +58,38 @@ const QRRequest = () => {
         >
           <div className="flex justify-between items-center">
             <div>
-              <p className="font-bold text-gray-700">
+              <p className="text-sm text-gray-400">
                 Client Name:{" "}
-                <span className="text-gray-500">{item.clientName}</span>
+                <span className="font-thin text-black">{item.clientName}</span>
               </p>
-              <p className="font-bold text-gray-700 truncate max-w-[200px] sm:max-w-none">
+              <p className="text-sm text-gray-400 truncate max-w-[200px] sm:max-w-none">
                 Assignment Title:{" "}
-                <span className="text-gray-500" title={item.title}>
+                <span className="font-thin text-black" title={item.title}>
                   {item.title.length > 30
                     ? `${item.title.substring(0, 30)}...`
                     : item.title}
                 </span>
               </p>
-              <p className="text-sm text-gray-500">
-                Date: {item.date} Payment Method: {item.method}
+              <p className="text-sm text-gray-400 flex gap-3">
+                <div>
+                  Date:{" "}
+                  <span className="font-thin text-black">{item.date}</span>
+                </div>
+                <div>
+                  {" "}
+                  Payment Method:{" "}
+                  <span className="font-thin text-black">{item.method}</span>
+                </div>
               </p>
             </div>
-            <p className="text-[#00b087] font-bold text-sm md:text-lg">
+            <p className="text-[#00b087] font-thin  text-sm md:text-lg">
               Amount: {item.currency} {item.amount}
             </p>
           </div>
-          <p className="text-sm text-gray-500">Remarks: {item.remarks}</p>
+          <p className="text-sm text-gray-400">
+            Remarks:{" "}
+            <span className="font-thin text-black">{item.remarks}</span>
+          </p>
           <div className="flex space-x-2 mt-2 flex-row-reverse gap-3">
             <button
               className="px-3 py-1 text-sm text-emerald-600 bg-emerald-200 hover:bg-emerald-400 hover:text-white rounded-md transition-all duration-200 border-2 border-emerald-400"
