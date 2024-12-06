@@ -74,7 +74,7 @@ const QRRequest = () => {
                 Date: {item.date} Payment Method: {item.method}
               </p>
             </div>
-            <p className="text-[#00b087] font-bold text-sm md:text-xl">
+            <p className="text-[#00b087] font-bold text-sm md:text-lg">
               Amount: {item.currency} {item.amount}
             </p>
           </div>
