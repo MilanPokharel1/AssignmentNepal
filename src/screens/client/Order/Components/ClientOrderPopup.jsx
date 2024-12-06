@@ -14,7 +14,7 @@ const ClientOrderPopup = ({ setorderPopup }) => {
     paidAmount: "",
     paymentMethod: "Cash",
     paymentCurrency: "Rs",
-    file: null,
+    file: [],
   });
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploading, setUploading] = useState(false);
@@ -25,11 +25,12 @@ const ClientOrderPopup = ({ setorderPopup }) => {
 
   const handleFilesChange = (newFiles) => {
     setFiles(newFiles);
-    // If you need to update formData
+    console.log(files);
     setFormData((prevData) => ({
       ...prevData,
       file: newFiles[0], // or handle as needed
     }));
+    console.log("this is file ", formData,"files changed")
   };
 
   const handleChange = (e) => {
@@ -38,6 +39,7 @@ const ClientOrderPopup = ({ setorderPopup }) => {
       ...prevData,
       [name]: files ? files[0] : value,
     }));
+    console.log(formData)
   };
 
   const handleSubmit = async (e) => {
@@ -46,6 +48,8 @@ const ClientOrderPopup = ({ setorderPopup }) => {
       setError("Please select a file to upload");
       return;
     }
+
+    console.log("this if file i have: ", formData.file)
 
     setUploading(true);
     setError("");
