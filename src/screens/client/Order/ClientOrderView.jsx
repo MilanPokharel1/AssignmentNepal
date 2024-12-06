@@ -420,6 +420,7 @@ const AssignmentView = () => {
                           downloadingFiles[
                             new URL(file.fileUrl).searchParams.get("id")
                           ] && (
+                            
                             <div className="mt-2 ml-7">
                               <div className="text-xs text-gray-500 mb-1">
                                 {
