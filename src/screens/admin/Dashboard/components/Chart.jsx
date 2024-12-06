@@ -22,14 +22,14 @@ const Chart = ({ chartData }) => {
         <Line
           type="monotone"
           dataKey="thisMonth"
-          name="This Month" // Custom label for the legend
+          name="This Year" // Custom label for the legend
           stroke="#10B981"
           strokeWidth={3}
         />
         <Line
           type="monotone"
           dataKey="lastMonth"
-          name="Last Month" // Custom label for the legend
+          name="Last Year" // Custom label for the legend
           stroke="#EF4444"
           strokeWidth={3}
         />

@@ -92,7 +92,7 @@ const QRRequest = () => {
           </p>
           <div className="flex space-x-2 mt-2 flex-row-reverse gap-3">
             <button
-              className="px-3 py-1 text-sm text-emerald-600 bg-emerald-200 hover:bg-emerald-400 hover:text-white rounded-md transition-all duration-200 border-2 border-emerald-400"
+              className="px-3 py-0 text-sm text-emerald-600 bg-emerald-200 hover:bg-emerald-400 hover:text-white rounded-md transition-all duration-200 border-2 border-emerald-400"
               onClick={() =>
                 setConfirmation({ open: true, action: "Approve", id: item.id })
               }
@@ -100,7 +100,7 @@ const QRRequest = () => {
               Approve
             </button>
             <button
-              className="px-3 py-1 text-sm text-red-600 bg-red-200 hover:bg-red-400 hover:text-white rounded-md transition-all duration-200 border-2 border-red-400"
+              className="px-3 py-0 text-sm text-red-600 bg-red-200 hover:bg-red-400 hover:text-white rounded-md transition-all duration-200 border-2 border-red-400"
               onClick={() =>
                 setConfirmation({ open: true, action: "Decline", id: item.id })
               }

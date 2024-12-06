@@ -119,17 +119,17 @@ const OrderCard = ({
         {currentStatus === "pending" ? (
           <div className="flex gap-2">
             <button
-              className="px-3 py-1 text-sm font-semibold text-emerald-700 bg-emerald-200 
-                   hover:bg-emerald-700 hover:text-white rounded-md transition-all duration-200 
-                   border-2 border-emerald-700"
+              className="px-3 py-1 text-sm text-emerald-600 bg-emerald-200 
+                           hover:bg-emerald-400 hover:text-white rounded-md transition-all duration-200 
+                           border-2 border-emerald-400"
               onClick={() => handleStatusChange("approved")}
             >
               Approve
             </button>
             <button
-              className="px-3 py-1 text-sm font-semibold text-red-700 bg-red-200
-                   hover:bg-red-700 hover:text-white rounded-md transition-all duration-200
-                   border-2 border-red-700"
+              className="px-3 py-1 text-sm text-red-600 bg-red-200 
+                           hover:bg-red-400 hover:text-white rounded-md transition-all duration-200 
+                           border-2 border-red-400"
               onClick={() => handleStatusChange("declined")}
             >
               Decline
