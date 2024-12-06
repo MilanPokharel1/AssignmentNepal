@@ -129,7 +129,7 @@ const WriterCard = ({
             }`}
             disabled={status !== "approved"}
             onClick={() =>
-              navigate(`/writer/writerorder/writerView/:orderId${_id}`)
+              navigate(`/writer/writerorder/writerView/${_id}`)
             }
           >
             View
