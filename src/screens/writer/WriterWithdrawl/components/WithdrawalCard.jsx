@@ -1,14 +1,17 @@
 import React from "react";
 
 const WithdrawalCard = ({ item }) => {
-  const { date, time, status, approvedBy, amount } = item; // Destructure from `item`
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
+  };
+  const { date, time, status, remark, amount } = item; // Destructure from `item`
 
   return (
     <div className="bg-white rounded-lg py-6 px-6 flex flex-col md:flex-row justify-between items-start md:items-center mb-4 border border-gray-200 w-full md:w-[82%]">
       {/* Date */}
       <div className="text-gray-500 text-base flex flex-col justify-center items-start md:items-center mb-4 md:mb-0">
         <div>Date</div>
-        <div className="font-medium text-black">{date}</div>
+        <div className="font-medium text-black">{formatDate(date)}</div>
       </div>
 
       {/* Time */}
@@ -33,8 +36,8 @@ const WithdrawalCard = ({ item }) => {
 
       {/* Approved By */}
       <div className="text-gray-500 text-base flex flex-col justify-center items-start md:items-center mb-4 md:mb-0">
-        <div>Approved by</div>
-        <div className="font-medium text-black">{approvedBy}</div>
+        <div>Remark</div>
+        <div className="font-medium text-black">{remark}</div>
       </div>
 
       {/* Amount */}
