@@ -518,7 +518,7 @@ const WriterView = () => {
                         <FolderIcon className="h-5 w-5 text-yellow-500" />
                         <div className="flex flex-col min-w-0 overflow-hidden flex-grow">
                           <p className="text-sm font-medium text-gray-700 truncate">
-                            {Milan}
+                            {file.fileName}
                           </p>
                           <p className="text-xs text-gray-500">
                             {file.fileSize}
