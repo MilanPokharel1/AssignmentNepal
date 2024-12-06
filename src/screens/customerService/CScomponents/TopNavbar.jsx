@@ -12,6 +12,7 @@ const pathToTitleMap = {
   "/cs/reminders": "Reminders",
   "/cs/payments": "Payments",
   "/cs/filetransfer": "File Transfer",
+  "/cs/csqrreuest":"QR Request",
 };
 
 const TopNavbar = ({

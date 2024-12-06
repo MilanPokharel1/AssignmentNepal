@@ -9,6 +9,7 @@ import { FaUser, FaUsers } from "react-icons/fa";
 import { FaMoneyBillWave } from "react-icons/fa6";
 import { FaUserPlus } from "react-icons/fa6";
 import { FaFolder } from "react-icons/fa";
+import { BsQrCode } from "react-icons/bs";
 const SideNavbar = ({ onClose, isMobile }) => {
   const navigate = useNavigate();
 
@@ -140,6 +141,18 @@ const SideNavbar = ({ onClose, isMobile }) => {
           >
             <FaBell className="w-5 h-5" />
             <span>Reminders</span>
+          </NavLink>
+        </div>
+        <div>
+          <NavLink
+            to="/cs/csqrreuest"
+            className={({ isActive }) =>
+              `${linkStyles} ${isActive ? activeLinkStyles : ""}`
+            }
+            onClick={() => isMobile && onClose?.()}
+          >
+            <BsQrCode className="w-5 h-5" />
+            <span>QR request</span>
           </NavLink>
         </div>
         <div>

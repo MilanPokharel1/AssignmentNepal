@@ -43,6 +43,7 @@ import Settings from "./screens/admin/Settings/Settings";
 import WriterOrderView from "./screens/writer/WriterOrderView/WriterOrderView";
 import AccountPending from "./screens/login/AccountPending";
 import AdminFiletransfer from "./screens/admin/FileTransfer/AdminFiletransfer";
+import QRrequest from "./screens/customerService/QRrequest/QRrequest";
 
 function App() {
   return (
@@ -102,6 +103,7 @@ function App() {
             <Route path="payments" element={<CsPayments />} />
             <Route path="filetransfer" element={<CsFileTransfer />} />
             <Route path="clientrequest" element={<CsClientRequest />} />
+            <Route path="csqrreuest" element={<QRrequest />} />
           </Route>
           <Route path="/writer" element={<Writer />}>
             <Route index element={<WriterDashboard />} />
