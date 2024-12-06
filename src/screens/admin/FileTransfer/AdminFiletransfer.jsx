@@ -7,54 +7,6 @@ import { ImSearch } from "react-icons/im";
 import { FaChevronDown } from "react-icons/fa";
 import { file_requests } from "../../../api/Api";
 
-const assignments = [
-  {
-    _id: "1",
-    assignmentTitle:
-      "It should be relatively short, but still management, and dedication.dcscdscfdcvfdvfdvfdvfdvfdvfdvfdvdfvdfvcdssssssssssssssssssssssssssssss",
-    status: "Approved",
-    totalAmount: 15000,
-    payments: [{ paidAmount: 7000 }],
-    deadline: "2023-10-06",
-    writerName: "MILLU",
-    writerPic: "path_to_image.jpg",
-    folderName: "rakesh Bhai",
-  },
-  {
-    _id: "2",
-    assignmentTitle: "Another assignment with similar details.",
-    status: "Approved",
-    totalAmount: 15000,
-    payments: [{ paidAmount: 7000 }],
-    deadline: "2023-10-10",
-    writerName: "dhanu",
-    writerPic: "path_to_image.jpg",
-    folderName: "cute Dhanan Bhai",
-  },
-  {
-    _id: "3",
-    assignmentTitle: "Another assignment with similar details.",
-    status: "Requested",
-    totalAmount: 15000,
-    payments: [{ paidAmount: 7000 }],
-    deadline: "2023-10-19",
-    writerName: "Sachet Khatiwada",
-    writerPic: "path_to_image.jpg",
-    folderName: "cute Dhanan Bhai",
-  },
-  {
-    _id: "4",
-    assignmentTitle:
-      "It should be relatively short, but still management, and dedication.dcscdscfdcvfdvfdvfdvfdvfdvfdvfdvdfvdfvcdssssssssssssssssssssssssssssss",
-    status: "Approved",
-    totalAmount: 15000,
-    payments: [{ paidAmount: 7000 }],
-    deadline: "2023-10-06",
-    writerName: "Sachet Khatiwada",
-    writerPic: "path_to_image.jpg",
-    folderName: "cute Dhanan Bhai",
-  },
-];
 
 const AdminFiletransfer = () => {
   const [assignments, setAssignments] = useState([]);
@@ -170,6 +122,11 @@ const AdminFiletransfer = () => {
 
   return (
     <div>
+      {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
+          <CircularProgress />
+        </div>
+      )}
       <div className="flex flex-row-reverse px-4 mt-5 w-full md:w-[85%]">
         <div className="flex justify-between items-center mr-5 gap-3">
           <div className="relative">

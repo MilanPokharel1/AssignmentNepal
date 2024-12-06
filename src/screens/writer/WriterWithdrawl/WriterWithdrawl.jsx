@@ -1,48 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import WithdrawalCard from "./components/WithdrawalCard";
 import { FiX } from "react-icons/fi";
 import Card from "./components/Card";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
 
 import { MdAccountBalance } from "react-icons/md";
 import { MdPendingActions } from "react-icons/md";
 import { MdReceipt } from "react-icons/md";
 import { FaMoneyBillWave } from "react-icons/fa6";
+import { create_withdrawal, get_withdrawal_request } from "../../../api/Api";
 // Dummy data
-const withdrawalData = [
-  {
-    id: 1,
-    date: "20/01/2024",
-    time: "04:24PM",
-    status: "approved",
-    approvedBy: "Customer Service",
-    amount: "Rs 8000",
-  },
-  {
-    id: 2,
-    date: "19/01/2024",
-    time: "02:15PM",
-    status: "declined",
-    approvedBy: "System",
-    amount: "Rs 5000",
-  },
-  {
-    id: 3,
-    date: "18/01/2024",
-    time: "11:30AM",
-    status: "approved",
-    approvedBy: "Admin",
-    amount: "Rs 12000",
-  },
-];
+
 
 const FilterButton = ({ label, active, onClick }) => (
   <button
     onClick={onClick}
-    className={`px-4 py-1.5 rounded-lg text-base transition-colors ${
-      active
-        ? "bg-indigo-600 text-white"
-        : "bg-white text-gray-700 border border-indigo-600 hover:bg-gray-50 "
-    }`}
+    className={`px-4 py-1.5 rounded-lg text-base transition-colors ${active
+      ? "bg-indigo-600 text-white"
+      : "bg-white text-gray-700 border border-indigo-600 hover:bg-gray-50 "
+      }`}
   >
     {label}
   </button>
@@ -51,17 +28,93 @@ const FilterButton = ({ label, active, onClick }) => (
 const WriterWithdrawal = () => {
   const [activeFilter, setActiveFilter] = useState("All");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [amount, setAmount] = useState();
+  const [remark, setRemark] = useState("");
+  const [withdrawalData, setWithdrawalData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
+  };
   // Filter options
   const filters = ["All", "Approved", "Declined"];
 
+  useEffect(() => {
+    const fetchOrders = async () => {
+      setIsLoading(true);
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
+
+        const response = await fetch(get_withdrawal_request, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch orders");
+        }
+
+        const data = await response.json();
+        setWithdrawalData(data.withdrawalRequests);
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("token"); // Replace with the actual token
+      const response = await fetch(create_withdrawal, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          amount: amount,
+          remark: remark,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error updating status:", errorData);
+        return;
+      }
+
+      const data = await response.json();
+      console.log("success:", data);
+      setWithdrawalData([...withdrawalData, data.newWithdrawal]);
+      toggleModal()
+    } catch (error) {
+      console.error("Failed:", error);
+    }
+  }
+
+
+
   // Filter logic
-  const filteredData = withdrawalData.filter((item) => {
+  const filteredData = withdrawalData.length > 0 ? withdrawalData.filter((item) => {
     if (activeFilter === "All") return true;
     return item.status.toLowerCase() === activeFilter.toLowerCase();
-  });
+  }) : []
   const toggleModal = () => setIsModalOpen(!isModalOpen);
   return (
     <div className="w-full min-h-screen p-6 bg-gray-50">
+      {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
+          <CircularProgress />
+        </div>
+      )}
       <div className="flex flex-wrap gap-7 justify-center sm:justify-start mb-14">
         <Card
           Icon={MdAccountBalance}
@@ -109,13 +162,13 @@ const WriterWithdrawal = () => {
       </div>
 
       <div>
-        {filteredData.map((item) => (
+        {withdrawalData.length > 0 && filteredData.map((item) => (
           <WithdrawalCard key={item.id} item={item} />
         ))}
       </div>
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white rounded-lg p-6 w-[40rem] relative">
+          <div className="bg-white rounded-lg p-6 w-[30rem] relative">
             {/* Close Button */}
             <button
               className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
@@ -125,57 +178,38 @@ const WriterWithdrawal = () => {
             </button>
 
             <h2 className="text-lg font-semibold mb-4">Basic Information</h2>
-            <form className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Name</label>
-                  <input
-                    type="text"
-                    placeholder="Type Here"
-                    className="w-full px-3 py-2 border rounded-lg"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    Phone Number
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Type Here"
-                    className="w-full px-3 py-2 border rounded-lg"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">E-mail</label>
-                <input
-                  type="email"
-                  placeholder="Type Here"
-                  className="w-full px-3 py-2 border rounded-lg"
-                />
-              </div>
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-4">
+
+
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  Address
+                  Amount
                 </label>
                 <input
-                  type="text"
-                  placeholder="Type Here"
-                  className="w-full px-3 py-2 border rounded-lg"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Withdrawal Amount
-                </label>
-                <input
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
                   type="number"
+                  placeholder="Enter the amount"
+                  className="w-full px-3 py-2 border rounded-lg"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Remark
+                </label>
+                <input
+                  value={remark}
+                  onChange={(e) => setRemark(e.target.value)}
+                  type="text"
                   placeholder="Type Here"
                   className="w-full px-3 py-2 border rounded-lg"
                 />
               </div>
               <div className="w-full flex justify-center">
                 <button
+
                   type="submit"
                   className="w-32 bg-indigo-600 text-white py-2 rounded-lg"
                 >

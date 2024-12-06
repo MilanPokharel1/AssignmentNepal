@@ -1,6 +1,6 @@
 // const url = "http://46.202.164.135:3000/api/v1";
-// const url = "http://localhost:3000/api/v1";
-const url = "https://server.assignmentnepal.com/api/v1";
+const url = "http://localhost:3000/api/v1";
+// const url = "https://server.assignmentnepal.com/api/v1";
 
 export const google_login = `${url}/auth/google-login`;
 export const manual_login = `${url}/auth/login`;
@@ -46,3 +46,10 @@ export const file_requests = `${url}/files/requests`;
 export const file_status = `${url}/file/changestatus`;
 export const all_file_status = `${url}/file/changeallfilestatus`;
 
+
+
+//withdrawal
+export const get_withdrawal_request = `${url}/user/getwithdrawlrequest`;
+export const get_all_withdrawal_request = `${url}/user/getallwithdrawlrequest`;
+export const create_withdrawal = `${url}/user/createwithdrawal`;
+export const withdrawal_status = `${url}/user/withdrawalstatus`;
