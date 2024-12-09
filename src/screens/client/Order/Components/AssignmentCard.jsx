@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import PaymentPopup from "./ClientPaymentPopup";
 import { useNavigate } from "react-router-dom";
 import profileIcon from "../../ClientComponents/profileIcon.jpg";
-
+import { UseTheme } from "../../../../contexts/ThemeContext/useTheme";
 const AssignmentCard = ({
   _id,
   assignmentTitle,
@@ -18,7 +18,7 @@ const AssignmentCard = ({
 }) => {
   const navigate = useNavigate();
   paidAmount = payments[0].paidAmount;
-
+  const { currentTheme, themes } = UseTheme();
   const handleView = () => {
     navigate(`/client/orders/view/${_id}`);
   };
@@ -60,12 +60,12 @@ const AssignmentCard = ({
 
   // Status styling
   const statusColors = {
-    ongoing: "bg-yellow-200 text-yellow-600",
-    submitted: "bg-purple-200 text-purple-600",
-    completed: "bg-green-100 text-green-600",
-    pending: "bg-orange-100 text-orange-600",
-    approved: "bg-gray-300 text-gray-600",
-    cancelled: "bg-red-300 text-red-600",
+    ongoing: `${themes[currentTheme].ongoingStatus}`,
+    submitted: `${themes[currentTheme].submittedStatus}`,
+    completed: `${themes[currentTheme].completedStatus}`,
+    pending: `${themes[currentTheme].pendingStatus}`,
+    approved: `${themes[currentTheme].approvedStatus}`,
+    cancelled: `${themes[currentTheme].cancelledStatus}`,
   };
 
   const [showPaymentPopup, setShowPaymentPopup] = useState(false);
@@ -143,13 +143,13 @@ const AssignmentCard = ({
         {/* Action Buttons */}
         <div className="flex gap-2">
           <button
-            className="px-3 py-1 text-sm text-white bg-[#9E9FEE] hover:bg-purple-400 rounded-md transition-colors"
+            className={`px-3 py-1 text-sm text-white bg-[${themes[currentTheme].view}] hover:${themes[currentTheme].viewHover} rounded-md transition-colors`}
             onClick={handleView}
           >
             View
           </button>
           <button
-            className="px-3 py-1 text-sm text-white bg-[#5d5fef] hover:bg-[#4a4cef] rounded-md transition-colors"
+            className={`px-3 py-1 text-sm text-white bg-[${themes[currentTheme].pay}] hover:bg-[${themes[currentTheme].payHover}] rounded-md transition-colors`}
             onClick={handlePay}
           >
             Pay

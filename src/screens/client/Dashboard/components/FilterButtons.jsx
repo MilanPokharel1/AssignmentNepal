@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import { UseTheme } from "../../../../contexts/ThemeContext/useTheme";
 const FilterButtons = ({ activeFilter, onFilterChange }) => {
   const buttons = [
     "all",
@@ -10,7 +10,7 @@ const FilterButtons = ({ activeFilter, onFilterChange }) => {
     "completed",
   ];
   const [isMobile, setIsMobile] = useState(window.innerWidth < 650);
-
+  const { currentTheme, themes } = UseTheme();
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 650);
@@ -44,7 +44,7 @@ const FilterButtons = ({ activeFilter, onFilterChange }) => {
               key={button}
               className={`px-4 py-2 rounded-lg capitalize filterbtn ${
                 activeFilter === button
-                  ? "bg-[#5d5fef] text-white"
+                  ? `bg-[${themes[currentTheme].FilterActive}] text-white`
                   : "bg-gray-100 text-gray-700"
               } transition-colors`}
               onClick={() => onFilterChange(button)}
