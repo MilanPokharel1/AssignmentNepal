@@ -12,31 +12,8 @@ import CircularChart from "./components/CircularChart";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 import { admin_dashboard } from "../../../api/Api";
-const chartData = [
-  { month: "Jan", thisMonth: 0, lastMonth: 0 },
-  { month: "Fev", thisMonth: 0, lastMonth: 0 },
-  { month: "Mar", thisMonth: 0, lastMonth: 0 },
-  { month: "Apr", thisMonth: 0, lastMonth: 0 },
-  { month: "May", thisMonth: 0, lastMonth: 0 },
-  { month: "Jun", thisMonth: 0, lastMonth: 0 },
-  { month: "Jul", thisMonth: 0, lastMonth: 0 },
-  { month: "Aug", thisMonth: 0, lastMonth: 0 },
-  { month: "Sep", thisMonth: 0, lastMonth: 0 },
-  { month: "Oct", thisMonth: 0, lastMonth: 0 },
-  { month: "Nov", thisMonth: 0, lastMonth: 0 },
-  { month: "Dec", thisMonth: 3, lastMonth: 0 },
-];
 
-const orderCancelData = [
-  { name: "Order", value: 75 },
-  { name: "Cancel", value: 25 },
-];
 
-const metricsData = [
-  { name: "Amount Comparison", completed: 77 },
-  { name: "Active Writers", completed: 54 },
-  { name: "Orders/Completed", completed: 39 },
-];
 
 const Dashboard = () => {
   const [writers, setWriters] = useState([]);
@@ -45,6 +22,24 @@ const Dashboard = () => {
   const [assignments, setAssignments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  const[chartData , setChartData] = useState([
+    { month: "Jan", thisMonth: 0, lastMonth: 0 },
+    { month: "Fev", thisMonth: 0, lastMonth: 0 },
+    { month: "Mar", thisMonth: 0, lastMonth: 0 },
+    { month: "Apr", thisMonth: 0, lastMonth: 0 },
+    { month: "May", thisMonth: 0, lastMonth: 0 },
+    { month: "Jun", thisMonth: 0, lastMonth: 0 },
+    { month: "Jul", thisMonth: 0, lastMonth: 0 },
+    { month: "Aug", thisMonth: 0, lastMonth: 0 },
+    { month: "Sep", thisMonth: 0, lastMonth: 0 },
+    { month: "Oct", thisMonth: 0, lastMonth: 0 },
+    { month: "Nov", thisMonth: 0, lastMonth: 0 },
+    { month: "Dec", thisMonth: 3, lastMonth: 0 },
+  ])
+
+
+
 
   useEffect(() => {
     const fetchCsDashboard = async () => {
@@ -70,6 +65,16 @@ const Dashboard = () => {
         setAssignments(data.recentAssignments);
         setCs(data.newCs);
         setAdminDashboard(data);
+
+        setChartData((prevChartData) =>
+          prevChartData.map((entry) =>
+            entry.month === "Dec"
+              ? { ...entry, thisMonth: data.totalOrders }
+              : entry
+          )
+        );
+
+
         console.log("total amount:", data.totalPayment);
       } catch (error) {
         console.error("Error fetching reminders:", error);

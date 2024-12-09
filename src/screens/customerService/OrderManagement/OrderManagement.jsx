@@ -69,8 +69,8 @@ const OrderManagement = () => {
   };
 
   const NoDataFound = () => (
-    <div className="flex flex-col items-center justify-center py-16 px-4">
-      <div className="bg-gray-100 rounded-full p-6 mb-4">
+    <div className="flex flex-col items-center mx-[25%] justify-center py-16 px-4">
+      <div className="bg-gray-100 rounded-full  p-6 mb-4">
         <ImSearch className="w-12 h-12 text-gray-400" />
       </div>
       <h3 className="text-xl font-semibold text-gray-700 mb-2">

@@ -8,7 +8,7 @@ import {
 } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { cs_clients, user_status } from "../../../api/Api";
+import { cs_clients, manual_register, user_status } from "../../../api/Api";
 
 import { IoBookSharp, IoCheckmarkSharp } from "react-icons/io5";
 import { MdShoppingCart } from "react-icons/md";
@@ -29,6 +29,59 @@ const AdminCS = () => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [down, setdown] = useState(false);
   const [expandedRows, setExpandedRows] = useState([]);
+
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [address, setAddress] = useState("");
+
+
+
+  const createUser = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("token"); // Replace with the actual token
+      const response = await fetch(manual_register, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          firstName: firstName,
+          lastName: lastName,
+          phone: phone,
+          email: email,
+          address: address,
+          role: "cs",
+          password: password
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error Creating User:", errorData);
+        return;
+      }
+
+      const data = await response.json();
+      console.log("success:", data);
+      setShowPopup(false)
+    } catch (error) {
+      console.error("Failed:", error);
+    }
+  }
+
+
+
+
+
+
+
+
   const handleRowClick = (index) => {
     setExpandedRows((prev) =>
       prev.includes(index)
@@ -89,10 +142,10 @@ const AdminCS = () => {
         prevClients.map((client) =>
           client._id === item._id
             ? {
-                ...client,
-                accountStatus:
-                  item.accountStatus === "enabled" ? "disabled" : "enabled",
-              }
+              ...client,
+              accountStatus:
+                item.accountStatus === "enabled" ? "disabled" : "enabled",
+            }
             : client
         )
       );
@@ -185,11 +238,10 @@ const AdminCS = () => {
         <button
           key={i}
           onClick={() => setCurrentPage(i)}
-          className={`px-3 py-1 mx-0.5 rounded ${
-            currentPage === i
+          className={`px-3 py-1 mx-0.5 rounded ${currentPage === i
               ? "bg-blue-600 text-white"
               : "bg-gray-100 hover:bg-gray-200"
-          }`}
+            }`}
         >
           {i}
         </button>
@@ -247,20 +299,18 @@ const AdminCS = () => {
         <Card
           Icon={RiExchangeBoxLine}
           heading="Enabled CS"
-          number={`${
-            clients.filter((writer) => writer.accountStatus === "enabled")
+          number={`${clients.filter((writer) => writer.accountStatus === "enabled")
               .length
-          }`}
+            }`}
           theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
         />
 
         <Card
           Icon={MdDisabledByDefault}
           heading="Disabled CS"
-          number={`${
-            clients.filter((writer) => writer.accountStatus === "disabled")
+          number={`${clients.filter((writer) => writer.accountStatus === "disabled")
               .length
-          }`}
+            }`}
           theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
         />
       </div>
@@ -365,11 +415,10 @@ const AdminCS = () => {
                       </button>
                       <button
                         onClick={() => handleTogglePopup(item, index)}
-                        className={`px-3 py-1 rounded-lg m-1  flex items-center border  text-sm border-gray-500 ${
-                          item.accountStatus === "enabled"
+                        className={`px-3 py-1 rounded-lg m-1  flex items-center border  text-sm border-gray-500 ${item.accountStatus === "enabled"
                             ? "text-red-700"
                             : "text-green-700"
-                        } bg-gray-100 hover:bg-gray-200 hover:cursor-pointer`}
+                          } bg-gray-100 hover:bg-gray-200 hover:cursor-pointer`}
                       >
                         {item.accountStatus === "enabled"
                           ? "Disable"
@@ -411,11 +460,10 @@ const AdminCS = () => {
                                     onClick={() =>
                                       handleTogglePopup(item, index)
                                     }
-                                    className={`px-3 py-1 rounded-lg text-sm border transition-colors ${
-                                      item.accountStatus === "enabled"
+                                    className={`px-3 py-1 rounded-lg text-sm border transition-colors ${item.accountStatus === "enabled"
                                         ? "border-red-500 text-red-700 bg-red-50 hover:bg-red-100"
                                         : "border-green-500 text-green-700 bg-green-50 hover:bg-green-100"
-                                    }`}
+                                      }`}
                                   >
                                     {item.accountStatus === "enabled"
                                       ? "Disable"
@@ -470,12 +518,10 @@ const AdminCS = () => {
             </h2>
             <p className="text-gray-600 mb-6">
               {selectedItem.accountStatus === "enabled"
-                ? `Are you sure you want to disable ${
-                    selectedItem.firstName
-                  }${" "}${selectedItem.lastName}? `
-                : `Are you sure you want to enable ${
-                    selectedItem.firstName
-                  }${" "}${selectedItem.lastName}?`}
+                ? `Are you sure you want to disable ${selectedItem.firstName
+                }${" "}${selectedItem.lastName}? `
+                : `Are you sure you want to enable ${selectedItem.firstName
+                }${" "}${selectedItem.lastName}?`}
             </p>
             <div className="flex justify-end space-x-4">
               <button
@@ -496,11 +542,10 @@ const AdminCS = () => {
             py-2 
             rounded-lg 
             transition-colors
-            ${
-              selectedItem.accountStatus === "enabled"
-                ? "bg-red-500 text-white hover:bg-red-600"
-                : "bg-blue-500 text-white hover:bg-blue-600"
-            }
+            ${selectedItem.accountStatus === "enabled"
+                    ? "bg-red-500 text-white hover:bg-red-600"
+                    : "bg-blue-500 text-white hover:bg-blue-600"
+                  }
           `}
               >
                 {selectedItem.accountStatus === "enabled"
@@ -513,7 +558,10 @@ const AdminCS = () => {
       )}
       {showPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl sm:max-w-2xl relative">
+          <form
+            onSubmit={createUser}
+
+            className="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl sm:max-w-2xl relative">
             {/* Close Button */}
             <button
               onClick={() => setShowPopup(false)}
@@ -525,7 +573,7 @@ const AdminCS = () => {
 
             {/* Form Header */}
             <h2 className="text-2xl font-bold mb-6 text-gray-800 text-center">
-              Create Customer Service
+              Create Writer
             </h2>
 
             {/* Input Fields */}
@@ -540,6 +588,8 @@ const AdminCS = () => {
                 <input
                   id="firstName"
                   type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
                   placeholder="Enter your first name"
                   className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200"
                 />
@@ -553,6 +603,8 @@ const AdminCS = () => {
                 </label>
                 <input
                   id="lastName"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
                   type="text"
                   placeholder="Enter your last name"
                   className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200"
@@ -571,6 +623,8 @@ const AdminCS = () => {
               <input
                 id="phone"
                 type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
                 placeholder="Enter phone number"
                 className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200 text-lg"
               />
@@ -586,8 +640,27 @@ const AdminCS = () => {
               <input
                 id="email"
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter email address"
                 className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200 text-lg"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="lastName"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Password
+              </label>
+              <input
+                id="lastName"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type="text"
+                placeholder="Enter your Password"
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200"
               />
             </div>
 
@@ -601,6 +674,8 @@ const AdminCS = () => {
               <input
                 id="address"
                 type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
                 placeholder="Enter your address"
                 className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200 text-lg"
               />
@@ -608,12 +683,13 @@ const AdminCS = () => {
 
             {/* Submit Button */}
             <button
-              onClick={() => setShowPopup(false)}
+              // onClick={() => setShowPopup(false)}
+              type="submit"
               className="bg-[#5d5fef] text-white w-40 py-3 mt-6 rounded-lg hover:bg-[#4b4dcc] transition duration-300 mx-auto block"
             >
               Create
             </button>
-          </div>
+          </form>
         </div>
       )}
     </div>

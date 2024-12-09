@@ -1,119 +1,199 @@
-// DownloadComponent.js
-import React, { useEffect, useState } from "react";
-import { download_file, get_orders } from "../../../api/Api";
+import React, { useState, useEffect } from 'react';
+import { 
+  HelpCircle, 
+  Search, 
+  MessageCircle, 
+  Mail, 
+  Phone, 
+  BookOpen, 
+  ChevronRight,
+  X 
+} from 'lucide-react';
 
 const HelpSupport = () => {
-  const [orders, setOrders] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeModal, setActiveModal] = useState(null);
+  const [filteredFAQs, setFilteredFAQs] = useState([]);
 
-  // Fetch orders when the component mounts
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const token = localStorage.getItem("token"); // Replace with the actual token
-
-        const response = await fetch(get_orders, {
-          method: "GET",
-          headers: {
-            "Authorization": `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch orders");
+  const faqs = [
+    {
+      category: 'Account',
+      questions: [
+        { 
+          question: 'How do I reset my password?', 
+          answer: 'Click "Forgot Password" on the login page and follow the email instructions.' 
+        },
+        { 
+          question: 'Can I change my email address?', 
+          answer: 'You cannot change your email address. If you lost your email contact Customer Service.' 
         }
+      ]
+    },
+    {
+      category: 'Billing',
+      questions: [
+        { 
+          question: 'What payment methods do you accept?', 
+          answer: 'We accept credit cards, FonePay dynamic QR, and Fonepay Static QR.' 
+        },
+        { 
+          question: 'How can I update my payment method?', 
+          answer: 'You dont have to change your payment method, Just select the payment options and proceed.' 
+        }
+      ]
+    }
+  ];
 
-        const data = await response.json();
-        setOrders(data);
-        console.log(data);
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-      }
+  useEffect(() => {
+    const filtered = faqs.flatMap(category => 
+      category.questions.filter(faq => 
+        faq.question.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+    setFilteredFAQs(filtered);
+  }, [searchQuery]);
+
+  const contactOptions = [
+    {
+      icon: <MessageCircle className="text-blue-400" size={24} />,
+      title: 'Live Chat',
+      description: 'Instant support, 24/7',
+      action: () => setActiveModal('chat')
+    },
+    {
+      icon: <Mail className="text-green-400" size={24} />,
+      title: 'Email Support',
+      description: 'support@assignmentnepal.com',
+      action: () => setActiveModal('email')
+    },
+    {
+      icon: <Phone className="text-purple-400" size={24} />,
+      title: 'Phone Support',
+      description: '+977 9864646464',
+      action: () => setActiveModal('phone')
+    }
+  ];
+
+  const renderModal = () => {
+    const modalContent = {
+      'chat': (
+        <div className="p-6">
+          <h2 className="text-xl font-bold mb-4 text-gray-700">Live Chat</h2>
+          <p className="text-gray-600">Our support team is ready to help you!</p>
+          <div className="mt-4">
+            <input 
+              type="text" 
+              placeholder="Your message" 
+              className="w-full p-3 border rounded-lg text-gray-700 bg-gray-50"
+            />
+            <button className="mt-4 w-full bg-indigo-500 text-white p-3 rounded-lg hover:bg-indigo-600 transition">
+              Start Chat
+            </button>
+          </div>
+        </div>
+      ),
+      'email': (
+        <div className="p-6">
+          <h2 className="text-xl font-bold mb-4 text-gray-700">Email Support</h2>
+          <form className="space-y-4">
+            <input 
+              type="email" 
+              placeholder="Your email" 
+              className="w-full p-3 border rounded-lg text-gray-700 bg-gray-50" 
+            />
+            <textarea 
+              placeholder="Describe your issue" 
+              className="w-full p-3 border rounded-lg h-32 text-gray-700 bg-gray-50"
+            ></textarea>
+            <button className="w-full bg-green-500 text-white p-3 rounded-lg hover:bg-green-600 transition">
+              Send Email
+            </button>
+          </form>
+        </div>
+      ),
+      'phone': (
+        <div className="p-6 text-center">
+          <h2 className="text-xl font-bold mb-4 text-gray-700">Phone Support</h2>
+          <p className="text-gray-600">Call us at: +1 (555) 123-4567</p>
+          <p className="text-gray-600">Hours: Mon-Fri, 9am-5pm EST</p>
+        </div>
+      )
     };
 
-    fetchOrders();
-
-  }, []);
-
-  // Function to handle file download
-  const handleDownload = async (fileUrl) => {
-
-    try {
-      const token = localStorage.getItem("token");
-      const fileId = new URL(fileUrl).searchParams.get("id"); // Get the id from the URL
-      console.log(fileId)
-      if (!fileId) {
-        throw new Error("Invalid file URL");
-      }
-
-      const response = await fetch(`${download_file}/${fileId}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to download file");
-      }
-
-      // Create a blob from the response
-      const contentDisposition = response.headers.get('content-disposition');
-      let filename;
-
-      if (contentDisposition) {
-        const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
-        filename = filenameMatch ? filenameMatch[1].replace(/['"]/g, '') : 'downloaded_file';
-      }
-
-
-      // Create a blob from the response
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.style.display = "none";
-      a.href = url;
-      // Use the filename from the header, or fall back to a default
-      a.download = filename || 'downloaded_file';
-      document.body.appendChild(a);
-      a.click();
-
-      // Cleanup
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (error) {
-      console.error("Error downloading the file:", error);
-    }
+    return activeModal ? (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white rounded-2xl shadow-2xl w-96 relative overflow-hidden">
+          <button 
+            onClick={() => setActiveModal(null)} 
+            className="absolute top-4 right-4 hover:bg-gray-100 rounded-full p-2"
+          >
+            <X className="text-gray-500" />
+          </button>
+          {modalContent[activeModal]}
+        </div>
+      </div>
+    ) : null;
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Orders</h1>
-      <table className="min-w-full border border-gray-300">
-        <thead>
-          <tr>
-            <th className="border-b p-2">Instagram Title</th>
-            <th className="border-b p-2">Assignment Title</th>
-            <th className="border-b p-2">Download</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map((order) => (
-            <tr key={order._id}>
-              <td className="border-b p-2">{order.instagramTitle}</td>
-              <td className="border-b p-2">{order.assignmentTitle}</td>
-              <td className="border-b p-2">
-                <button
-                  onClick={() => handleDownload(order.files[0].fileUrl)} // Ensure fileId is part of your order data
-                  className="bg-blue-500 text-white px-4 py-2 rounded"
-                >
-                  Download
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="min-h-[90vh] min-w-[60vw] bg-gray-50 flex items-center justify-center p-4">
+      <div className="w-full h-full max-w-full bg-white shadow-2xl rounded-3xl overflow-hidden">
+        
+        <div className="p-6">
+          <div className="relative mb-6">
+            <input 
+              type="text" 
+              placeholder="Search FAQs and support topics..." 
+              className="w-full pl-12 pr-4 py-3 border rounded-full text-gray-700 bg-gray-50 shadow-sm focus:ring-2 focus:ring-indigo-300"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <Search className="absolute left-4 top-4 text-gray-400" />
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-4">
+            <div className="md:col-span-2">
+              <h2 className="text-xl font-semibold mb-4 text-gray-700">Frequently Asked Questions</h2>
+              {filteredFAQs.length > 0 ? (
+                filteredFAQs.map((faq, index) => (
+                  <div 
+                    key={index} 
+                    className="bg-gray-100 p-4 rounded-lg mb-3 hover:shadow-md transition"
+                  >
+                    <h3 className="font-bold mb-2 text-gray-800">{faq.question}</h3>
+                    <p className="text-gray-600">{faq.answer}</p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-500">No FAQs found matching your search.</p>
+              )}
+            </div>
+
+            <div className="space-y-4">
+              <div className="bg-blue-50 p-4 rounded-lg">
+                <h3 className="font-bold mb-4 flex items-center text-gray-700">
+                  <BookOpen className="mr-2 text-blue-500" />
+                  Support Channels
+                </h3>
+                {contactOptions.map((option, index) => (
+                  <div 
+                    key={index} 
+                    onClick={option.action}
+                    className="flex items-center bg-white p-3 rounded-lg mb-2 cursor-pointer hover:bg-gray-100 hover:shadow-md transition"
+                  >
+                    {option.icon}
+                    <div className="ml-3">
+                      <h4 className="font-semibold text-gray-800">{option.title}</h4>
+                      <p className="text-sm text-gray-500">{option.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {renderModal()}
     </div>
   );
 };

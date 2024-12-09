@@ -478,7 +478,7 @@ const OrdertView = () => {
                       >
                         <div className="flex items-center justify-between w-full">
                           <div className="flex items-center space-x-2 min-w-0 flex-grow">
-                            <FolderIcon className="h-5 w-5 text-yellow-500 flex-shrink-0" />
+                            <FolderIcon className="h-5 min-w-5 text-yellow-500 flex-shrink-0" />
                             <div className="flex flex-col min-w-0 overflow-hidden flex-grow">
                               <p
                                 className="text-sm font-medium text-gray-700 truncate"
@@ -574,7 +574,7 @@ const OrdertView = () => {
                       className="flex items-center justify-between p-2 bg-white rounded border border-gray-200"
                     >
                       <div className="flex items-center space-x-2 min-w-0 flex-grow">
-                        <FolderIcon className="h-5 w-5 text-yellow-500" />
+                        <FolderIcon className="h-5 min-w-5 text-yellow-500" />
                         <div className="flex flex-col min-w-0 overflow-hidden flex-grow">
                           <p className="text-sm font-medium text-gray-700 truncate">
                             {file.fileName}

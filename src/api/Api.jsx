@@ -4,6 +4,7 @@ const url = "https://server.assignmentnepal.com/api/v1";
 
 export const google_login = `${url}/auth/google-login`;
 export const manual_login = `${url}/auth/login`;
+export const manual_register = `${url}/auth/register`;
 export const upload_file = `${url}/user/createorder`;
 export const get_orders = `${url}/user/orders`;
 export const get_all_orders = `${url}/user/allorders`;

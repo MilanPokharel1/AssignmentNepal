@@ -7,7 +7,7 @@ import {
   MdDisabledByDefault,
 } from "react-icons/md";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { cs_writers, user_status } from "../../../api/Api";
+import { cs_writers, manual_login, manual_register, user_status } from "../../../api/Api";
 import { FaUsers } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import Card from "../../client/Dashboard/components/Card";
@@ -28,6 +28,55 @@ const CsAssignWriter = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [expandedRows, setExpandedRows] = useState([]);
   const [down, setdown] = useState(false);
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [address, setAddress] = useState("");
+  const [catagory, setCatagory] = useState("");
+
+
+  const createUser = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("token"); // Replace with the actual token
+      const response = await fetch(manual_register, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          firstName: firstName,
+          lastName: lastName,
+          phone: phone,
+          email: email,
+          address: address,
+          catagory: catagory,
+          role: "writer",
+          password: password
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error Creating User:", errorData);
+        return;
+      }
+
+      const data = await response.json();
+      console.log("success:", data);
+      setShowPopup(false)
+    } catch (error) {
+      console.error("Failed:", error);
+    }
+  }
+
+
+
+
 
   const handleRowClick = (index) => {
     setExpandedRows((prev) =>
@@ -98,10 +147,10 @@ const CsAssignWriter = () => {
         prevWriters.map((writer) =>
           writer._id === item._id
             ? {
-                ...writer,
-                accountStatus:
-                  item.accountStatus === "enabled" ? "disabled" : "enabled",
-              }
+              ...writer,
+              accountStatus:
+                item.accountStatus === "enabled" ? "disabled" : "enabled",
+            }
             : writer
         )
       );
@@ -208,11 +257,10 @@ const CsAssignWriter = () => {
         <button
           key={i}
           onClick={() => setCurrentPage(i)}
-          className={`px-3 py-1 mx-0.5 rounded ${
-            currentPage === i
-              ? "bg-blue-600 text-white"
-              : "bg-gray-100 hover:bg-gray-200"
-          }`}
+          className={`px-3 py-1 mx-0.5 rounded ${currentPage === i
+            ? "bg-blue-600 text-white"
+            : "bg-gray-100 hover:bg-gray-200"
+            }`}
         >
           {i}
         </button>
@@ -258,28 +306,25 @@ const CsAssignWriter = () => {
         <Card
           Icon={MdAssignmentTurnedIn}
           heading="Assigned Writers"
-          number={`${
-            writers.filter((writer) => writer.status === "assigned").length
-          }`}
+          number={`${writers.filter((writer) => writer.status === "assigned").length
+            }`}
           theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
         />
         <Card
           Icon={RiExchangeBoxLine}
           heading="Enabled Writers"
-          number={`${
-            writers.filter((writer) => writer.accountStatus === "enabled")
-              .length
-          }`}
+          number={`${writers.filter((writer) => writer.accountStatus === "enabled")
+            .length
+            }`}
           theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
         />
 
         <Card
           Icon={MdDisabledByDefault}
           heading="Disabled Writers"
-          number={`${
-            writers.filter((writer) => writer.accountStatus === "disabled")
-              .length
-          }`}
+          number={`${writers.filter((writer) => writer.accountStatus === "disabled")
+            .length
+            }`}
           theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
         />
       </div>
@@ -328,27 +373,24 @@ const CsAssignWriter = () => {
         <div className="flex space-x-4">
           <button
             onClick={() => setFilter("All")}
-            className={`px-4 py-2 rounded-md ${
-              filter === "All" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
-            }`}
+            className={`px-4 py-2 rounded-md ${filter === "All" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
+              }`}
           >
             All
           </button>
           <button
             onClick={() => setFilter("assigned")}
-            className={`px-4 py-2 rounded-md ${
-              filter === "assigned" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
-            }`}
+            className={`px-4 py-2 rounded-md ${filter === "assigned" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
+              }`}
           >
             Assigned
           </button>
           <button
             onClick={() => setFilter("unassigned")}
-            className={`px-4 py-2 rounded-md ${
-              filter === "unassigned"
-                ? "bg-[#20dcb6]"
-                : "border border-[#7072f0]"
-            }`}
+            className={`px-4 py-2 rounded-md ${filter === "unassigned"
+              ? "bg-[#20dcb6]"
+              : "border border-[#7072f0]"
+              }`}
           >
             Unassigned
           </button>
@@ -411,38 +453,35 @@ const CsAssignWriter = () => {
                     <td className="border-b-2 border-gray-200 py-3 text-center max-md:hidden">
                       <div className="flex gap-4 justify-center">
                         <span
-                          className={`inline-block min-w-20 px-3 py-1 text-sm font-medium rounded-lg border-2 hover:cursor-pointer ${
-                            item.accountStatus === "enabled"
-                              ? item.status === "Assigned"
-                                ? "border-emerald-700 text-emerald-700 bg-emerald-50 hover:bg-emerald-200"
-                                : "border-red-700 text-red-700 bg-red-50 hover:bg-red-200"
-                              : "border-red-400 text-red-400 bg-gray-100 opacity-50 cursor-not-allowed"
-                          }`}
+                          className={`inline-block min-w-20 px-3 py-1 text-sm font-medium rounded-lg border-2 hover:cursor-pointer ${item.accountStatus === "enabled"
+                            ? item.status === "Assigned"
+                              ? "border-emerald-700 text-emerald-700 bg-emerald-50 hover:bg-emerald-200"
+                              : "border-red-700 text-red-700 bg-red-50 hover:bg-red-200"
+                            : "border-red-400 text-red-400 bg-gray-100 opacity-50 cursor-not-allowed"
+                            }`}
                           onClick={
-                            item.accountStatus === "enabled" ? () => {} : null
+                            item.accountStatus === "enabled" ? () => { } : null
                           }
                         >
                           {highlightText(item.writerStatus, search)}
                         </span>
                         <span
-                          className={`inline-block min-w-20 px-3 py-1 text-sm font-medium rounded-lg border-2 ${
-                            item.accountStatus === "enabled"
-                              ? "border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-200 hover:cursor-pointer"
-                              : "border-blue-300 text-blue-400 bg-gray-100 opacity-50 cursor-not-allowed"
-                          }`}
+                          className={`inline-block min-w-20 px-3 py-1 text-sm font-medium rounded-lg border-2 ${item.accountStatus === "enabled"
+                            ? "border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-200 hover:cursor-pointer"
+                            : "border-blue-300 text-blue-400 bg-gray-100 opacity-50 cursor-not-allowed"
+                            }`}
                           onClick={
-                            item.accountStatus === "enabled" ? () => {} : null
+                            item.accountStatus === "enabled" ? () => { } : null
                           }
                         >
                           LogIn
                         </span>
                         <span
                           onClick={() => handleTogglePopup(item, index)}
-                          className={`inline-block min-w-20 px-3 py-1 text-sm font-medium rounded-lg border-2 transition-colors duration-200 ${
-                            item.accountStatus === "enabled"
-                              ? "border-gray-500 text-gray-700 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer"
-                              : "border-blue-500 text-white bg-blue-500 hover:bg-blue-400 hover:cursor-pointer"
-                          }`}
+                          className={`inline-block min-w-20 px-3 py-1 text-sm font-medium rounded-lg border-2 transition-colors duration-200 ${item.accountStatus === "enabled"
+                            ? "border-gray-500 text-gray-700 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer"
+                            : "border-blue-500 text-white bg-blue-500 hover:bg-blue-400 hover:cursor-pointer"
+                            }`}
                         >
                           {item.accountStatus === "enabled"
                             ? "Disable"
@@ -470,16 +509,15 @@ const CsAssignWriter = () => {
 
                           <div className="flex gap-3 flex-wrap justify-center items-center">
                             <span
-                              className={`inline-block min-w-[5rem] px-3 py-1 text-sm font-medium rounded-lg border-2 text-center transition-all duration-200 ${
-                                item.accountStatus === "enabled"
-                                  ? item.status === "Assigned"
-                                    ? "border-emerald-700 text-emerald-700 bg-emerald-50 hover:bg-emerald-200"
-                                    : "border-red-700 text-red-700 bg-red-50 hover:bg-red-200"
-                                  : "border-red-400 text-red-400 bg-gray-100 opacity-50 cursor-not-allowed"
-                              }`}
+                              className={`inline-block min-w-[5rem] px-3 py-1 text-sm font-medium rounded-lg border-2 text-center transition-all duration-200 ${item.accountStatus === "enabled"
+                                ? item.status === "Assigned"
+                                  ? "border-emerald-700 text-emerald-700 bg-emerald-50 hover:bg-emerald-200"
+                                  : "border-red-700 text-red-700 bg-red-50 hover:bg-red-200"
+                                : "border-red-400 text-red-400 bg-gray-100 opacity-50 cursor-not-allowed"
+                                }`}
                               onClick={
                                 item.accountStatus === "enabled"
-                                  ? () => {}
+                                  ? () => { }
                                   : null
                               }
                             >
@@ -487,14 +525,13 @@ const CsAssignWriter = () => {
                             </span>
 
                             <span
-                              className={`inline-block min-w-[5rem] px-3 py-1 text-sm font-medium rounded-lg border-2 text-center transition-all duration-200 ${
-                                item.accountStatus === "enabled"
-                                  ? "border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-200 hover:cursor-pointer"
-                                  : "border-blue-300 text-blue-400 bg-gray-100 opacity-50 cursor-not-allowed"
-                              }`}
+                              className={`inline-block min-w-[5rem] px-3 py-1 text-sm font-medium rounded-lg border-2 text-center transition-all duration-200 ${item.accountStatus === "enabled"
+                                ? "border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-200 hover:cursor-pointer"
+                                : "border-blue-300 text-blue-400 bg-gray-100 opacity-50 cursor-not-allowed"
+                                }`}
                               onClick={
                                 item.accountStatus === "enabled"
-                                  ? () => {}
+                                  ? () => { }
                                   : null
                               }
                             >
@@ -503,11 +540,10 @@ const CsAssignWriter = () => {
 
                             <span
                               onClick={() => handleTogglePopup(item, index)}
-                              className={`inline-block min-w-[5rem] px-3 py-1 text-sm font-medium rounded-lg border-2 text-center transition-all duration-200 ${
-                                item.accountStatus === "enabled"
-                                  ? "border-gray-500 text-gray-700 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer"
-                                  : "border-blue-500 text-white bg-blue-500 hover:bg-blue-400 hover:cursor-pointer"
-                              }`}
+                              className={`inline-block min-w-[5rem] px-3 py-1 text-sm font-medium rounded-lg border-2 text-center transition-all duration-200 ${item.accountStatus === "enabled"
+                                ? "border-gray-500 text-gray-700 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer"
+                                : "border-blue-500 text-white bg-blue-500 hover:bg-blue-400 hover:cursor-pointer"
+                                }`}
                             >
                               {item.accountStatus === "enabled"
                                 ? "Disable"
@@ -560,12 +596,10 @@ const CsAssignWriter = () => {
             </h2>
             <p className="text-gray-600 mb-6">
               {selectedItem.accountStatus === "enabled"
-                ? `Are you sure you want to disable ${
-                    selectedItem.firstName
-                  }${" "}${selectedItem.lastName}? `
-                : `Are you sure you want to enable ${
-                    selectedItem.firstName
-                  }${" "}${selectedItem.lastName}?`}
+                ? `Are you sure you want to disable ${selectedItem.firstName
+                }${" "}${selectedItem.lastName}? `
+                : `Are you sure you want to enable ${selectedItem.firstName
+                }${" "}${selectedItem.lastName}?`}
             </p>
             <div className="flex justify-end space-x-4">
               <button
@@ -586,11 +620,10 @@ const CsAssignWriter = () => {
             py-2 
             rounded-lg 
             transition-colors
-            ${
-              selectedItem.accountStatus === "enabled"
-                ? "bg-red-500 text-white hover:bg-red-600"
-                : "bg-blue-500 text-white hover:bg-blue-600"
-            }
+            ${selectedItem.accountStatus === "enabled"
+                    ? "bg-red-500 text-white hover:bg-red-600"
+                    : "bg-blue-500 text-white hover:bg-blue-600"
+                  }
           `}
               >
                 {selectedItem.accountStatus === "enabled"
@@ -603,7 +636,10 @@ const CsAssignWriter = () => {
       )}
       {showPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl sm:max-w-2xl relative">
+          <form
+            onSubmit={createUser}
+
+            className="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl sm:max-w-2xl relative">
             {/* Close Button */}
             <button
               onClick={() => setShowPopup(false)}
@@ -630,6 +666,8 @@ const CsAssignWriter = () => {
                 <input
                   id="firstName"
                   type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
                   placeholder="Enter your first name"
                   className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200"
                 />
@@ -643,6 +681,8 @@ const CsAssignWriter = () => {
                 </label>
                 <input
                   id="lastName"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
                   type="text"
                   placeholder="Enter your last name"
                   className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200"
@@ -661,6 +701,8 @@ const CsAssignWriter = () => {
               <input
                 id="phone"
                 type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
                 placeholder="Enter phone number"
                 className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200 text-lg"
               />
@@ -676,8 +718,27 @@ const CsAssignWriter = () => {
               <input
                 id="email"
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter email address"
                 className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200 text-lg"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="lastName"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Password
+              </label>
+              <input
+                id="lastName"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type="text"
+                placeholder="Enter your Password"
+                className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200"
               />
             </div>
 
@@ -691,6 +752,8 @@ const CsAssignWriter = () => {
               <input
                 id="address"
                 type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
                 placeholder="Enter your address"
                 className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200 text-lg"
               />
@@ -707,6 +770,8 @@ const CsAssignWriter = () => {
               <input
                 id="categories"
                 type="text"
+                value={catagory}
+                onChange={(e) => setCatagory(e.target.value)}
                 placeholder="Enter categories"
                 className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring focus:ring-[#5d5fef] outline-none transition duration-200"
               />
@@ -714,12 +779,13 @@ const CsAssignWriter = () => {
 
             {/* Submit Button */}
             <button
-              onClick={() => setShowPopup(false)}
+              // onClick={() => setShowPopup(false)}
+              type="submit"
               className="bg-[#5d5fef] text-white w-40 py-3 mt-6 rounded-lg hover:bg-[#4b4dcc] transition duration-300 mx-auto block"
             >
               Create
             </button>
-          </div>
+          </form>
         </div>
       )}
     </div>
