@@ -9,7 +9,7 @@ import ClientPayments from "./screens/client/Payments/ClientPayments";
 import ClientReminders from "./screens/client/Reminders/ClientReminders";
 import HelpSupport from "./screens/client/HelpSupport/HelpSupport";
 import Admin from "./screens/admin/admin";
-import { ThemeProvider } from "../src/contexts/ThemeContext/ThemeProvider";
+import { ThemeProvider } from "./contexts/ThemeContext/ThemeProvider";
 import CustomerService from "./screens/customerService/CustomerService";
 import CSdashboard from "./screens/customerService/csDashboard/CSdashboard";
 import OrderManagement from "./screens/customerService/OrderManagement/OrderManagement";

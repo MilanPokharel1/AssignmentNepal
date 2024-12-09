@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ThemeContext } from "./ThemeContext";
-import { themes } from "../../Themes";
+import { themes } from "../../Themes/index.js";
 
 export const ThemeProvider = ({ children }) => {
   const [currentTheme, setCurrentTheme] = useState("default");
