@@ -1,17 +1,14 @@
 import React, { useState } from "react";
 import { FiUpload, FiTrash2 } from "react-icons/fi";
 import { ImCross } from "react-icons/im";
-const FileUploaderWithPopup = () => {
+import { upload_file_after_order } from "../../../../api/Api";
+
+const FileUploaderWithPopup = ({ orderId, readData }) => {
   const [files, setFiles] = useState([]);
   const [progress, setProgress] = useState({});
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [isSubmittedPopupOpen, setIsSubmittedPopupOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-
-  const [formData, setFormData] = useState({
-    orderId:"",
-    file: null,
-  });
 
   const handleFileChange = (event) => {
     const selectedFiles = Array.from(event.target.files);
@@ -31,40 +28,69 @@ const FileUploaderWithPopup = () => {
   const removeFile = (index) => {
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
+  const sendData = (requiredData) => {
+    readData(requiredData);
+  }
 
-  const handleSubmit = (e) => {
+  const uploadFile = (file, index) => {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("orderId", orderId);
 
+      xhr.upload.addEventListener("progress", (event) => {
+        if (event.lengthComputable) {
+          const percentComplete = Math.round((event.loaded / event.total) * 100);
+          setProgress((prevProgress) => ({
+            ...prevProgress,
+            [index]: percentComplete,
+          }));
+        }
+      });
+
+      xhr.onload = () => {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          resolve(xhr.response);
+        } else {
+          reject(xhr.statusText);
+        }
+      };
+
+      xhr.onerror = () => reject("Network error occurred during upload");
+      const token = localStorage.getItem("token");
+      xhr.open("POST", upload_file_after_order); // Replace with your API endpoint
+      xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+      xhr.send(formData);
+    });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!files) {
-      setError("Please select a file to upload");
-      return;
-    }
-
+    if (files.length === 0) return;
 
     setIsUploading(true);
-
     const newProgress = {};
     files.forEach((_, index) => {
       newProgress[index] = 0;
     });
     setProgress(newProgress);
 
-    files.forEach((file, index) => {
-      const interval = setInterval(() => {
-        setProgress((prevProgress) => {
-          const newValue = Math.min((prevProgress[index] || 0) + 10, 100);
-          return { ...prevProgress, [index]: newValue };
-        });
-
-        if (progress[index] === 100) clearInterval(interval);
-      }, 100);
-    });
-
-    setTimeout(() => {
+    try {
+      const uploadPromises = files.map((file, index) => uploadFile(file, index));
+      const responses = await Promise.all(uploadPromises);
+      const data = JSON.parse(responses[0])
+      console.log(data.data);
+      sendData(data.data);
       setIsUploading(false);
       setIsPopupOpen(false);
       setIsSubmittedPopupOpen(true);
-    }, files.length * 1000); // Adjust timeout based on file count
+      setFiles([]); // Clear files after successful upload
+    } catch (error) {
+      console.error("Upload error:", error);
+      setIsUploading(false);
+
+    }
   };
 
   return (
@@ -80,7 +106,7 @@ const FileUploaderWithPopup = () => {
 
       {/* File Upload Popup */}
       {isPopupOpen && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50 ">
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg p-6 w-3/4 max-w-lg relative">
             <button
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
@@ -128,9 +154,7 @@ const FileUploaderWithPopup = () => {
                         <div
                           className={`bg-[#5d5fef] h-2 rounded`}
                           style={{
-                            width: isUploading
-                              ? `${progress[index] || 0}%`
-                              : "0%",
+                            width: `${progress[index] || 0}%`,
                           }}
                         ></div>
                       </div>

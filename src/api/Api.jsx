@@ -1,11 +1,12 @@
 // const url = "http://46.202.164.135:3000/api/v1";
-// const url = "http://localhost:3000/api/v1";
-const url = "https://server.assignmentnepal.com/api/v1";
+const url = "http://localhost:3000/api/v1";
+// const url = "https://server.assignmentnepal.com/api/v1";
 
 export const google_login = `${url}/auth/google-login`;
 export const manual_login = `${url}/auth/login`;
 export const manual_register = `${url}/auth/register`;
 export const upload_file = `${url}/user/createorder`;
+export const upload_file_after_order = `${url}/user/uploadfile`;
 export const get_orders = `${url}/user/orders`;
 export const get_all_orders = `${url}/user/allorders`;
 export const send_comment = `${url}/user/order/sendcomment`;

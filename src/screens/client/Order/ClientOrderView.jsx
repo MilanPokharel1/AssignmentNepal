@@ -231,7 +231,10 @@ const AssignmentView = () => {
     if (isExpanded || description.length <= maxLength) return description;
     return description.slice(0, maxLength) + "...";
   };
-
+  const readData = (data) => {
+    console.log("millu bhai: ", data)
+    setAssignment(data)
+  }
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
   };
@@ -357,7 +360,7 @@ const AssignmentView = () => {
               <h3 className="text-sm font-medium text-gray-700 mb-2">
                 Uploaded Files
               </h3>
-              <FileUploaderWithPopup />
+              <FileUploaderWithPopup orderId={orderId} readData={readData} />
 
             </div>
             <div className="space-y-2">
@@ -389,15 +392,20 @@ const AssignmentView = () => {
                             onClick={() =>
                               handleDownload(file.fileUrl, file.fileName)
                             }
+                            title={
+                              file.fileStatus == "approved" && file.fileUrl
+                                ? ""
+                                : "Download not approved"
+                            }
                             disabled={
-                              file.fileStatus !== "approved" ||
+                              file.fileStatus == "approved" &&
                                 file.fileUrl
                                 ? downloadingFiles[
                                 new URL(file.fileUrl).searchParams.get(
                                   "id"
                                 )
                                 ]
-                                : false
+                                : true
                             }
                           >
                             {file?.fileUrl && downloadingFiles[
@@ -410,11 +418,24 @@ const AssignmentView = () => {
                               <Download
                                 className={`w-4 h-4  ${file.fileStatus === "approved"
                                   ? "text-gray-500"
-                                  : file.fileStatus === "pending"
-                                    ? "text-gray-400"
-                                    : "text-gray-400"
+
+                                  : "text-gray-400"
                                   } hover:cursor-pointer`}
+
+
+                                disabled={
+                                  file.fileStatus == "approved" &&
+                                    file.fileUrl
+                                    ? downloadingFiles[
+                                    new URL(file.fileUrl).searchParams.get(
+                                      "id"
+                                    )
+                                    ]
+                                    : true
+                                }
+
                               />
+
                             )}
                           </button>
                         </div>
@@ -482,10 +503,10 @@ const AssignmentView = () => {
                           }`}
                       >
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center space-x-2">
-                            <FolderIcon className="h-5 w-5 text-yellow-500" />
-                            <div>
-                              <p className="text-sm font-medium text-gray-700">
+                          <div className="flex items-center space-x-2 min-w-0 flex-grow">
+                            <FolderIcon className="h-5 min-w-5 text-yellow-500" />
+                            <div className="flex flex-col min-w-0 overflow-hidden flex-grow">
+                              <p className="text-sm font-medium text-gray-700 truncate">
                                 {file.fileName}
                               </p>
                               <p className="text-xs text-gray-500">
@@ -498,14 +519,23 @@ const AssignmentView = () => {
                             onClick={() =>
                               handleDownload(file.fileUrl, file.fileName)
                             }
+                            title={
+                              file.fileStatus == "approved" && file.fileUrl
+                                ? ""
+                                : "Download not approved"
+                            }
                             disabled={
-                              file.fileStatus !== "approved" ||
-                              downloadingFiles[
-                              new URL(file.fileUrl).searchParams.get("id")
-                              ]
+                              file.fileStatus == "approved" &&
+                                file.fileUrl
+                                ? downloadingFiles[
+                                new URL(file.fileUrl).searchParams.get(
+                                  "id"
+                                )
+                                ]
+                                : true
                             }
                           >
-                            {downloadingFiles[
+                            {file?.fileUrl && downloadingFiles[
                               new URL(file.fileUrl).searchParams.get("id")
                             ] ? (
                               <div className="flex flex-col items-end">
@@ -515,30 +545,44 @@ const AssignmentView = () => {
                               <Download
                                 className={`w-4 h-4  ${file.fileStatus === "approved"
                                   ? "text-gray-500"
-                                  : file.fileStatus === "pending"
-                                    ? "text-gray-300"
-                                    : "text-gray-300"
+
+                                  : "text-gray-400"
                                   } hover:cursor-pointer`}
+
+
+                                disabled={
+                                  file.fileStatus == "approved" &&
+                                    file.fileUrl
+                                    ? downloadingFiles[
+                                    new URL(file.fileUrl).searchParams.get(
+                                      "id"
+                                    )
+                                    ]
+                                    : true
+                                }
+
                               />
+
                             )}
                           </button>
                         </div>
                         {file.fileUrl &&
-                          downloadingFiles[
+                          downloadingFiles?.[
                           new URL(file.fileUrl).searchParams.get("id")
                           ] && (
+
                             <div className="mt-2 ml-7">
                               <div className="text-xs text-gray-500 mb-1">
                                 {
                                   downloadingFiles[
                                     new URL(file.fileUrl).searchParams.get("id")
-                                  ].progress
+                                  ]?.progress
                                 }
                                 % •{" "}
                                 {
                                   downloadingFiles[
                                     new URL(file.fileUrl).searchParams.get("id")
-                                  ].timeRemaining
+                                  ]?.timeRemaining
                                 }
                               </div>
                               <div className="w-full h-2 bg-gray-200 rounded-full">
@@ -549,7 +593,7 @@ const AssignmentView = () => {
                                       new URL(file.fileUrl).searchParams.get(
                                         "id"
                                       )
-                                    ].progress
+                                    ]?.progress
                                       }%`,
                                   }}
                                 ></div>

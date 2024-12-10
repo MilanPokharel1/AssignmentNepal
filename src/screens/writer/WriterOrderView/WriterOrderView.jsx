@@ -10,6 +10,7 @@ import {
 } from "../../../api/Api";
 import { useParams } from "react-router-dom";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import FileUploaderWithPopup from "../../client/Order/Components/FileUploaderWithPopup";
 const WriterOrderView = () => {
   const [comments, setComments] = useState("");
   const [assignment, setAssignment] = useState({
@@ -271,6 +272,11 @@ const WriterOrderView = () => {
     setIsExpanded((prev) => !prev);
   };
 
+  const readData = (data) => {
+    console.log("millu bhai: ", data)
+    setAssignment(data)
+  }
+
   const getDisplayText = (description) => {
     if (!description) return;
     const maxLength = 700;
@@ -414,26 +420,22 @@ const WriterOrderView = () => {
               Client Upload
             </h3>
             <div className="space-y-2">
-              {assignment.files &&
+              {assignment &&
                 assignment.files
                   .filter((file) => file.uploadedBy === "client")
                   .map((file, index) => (
                     <div key={index} className="relative">
                       <div
-                        className={`flex flex-col p-2 rounded border ${
-                          file.fileUrl
-                            ? "bg-white border-gray-200"
-                            : "bg-gray-100 border-gray-300"
-                        }`}
+                        className={`flex flex-col p-2 rounded border ${file.fileUrl
+                          ? "bg-white border-gray-200"
+                          : "bg-gray-100 border-gray-300"
+                          }`}
                       >
-                        <div className="flex items-center justify-between w-full">
+                        <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2 min-w-0 flex-grow">
-                            <FolderIcon className="h-5 w-5 text-yellow-500 flex-shrink-0" />
+                            <FolderIcon className="h-5 min-w-5 text-yellow-500" />
                             <div className="flex flex-col min-w-0 overflow-hidden flex-grow">
-                              <p
-                                className="text-sm font-medium text-gray-700 truncate"
-                                title={file.fileName}
-                              >
+                              <p className="text-sm font-medium text-gray-700 truncate">
                                 {file.fileName}
                               </p>
                               <p className="text-xs text-gray-500">
@@ -441,57 +443,87 @@ const WriterOrderView = () => {
                               </p>
                             </div>
                           </div>
-                          <div className="ml-2 flex-shrink-0">
-                            <button
-                              className="focus:outline-none"
-                              onClick={() =>
-                                handleDownload(file.fileUrl, file.fileName)
-                              }
-                              disabled={
-                                downloadingFiles[
-                                  new URL(file.fileUrl).searchParams.get("id")
+                          <button
+                            className="focus:outline-none"
+                            onClick={() =>
+                              handleDownload(file.fileUrl, file.fileName)
+                            }
+                            title={
+                              file.fileStatus == "approved" && file.fileUrl
+                                ? ""
+                                : "Download not approved"
+                            }
+                            disabled={
+                              file.fileStatus == "approved" &&
+                                file.fileUrl
+                                ? downloadingFiles[
+                                new URL(file.fileUrl).searchParams.get(
+                                  "id"
+                                )
                                 ]
-                              }
-                            >
-                              {downloadingFiles[
-                                new URL(file.fileUrl).searchParams.get("id")
-                              ] ? (
+                                : true
+                            }
+                          >
+                            {file?.fileUrl && downloadingFiles[
+                              new URL(file.fileUrl).searchParams.get("id")
+                            ] ? (
+                              <div className="flex flex-col items-end">
                                 <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
-                              ) : (
-                                <Download className="w-4 h-4 text-gray-700 hover:cursor-pointer" />
-                              )}
-                            </button>
-                          </div>
+                              </div>
+                            ) : (
+                              <Download
+                                className={`w-4 h-4  ${file.fileStatus === "approved"
+                                  ? "text-gray-500"
+
+                                  : "text-gray-400"
+                                  } hover:cursor-pointer`}
+
+
+                                disabled={
+                                  file.fileStatus == "approved" &&
+                                    file.fileUrl
+                                    ? downloadingFiles[
+                                    new URL(file.fileUrl).searchParams.get(
+                                      "id"
+                                    )
+                                    ]
+                                    : true
+                                }
+
+                              />
+
+                            )}
+                          </button>
                         </div>
                         {file.fileUrl &&
-                          downloadingFiles[
-                            new URL(file.fileUrl).searchParams.get("id")
+                          downloadingFiles?.[
+                          new URL(file.fileUrl).searchParams.get("id")
                           ] && (
+
                             <div className="mt-2 ml-7">
                               <div className="text-xs text-gray-500 mb-1">
                                 {
                                   downloadingFiles[
                                     new URL(file.fileUrl).searchParams.get("id")
-                                  ].progress
+                                  ]?.progress
                                 }
                                 % •{" "}
                                 {
                                   downloadingFiles[
                                     new URL(file.fileUrl).searchParams.get("id")
-                                  ].timeRemaining
+                                  ]?.timeRemaining
                                 }
                               </div>
                               <div className="w-full h-2 bg-gray-200 rounded-full">
                                 <div
                                   className="h-2 bg-blue-500 rounded-full"
                                   style={{
-                                    width: `${
-                                      downloadingFiles[
-                                        new URL(file.fileUrl).searchParams.get(
-                                          "id"
-                                        )
-                                      ].progress
-                                    }%`,
+                                    width: `${downloadingFiles[
+                                      new URL(file.fileUrl).searchParams.get(
+                                        "id"
+                                      )
+                                    ]?.progress
+                                      }%`,
                                   }}
                                 ></div>
                               </div>
@@ -511,44 +543,129 @@ const WriterOrderView = () => {
           </div>
 
           <div>
+            <div className="flex justify-between">
             <h3 className="text-sm font-medium text-gray-700 mb-2">
               Writer Upload
             </h3>
+            <FileUploaderWithPopup orderId={orderId} readData={readData} />
+            </div>
             <div className="space-y-2">
-              {assignment.files &&
+              {assignment &&
                 assignment.files
-                  .filter((file) => file.uploadedBy === "client")
+                  .filter((file) => file.uploadedBy === "writer")
                   .map((file, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-2 bg-white rounded border border-gray-200"
-                    >
-                      <div className="flex items-center space-x-2 min-w-0 flex-grow">
-                      <FolderIcon className="h-5 w-5 text-yellow-500" />
-                        <div className="flex flex-col min-w-0 overflow-hidden flex-grow">
-                          <p className="text-sm font-medium text-gray-700 truncate">
-                            {file.fileName}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            {file.fileSize}
-                          </p>
+                    <div key={index} className="relative">
+                      <div
+                        className={`flex flex-col p-2 rounded border ${file.fileUrl
+                          ? "bg-white border-gray-200"
+                          : "bg-gray-100 border-gray-300"
+                          }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2 min-w-0 flex-grow">
+                            <FolderIcon className="h-5 min-w-5 text-yellow-500" />
+                            <div className="flex flex-col min-w-0 overflow-hidden flex-grow">
+                              <p className="text-sm font-medium text-gray-700 truncate">
+                                {file.fileName}
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                {file.fileSize}
+                              </p>
+                            </div>
+                          </div>
+                          <button
+                            className="focus:outline-none"
+                            onClick={() =>
+                              handleDownload(file.fileUrl, file.fileName)
+                            }
+                            title={
+                              file.fileStatus == "approved" && file.fileUrl
+                                ? ""
+                                : "Download not approved"
+                            }
+                            disabled={
+                              file.fileStatus == "approved" &&
+                                file.fileUrl
+                                ? downloadingFiles[
+                                new URL(file.fileUrl).searchParams.get(
+                                  "id"
+                                )
+                                ]
+                                : true
+                            }
+                          >
+                            {file?.fileUrl && downloadingFiles[
+                              new URL(file.fileUrl).searchParams.get("id")
+                            ] ? (
+                              <div className="flex flex-col items-end">
+                                <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
+                              </div>
+                            ) : (
+                              <Download
+                                className={`w-4 h-4  ${file.fileStatus === "approved"
+                                  ? "text-gray-500"
+
+                                  : "text-gray-400"
+                                  } hover:cursor-pointer`}
+
+
+                                disabled={
+                                  file.fileStatus == "approved" &&
+                                    file.fileUrl
+                                    ? downloadingFiles[
+                                    new URL(file.fileUrl).searchParams.get(
+                                      "id"
+                                    )
+                                    ]
+                                    : true
+                                }
+
+                              />
+
+                            )}
+                          </button>
                         </div>
-                      </div>
-                      {file.fileStatus === "pending" ? (
-                        <div></div>
-                      ) : (
-                        <button
-                          className="focus:outline-none"
-                          onClick={() => {
-                            setisDownloading(true);
-                          }}
-                        >
-                          {!isDownloading ? (
-                            <Download className="w-4 h-4 " />
-                          ) : (
-                            <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
+                        {file.fileUrl &&
+                          downloadingFiles?.[
+                          new URL(file.fileUrl).searchParams.get("id")
+                          ] && (
+
+                            <div className="mt-2 ml-7">
+                              <div className="text-xs text-gray-500 mb-1">
+                                {
+                                  downloadingFiles[
+                                    new URL(file.fileUrl).searchParams.get("id")
+                                  ]?.progress
+                                }
+                                % •{" "}
+                                {
+                                  downloadingFiles[
+                                    new URL(file.fileUrl).searchParams.get("id")
+                                  ]?.timeRemaining
+                                }
+                              </div>
+                              <div className="w-full h-2 bg-gray-200 rounded-full">
+                                <div
+                                  className="h-2 bg-blue-500 rounded-full"
+                                  style={{
+                                    width: `${downloadingFiles[
+                                      new URL(file.fileUrl).searchParams.get(
+                                        "id"
+                                      )
+                                    ]?.progress
+                                      }%`,
+                                  }}
+                                ></div>
+                              </div>
+                            </div>
                           )}
-                        </button>
+                      </div>
+
+                      {/* Overlay for blur and loader */}
+                      {!file.fileUrl && (
+                        <div className="absolute inset-0 bg-white/5 opacity-85 backdrop-blur flex items-center justify-center rounded">
+                          <Loader className="w-5 h-5 text-gray-500 animate-spin" />
+                        </div>
                       )}
                     </div>
                   ))}
