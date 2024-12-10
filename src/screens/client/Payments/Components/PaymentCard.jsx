@@ -4,7 +4,14 @@ const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
 };
 
-const PaymentCard = ({ title, createdAt, method, currency, remarks, amount }) => {
+const PaymentCard = ({
+  title,
+  createdAt,
+  method,
+  currency,
+  remarks,
+  amount,
+}) => {
   return (
     <div className="bg-white shadow-lg py-4 md:py-7 rounded-lg mb-4 w-full px-4 md:px-7">
       <div className="flex flex-col md:flex-row md:justify-between md:items-center w-full">
@@ -40,7 +47,11 @@ const PaymentCard = ({ title, createdAt, method, currency, remarks, amount }) =>
         {/* Third Column */}
         <div className="flex items-center md:text-right">
           Amount:&nbsp;
-          <span className="text-[#00b087] font-semibold">{amount}</span>
+          <span
+            className={`text-[${themes[currentTheme].amountTextColor}] font-semibold`}
+          >
+            {amount}
+          </span>
         </div>
       </div>
     </div>

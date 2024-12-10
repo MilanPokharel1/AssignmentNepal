@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import { order_status } from "../../../../api/Api";
-
+import { UseTheme } from "../../../../contexts/ThemeContext/useTheme";
 const OrderCard = ({
   _id,
   assignmentTitle,
@@ -20,7 +20,7 @@ const OrderCard = ({
   const navigate = useNavigate();
   const [currentStatus, setCurrentStatus] = useState(status);
   paidAmount = payments[0].paidAmount;
-
+  const { currentTheme, themes } = UseTheme();
   const handleView = () => {
     navigate(`/cs/OrderManagement/OrderView/${_id}`);
   };
@@ -94,12 +94,12 @@ const OrderCard = ({
 
   // Status styling
   const statusColors = {
-    ongoing: "bg-yellow-200 text-yellow-600",
-    submitted: "bg-purple-200 text-purple-600",
-    completed: "bg-green-100 text-green-600",
-    pending: "bg-orange-100 text-orange-600",
-    approved: "bg-gray-300 text-gray-600",
-    cancelled: "bg-red-300 text-red-600",
+    ongoing: `${themes[currentTheme].ongoingStatus}`,
+    submitted: `${themes[currentTheme].submittedStatus}`,
+    completed: `${themes[currentTheme].completedStatus}`,
+    pending: `${themes[currentTheme].pendingStatus}`,
+    approved: `${themes[currentTheme].approvedStatus}`,
+    cancelled: `${themes[currentTheme].cancelledStatus}`,
   };
 
   const progressClasses = getProgressClasses();
@@ -176,9 +176,9 @@ const OrderCard = ({
           {currentStatus === "pending" || currentStatus === "submitted" ? (
             <>
               <button
-                className="px-3 py-1 text-sm text-emerald-600 bg-emerald-200 
-                           hover:bg-emerald-400 hover:text-white rounded-md transition-all duration-200 
-                           border-2 border-emerald-400"
+                className={`px-3 py-1 text-sm ${themes[currentTheme].btnStatusText} ${themes[currentTheme].btnStatus}
+                           hover:${themes[currentTheme].btnStatusHover} hover:text-white rounded-md transition-all duration-200 
+                           border-2 ${themes[currentTheme].btnStatusborder}`}
                 onClick={() =>
                   handleStatusChange(
                     currentStatus === "pending" ? "approved" : "completed"
@@ -220,7 +220,7 @@ const OrderCard = ({
         <div>
           <button
             onClick={handleView}
-            className="px-3 py-1 text-sm text-white bg-[#9E9FEE] hover:bg-purple-400 rounded-md transition-colors"
+            className={`px-3 py-1 text-sm text-white bg-[${themes[currentTheme].view}] hover:${themes[currentTheme].viewHover} rounded-md transition-colors`}
           >
             View
           </button>

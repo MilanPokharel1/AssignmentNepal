@@ -6,8 +6,14 @@ import {
   MdChevronRight,
   MdDisabledByDefault,
 } from "react-icons/md";
+import { UseTheme } from "../../../contexts/ThemeContext/useTheme";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { cs_writers, manual_login, manual_register, user_status } from "../../../api/Api";
+import {
+  cs_writers,
+  manual_login,
+  manual_register,
+  user_status,
+} from "../../../api/Api";
 import { FaUsers } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import Card from "../../client/Dashboard/components/Card";
@@ -28,7 +34,7 @@ const CsAssignWriter = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [expandedRows, setExpandedRows] = useState([]);
   const [down, setdown] = useState(false);
-
+  const { currentTheme, themes } = UseTheme();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
@@ -36,7 +42,6 @@ const CsAssignWriter = () => {
   const [password, setPassword] = useState("");
   const [address, setAddress] = useState("");
   const [catagory, setCatagory] = useState("");
-
 
   const createUser = async (e) => {
     e.preventDefault();
@@ -56,7 +61,7 @@ const CsAssignWriter = () => {
           address: address,
           catagory: catagory,
           role: "writer",
-          password: password
+          password: password,
         }),
       });
 
@@ -68,15 +73,11 @@ const CsAssignWriter = () => {
 
       const data = await response.json();
       console.log("success:", data);
-      setShowPopup(false)
+      setShowPopup(false);
     } catch (error) {
       console.error("Failed:", error);
     }
-  }
-
-
-
-
+  };
 
   const handleRowClick = (index) => {
     setExpandedRows((prev) =>
@@ -147,10 +148,10 @@ const CsAssignWriter = () => {
         prevWriters.map((writer) =>
           writer._id === item._id
             ? {
-              ...writer,
-              accountStatus:
-                item.accountStatus === "enabled" ? "disabled" : "enabled",
-            }
+                ...writer,
+                accountStatus:
+                  item.accountStatus === "enabled" ? "disabled" : "enabled",
+              }
             : writer
         )
       );
@@ -163,12 +164,10 @@ const CsAssignWriter = () => {
   const highlightText = (text, searchTerm) => {
     if (!searchTerm) return text;
 
-    // Create search terms, both with and without spaces
     const originalTerms = searchTerm.toLowerCase().split(" ").filter(Boolean);
     const spacelessTerms = originalTerms.join("").toLowerCase();
     const terms = [...originalTerms, spacelessTerms];
 
-    // Create a regex that matches any of the terms
     const regex = new RegExp(
       `(${terms
         .map((term) => term.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
@@ -257,10 +256,11 @@ const CsAssignWriter = () => {
         <button
           key={i}
           onClick={() => setCurrentPage(i)}
-          className={`px-3 py-1 mx-0.5 rounded ${currentPage === i
-            ? "bg-blue-600 text-white"
-            : "bg-gray-100 hover:bg-gray-200"
-            }`}
+          className={`px-3 py-1 mx-0.5 rounded ${
+            currentPage === i
+              ? "bg-blue-600 text-white"
+              : "bg-gray-100 hover:bg-gray-200"
+          }`}
         >
           {i}
         </button>
@@ -301,31 +301,46 @@ const CsAssignWriter = () => {
           Icon={FaPenFancy}
           heading="Total Writers"
           number={`${writers.length}`}
-          theme={{ bgColor: "bg-orange-100", iconBgColor: "bg-orange-400" }}
+          theme={{
+            bgColor: `${themes[currentTheme].card2bg}`,
+            iconBgColor: `${themes[currentTheme].card2iconbg}`,
+          }}
         />
         <Card
           Icon={MdAssignmentTurnedIn}
           heading="Assigned Writers"
-          number={`${writers.filter((writer) => writer.status === "assigned").length
-            }`}
-          theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
+          number={`${
+            writers.filter((writer) => writer.status === "assigned").length
+          }`}
+          theme={{
+            bgColor: `${themes[currentTheme].card3bg}`,
+            iconBgColor: `${themes[currentTheme].card3iconbg}`,
+          }}
         />
         <Card
           Icon={RiExchangeBoxLine}
           heading="Enabled Writers"
-          number={`${writers.filter((writer) => writer.accountStatus === "enabled")
-            .length
-            }`}
-          theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
+          number={`${
+            writers.filter((writer) => writer.accountStatus === "enabled")
+              .length
+          }`}
+          theme={{
+            bgColor: `${themes[currentTheme].card4bg}`,
+            iconBgColor: `${themes[currentTheme].card4iconbg}`,
+          }}
         />
 
         <Card
           Icon={MdDisabledByDefault}
           heading="Disabled Writers"
-          number={`${writers.filter((writer) => writer.accountStatus === "disabled")
-            .length
-            }`}
-          theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
+          number={`${
+            writers.filter((writer) => writer.accountStatus === "disabled")
+              .length
+          }`}
+          theme={{
+            bgColor: `${themes[currentTheme].card1bg}`,
+            iconBgColor: `${themes[currentTheme].card1iconbg}`,
+          }}
         />
       </div>
       <h1 className="text-2xl font-bold mb-4 text-center">Writers</h1>
@@ -338,7 +353,7 @@ const CsAssignWriter = () => {
             placeholder="Search here..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-10 pr-4 py-2 w-full text-gray-700 placeholder-gray-500 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className={`pl-10 pr-4 py-2 w-full text-gray-700 placeholder-gray-500 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
           />
         </div>
         <div className="flex flex-col gap-4 sm:flex-row sm:gap-11 items-start sm:items-center sm:justify-between mr-0 sm:mr-14">
@@ -359,7 +374,7 @@ const CsAssignWriter = () => {
             <select
               value={itemsPerPage}
               onChange={handleItemsPerPageChange}
-              className="border border-[#7072f0] rounded p-2 w-full sm:w-auto"
+              className={`border border-[${themes[currentTheme].filterButtonTableBorder}] rounded p-2 w-full sm:w-auto`}
             >
               <option value={10}>10</option>
               <option value={20}>20</option>
@@ -373,24 +388,31 @@ const CsAssignWriter = () => {
         <div className="flex space-x-4">
           <button
             onClick={() => setFilter("All")}
-            className={`px-4 py-2 rounded-md ${filter === "All" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
-              }`}
+            className={`px-4 py-2 rounded-md ${
+              filter === "All"
+                ? `bg-[${themes[currentTheme].TableActionButton}]`
+                : `border border-[${themes[currentTheme].filterButtonTableBorder}]`
+            }`}
           >
             All
           </button>
           <button
             onClick={() => setFilter("assigned")}
-            className={`px-4 py-2 rounded-md ${filter === "assigned" ? "bg-[#20dcb6]" : "border border-[#7072f0]"
-              }`}
+            className={`px-4 py-2 rounded-md ${
+              filter === "assigned"
+                ? `bg-[${themes[currentTheme].TableActionButton}]`
+                : `border border-[${themes[currentTheme].filterButtonTableBorder}]`
+            }`}
           >
             Assigned
           </button>
           <button
             onClick={() => setFilter("unassigned")}
-            className={`px-4 py-2 rounded-md ${filter === "unassigned"
-              ? "bg-[#20dcb6]"
-              : "border border-[#7072f0]"
-              }`}
+            className={`px-4 py-2 rounded-md ${
+              filter === "unassigned"
+                ? `bg-[${themes[currentTheme].TableActionButton}]`
+                : `border border-[${themes[currentTheme].filterButtonTableBorder}]`
+            }`}
           >
             Unassigned
           </button>
@@ -453,35 +475,38 @@ const CsAssignWriter = () => {
                     <td className="border-b-2 border-gray-200 py-3 text-center max-md:hidden">
                       <div className="flex gap-4 justify-center">
                         <span
-                          className={`inline-block min-w-20 px-3 py-1 text-sm font-medium rounded-lg border-2 hover:cursor-pointer ${item.accountStatus === "enabled"
-                            ? item.status === "Assigned"
-                              ? "border-emerald-700 text-emerald-700 bg-emerald-50 hover:bg-emerald-200"
-                              : "border-red-700 text-red-700 bg-red-50 hover:bg-red-200"
-                            : "border-red-400 text-red-400 bg-gray-100 opacity-50 cursor-not-allowed"
-                            }`}
+                          className={`inline-block min-w-20 px-3 py-1 text-sm font-medium rounded-lg border-2 hover:cursor-pointer ${
+                            item.accountStatus === "enabled"
+                              ? item.status === "Assigned"
+                                ? `${themes[currentTheme].btnStatusborder} ${themes[currentTheme].btnStatusText} ${themes[currentTheme].TableActionButtonBg} hover:${themes[currentTheme].TableActionButtonBgHover}`
+                                : "border-red-700 text-red-700 bg-red-50 hover:bg-red-200"
+                              : "border-red-400 text-red-400 bg-gray-100 opacity-50 cursor-not-allowed"
+                          }`}
                           onClick={
-                            item.accountStatus === "enabled" ? () => { } : null
+                            item.accountStatus === "enabled" ? () => {} : null
                           }
                         >
                           {highlightText(item.writerStatus, search)}
                         </span>
                         <span
-                          className={`inline-block min-w-20 px-3 py-1 text-sm font-medium rounded-lg border-2 ${item.accountStatus === "enabled"
-                            ? "border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-200 hover:cursor-pointer"
-                            : "border-blue-300 text-blue-400 bg-gray-100 opacity-50 cursor-not-allowed"
-                            }`}
+                          className={`inline-block min-w-20 px-3 py-1 text-sm font-medium rounded-lg border-2 ${
+                            item.accountStatus === "enabled"
+                              ? "border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-200 hover:cursor-pointer"
+                              : "border-blue-300 text-blue-400 bg-gray-100 opacity-50 cursor-not-allowed"
+                          }`}
                           onClick={
-                            item.accountStatus === "enabled" ? () => { } : null
+                            item.accountStatus === "enabled" ? () => {} : null
                           }
                         >
                           LogIn
                         </span>
                         <span
                           onClick={() => handleTogglePopup(item, index)}
-                          className={`inline-block min-w-20 px-3 py-1 text-sm font-medium rounded-lg border-2 transition-colors duration-200 ${item.accountStatus === "enabled"
-                            ? "border-gray-500 text-gray-700 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer"
-                            : "border-blue-500 text-white bg-blue-500 hover:bg-blue-400 hover:cursor-pointer"
-                            }`}
+                          className={`inline-block min-w-20 px-3 py-1 text-sm font-medium rounded-lg border-2 transition-colors duration-200 ${
+                            item.accountStatus === "enabled"
+                              ? "border-gray-500 text-gray-700 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer"
+                              : "border-blue-500 text-white bg-blue-500 hover:bg-blue-400 hover:cursor-pointer"
+                          }`}
                         >
                           {item.accountStatus === "enabled"
                             ? "Disable"
@@ -509,15 +534,16 @@ const CsAssignWriter = () => {
 
                           <div className="flex gap-3 flex-wrap justify-center items-center">
                             <span
-                              className={`inline-block min-w-[5rem] px-3 py-1 text-sm font-medium rounded-lg border-2 text-center transition-all duration-200 ${item.accountStatus === "enabled"
-                                ? item.status === "Assigned"
-                                  ? "border-emerald-700 text-emerald-700 bg-emerald-50 hover:bg-emerald-200"
-                                  : "border-red-700 text-red-700 bg-red-50 hover:bg-red-200"
-                                : "border-red-400 text-red-400 bg-gray-100 opacity-50 cursor-not-allowed"
-                                }`}
+                              className={`inline-block min-w-[5rem] px-3 py-1 text-sm font-medium rounded-lg border-2 text-center transition-all duration-200 ${
+                                item.accountStatus === "enabled"
+                                  ? item.status === "Assigned"
+                                    ? `${themes[currentTheme].btnStatusborder} ${themes[currentTheme].btnStatusText} ${themes[currentTheme].TableActionButtonBg} hover:${themes[currentTheme].TableActionButtonBgHover}`
+                                    : "border-red-700 text-red-700 bg-red-50 hover:bg-red-200"
+                                  : "border-red-400 text-red-400 bg-gray-100 opacity-50 cursor-not-allowed"
+                              }`}
                               onClick={
                                 item.accountStatus === "enabled"
-                                  ? () => { }
+                                  ? () => {}
                                   : null
                               }
                             >
@@ -525,13 +551,14 @@ const CsAssignWriter = () => {
                             </span>
 
                             <span
-                              className={`inline-block min-w-[5rem] px-3 py-1 text-sm font-medium rounded-lg border-2 text-center transition-all duration-200 ${item.accountStatus === "enabled"
-                                ? "border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-200 hover:cursor-pointer"
-                                : "border-blue-300 text-blue-400 bg-gray-100 opacity-50 cursor-not-allowed"
-                                }`}
+                              className={`inline-block min-w-[5rem] px-3 py-1 text-sm font-medium rounded-lg border-2 text-center transition-all duration-200 ${
+                                item.accountStatus === "enabled"
+                                  ? "border-blue-700 text-blue-700 bg-blue-50 hover:bg-blue-200 hover:cursor-pointer"
+                                  : "border-blue-300 text-blue-400 bg-gray-100 opacity-50 cursor-not-allowed"
+                              }`}
                               onClick={
                                 item.accountStatus === "enabled"
-                                  ? () => { }
+                                  ? () => {}
                                   : null
                               }
                             >
@@ -540,10 +567,11 @@ const CsAssignWriter = () => {
 
                             <span
                               onClick={() => handleTogglePopup(item, index)}
-                              className={`inline-block min-w-[5rem] px-3 py-1 text-sm font-medium rounded-lg border-2 text-center transition-all duration-200 ${item.accountStatus === "enabled"
-                                ? "border-gray-500 text-gray-700 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer"
-                                : "border-blue-500 text-white bg-blue-500 hover:bg-blue-400 hover:cursor-pointer"
-                                }`}
+                              className={`inline-block min-w-[5rem] px-3 py-1 text-sm font-medium rounded-lg border-2 text-center transition-all duration-200 ${
+                                item.accountStatus === "enabled"
+                                  ? "border-gray-500 text-gray-700 bg-gray-100 hover:bg-gray-200 hover:cursor-pointer"
+                                  : "border-blue-500 text-white bg-blue-500 hover:bg-blue-400 hover:cursor-pointer"
+                              }`}
                             >
                               {item.accountStatus === "enabled"
                                 ? "Disable"
@@ -596,10 +624,12 @@ const CsAssignWriter = () => {
             </h2>
             <p className="text-gray-600 mb-6">
               {selectedItem.accountStatus === "enabled"
-                ? `Are you sure you want to disable ${selectedItem.firstName
-                }${" "}${selectedItem.lastName}? `
-                : `Are you sure you want to enable ${selectedItem.firstName
-                }${" "}${selectedItem.lastName}?`}
+                ? `Are you sure you want to disable ${
+                    selectedItem.firstName
+                  }${" "}${selectedItem.lastName}? `
+                : `Are you sure you want to enable ${
+                    selectedItem.firstName
+                  }${" "}${selectedItem.lastName}?`}
             </p>
             <div className="flex justify-end space-x-4">
               <button
@@ -620,10 +650,11 @@ const CsAssignWriter = () => {
             py-2 
             rounded-lg 
             transition-colors
-            ${selectedItem.accountStatus === "enabled"
-                    ? "bg-red-500 text-white hover:bg-red-600"
-                    : "bg-blue-500 text-white hover:bg-blue-600"
-                  }
+            ${
+              selectedItem.accountStatus === "enabled"
+                ? "bg-red-500 text-white hover:bg-red-600"
+                : "bg-blue-500 text-white hover:bg-blue-600"
+            }
           `}
               >
                 {selectedItem.accountStatus === "enabled"
@@ -638,8 +669,8 @@ const CsAssignWriter = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <form
             onSubmit={createUser}
-
-            className="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl sm:max-w-2xl relative">
+            className="bg-white rounded-lg shadow-lg p-8 w-full max-w-2xl sm:max-w-2xl relative"
+          >
             {/* Close Button */}
             <button
               onClick={() => setShowPopup(false)}

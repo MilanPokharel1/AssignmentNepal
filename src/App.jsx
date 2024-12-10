@@ -9,7 +9,7 @@ import ClientPayments from "./screens/client/Payments/ClientPayments";
 import ClientReminders from "./screens/client/Reminders/ClientReminders";
 import HelpSupport from "./screens/client/HelpSupport/HelpSupport";
 import Admin from "./screens/admin/admin";
-import { ThemeProvider } from "../src/contexts/ThemeContext/ThemeProvider";
+import { ThemeProvider } from "./contexts/ThemeContext/ThemeProvider";
 import CustomerService from "./screens/customerService/CustomerService";
 import CSdashboard from "./screens/customerService/csDashboard/CSdashboard";
 import OrderManagement from "./screens/customerService/OrderManagement/OrderManagement";
@@ -44,7 +44,8 @@ import WriterOrderView from "./screens/writer/WriterOrderView/WriterOrderView";
 import AccountPending from "./screens/login/AccountPending";
 import AdminFiletransfer from "./screens/admin/FileTransfer/AdminFiletransfer";
 import QRrequest from "./screens/customerService/QRrequest/QRrequest";
-
+import PrivateRoute from "./PrivateRoute";
+import Unauthorized from "./Unauthorized";
 function App() {
   return (
     <ThemeProvider>
@@ -52,7 +53,14 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/pending" element={<AccountPending />} />
-          <Route path="/client" element={<Client />}>
+          <Route
+            path="/client"
+            element={
+              <PrivateRoute requiredRole="client">
+                <Client />
+              </PrivateRoute>
+            }
+          >
             <Route index element={<ClientDashboard />} />
             <Route path="orders" element={<ClientOrder />}>
               <Route index element={<AllClientOrder />} />
@@ -62,7 +70,14 @@ function App() {
             <Route path="reminders" element={<ClientReminders />} />
             <Route path="helpsupport" element={<HelpSupport />} />
           </Route>
-          <Route path="/admin" element={<Admin />}>
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute requiredRole="admin">
+                <Admin />
+              </PrivateRoute>
+            }
+          >
             <Route index element={<AdminDashboard />} />
             <Route
               path="adminordermanagement"
@@ -90,7 +105,14 @@ function App() {
             <Route path="adminsettings" element={<Settings />} />
             <Route path="adminqrrequest" element={<QRrequest />} />
           </Route>
-          <Route path="/cs" element={<CustomerService />}>
+          <Route
+            path="/cs"
+            element={
+              <PrivateRoute requiredRole="cs">
+                <CustomerService />
+              </PrivateRoute>
+            }
+          >
             <Route index element={<CSdashboard />} />
             <Route path="ordermanagement" element={<OrderManagement />} />
             <Route path="assignwriter" element={<CsAssignWriter />} />
@@ -106,7 +128,14 @@ function App() {
             <Route path="clientrequest" element={<CsClientRequest />} />
             <Route path="csqrrequest" element={<QRrequest />} />
           </Route>
-          <Route path="/writer" element={<Writer />}>
+          <Route
+            path="/writer"
+            element={
+              <PrivateRoute requiredRole="writer">
+                <Writer />
+              </PrivateRoute>
+            }
+          >
             <Route index element={<WriterDashboard />} />
             <Route path="writerwithdrawl" element={<WriterWithdrawl />} />
             <Route path="writerorder" element={<WriterOrder />} />
@@ -126,6 +155,7 @@ function App() {
               element={<WriterOrderView />}
             />
           </Route>
+          <Route path="/unauthorized" element={<Unauthorized />} />
         </Routes>
       </Router>
     </ThemeProvider>

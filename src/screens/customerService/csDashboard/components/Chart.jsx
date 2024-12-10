@@ -8,7 +8,9 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { UseTheme } from "../../../../contexts/ThemeContext/useTheme";
 const Chart = ({ chartData }) => {
+  const { currentTheme, themes } = UseTheme();
   return (
     <ResponsiveContainer width="100%" height="100%">
       <LineChart data={chartData}>
@@ -23,14 +25,14 @@ const Chart = ({ chartData }) => {
           type="monotone"
           dataKey="thisMonth"
           name="This Year" // Custom label for the legend
-          stroke="#10B981"
+          stroke={`${themes[currentTheme].graph1}`}
           strokeWidth={3}
         />
         <Line
           type="monotone"
           dataKey="lastMonth"
           name="Last Year" // Custom label for the legend
-          stroke="#EF4444"
+          stroke={`${themes[currentTheme].graph2}`}
           strokeWidth={3}
         />
       </LineChart>

@@ -11,15 +11,15 @@ import {
 } from "react-icons/fa";
 import logo from "../../../assets/random-logo.png";
 import { RiPieChart2Fill } from "react-icons/ri";
-
+import { UseTheme } from "../../../contexts/ThemeContext/useTheme.js";
 const SideNavbar = ({ onClose, isMobile }) => {
   const navigate = useNavigate();
 
+  const { currentTheme, themes } = UseTheme();
   const linkStyles =
     "flex items-center space-x-4 pl-6 text-gray-600 transition-all duration-300 ease-in-out py-2";
-  const activeLinkStyles = "bg-[#5d5fef] text-white rounded-md py-2";
-  const dashboardActiveStyles =
-    "bg-[#5d5fef] text-white font-medium rounded-md py-2  dashboardActiveheight:text-xl transform scale-105";
+  const activeLinkStyles = `bg-[${themes[currentTheme].navActive}] text-white rounded-md py-2`;
+  const dashboardActiveStyles = `bg-[${themes[currentTheme].navActive}] text-white font-medium rounded-md py-2  dashboardActiveheight:text-xl transform scale-105`;
 
   const handleLogout = () => {
     localStorage.removeItem("token");

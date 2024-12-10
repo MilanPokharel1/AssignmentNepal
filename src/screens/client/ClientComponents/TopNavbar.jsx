@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MdOutlineNotifications, MdMenu } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import { UseTheme } from "../../../contexts/ThemeContext/useTheme.js";
 const pathToTitleMap = {
   "/client": "Dashboard",
   "/client/orders": "Orders",

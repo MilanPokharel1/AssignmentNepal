@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { SlLogin } from "react-icons/sl";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 import GoogleLoginComponent from "./components/GoogleLoginComponent";
 import FacebookLoginComponent from "./components/FacebookLoginComponent";
@@ -16,6 +16,24 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  // Prevent back navigation
+  useEffect(() => {
+    localStorage.clear(); // Clear all local storage items
+
+    // Prevent back navigation
+    const handleBackNavigation = (event) => {
+      event.preventDefault();
+      navigate("/"); // Redirect to home or any other route
+    };
+
+    window.history.pushState(null, null, window.location.href);
+    window.addEventListener("popstate", handleBackNavigation);
+
+    return () => {
+      window.removeEventListener("popstate", handleBackNavigation);
+    };
+  }, [navigate]);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -37,18 +55,16 @@ const Login = () => {
       const data = await response.json();
       if (response.ok) {
         setIsLoading(false);
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('firstName', data.user.firstName);
-        localStorage.setItem('lastName', data.user.lastName);
-        localStorage.setItem('picture', data.user.picture);
-        localStorage.setItem('status', data.user.status);
-
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("firstName", data.user.firstName);
+        localStorage.setItem("lastName", data.user.lastName);
+        localStorage.setItem("picture", data.user.picture);
+        localStorage.setItem("status", data.user.status);
         if (data.user.status === "pending") {
           navigate("/pending");
         } else {
           navigate(`/${data.user.role}`);
         }
-
       } else {
         setIsLoading(false);
         setError(`*${data.error}` || "Login failed. Please try again.");
@@ -68,15 +84,12 @@ const Login = () => {
         </div>
       )}
       <div className="h-[70vh] w-[60%] bg-white rounded-lg shadow-lg flex p-5 loginStyle">
-
         {/* Social Login Section */}
         <div className="w-1/2 loginStyleDiv flex flex-col items-center justify-center space-y-4 border-r border-gray-200 px-6">
-
           <div className="w-[74%]">
             <FacebookLoginComponent />
             <GoogleLoginComponent />
           </div>
-
           {/* <AppleLoginComponent /> */}
         </div>
 
@@ -85,7 +98,9 @@ const Login = () => {
           <div className="flex justify-center items-center w-full">
             <SlLogin className="text-4xl text-gray-600" />
           </div>
-          <h1 className="text-2xl font-semibold text-center">Sign in with the email</h1>
+          <h1 className="text-2xl font-semibold text-center">
+            Sign in with the email
+          </h1>
           {error && <div className="w-full text-red-400 text-sm">{error}</div>}
 
           <input
@@ -112,7 +127,9 @@ const Login = () => {
           </div>
 
           <div className="w-full text-right">
-            <a href="#" className="text-sm text-[#5D5FEF] hover:underline">Forgot Password?</a>
+            <a href="#" className="text-sm text-[#5D5FEF] hover:underline">
+              Forgot Password?
+            </a>
           </div>
 
           <button

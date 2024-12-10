@@ -10,7 +10,7 @@ import FilterButtons from "./components/FilterButtons";
 import { HiArrowRight } from "react-icons/hi";
 import PaymentCard from "../Payments/Components/PaymentCard";
 import ClientOrderPopup from "../Order/Components/ClientOrderPopup.jsx";
-// import { UseTheme } from "../../../contexts/ThemeContext/UseTheme.js";
+import { UseTheme } from "../../../contexts/ThemeContext/useTheme.js";
 import { get_orders, get_payment_dashboard } from "../../../api/Api.jsx";
 
 const Dashboard = () => {
@@ -20,10 +20,8 @@ const Dashboard = () => {
   const [assignments, setAssignments] = useState([]);
   const [paymentData, setPaymentData] = useState([]);
 
-  // const { currentTheme, themes } = UseTheme();
+  const { currentTheme, themes } = UseTheme();
   const [isLoading, setIsLoading] = useState(false);
-
-  // const theme = themes[currentTheme];
 
   const countAssignments = () => {
     const totalAssignments = assignments.length;
@@ -168,26 +166,38 @@ const Dashboard = () => {
           Icon={IoBookSharp}
           heading="Total Assignment"
           number={`${totalAssignments}`}
-          theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
+          theme={{
+            bgColor: `${themes[currentTheme].card1bg}`,
+            iconBgColor: `${themes[currentTheme].card1iconbg}`,
+          }}
         />
         <Card
           Icon={MdShoppingCart}
           heading="Pending Orders"
           number={`${pendingAssignments}`}
-          theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
+          theme={{
+            bgColor: `${themes[currentTheme].card2bg}`,
+            iconBgColor: `${themes[currentTheme].card2iconbg}`,
+          }}
         />
         <Card
           Icon={IoBookSharp}
           heading="Active Assignment"
           number={`${activeAssignments}`}
-          theme={{ bgColor: "bg-yellow-100", iconBgColor: "bg-orange-400" }}
+          theme={{
+            bgColor: `${themes[currentTheme].card3bg}`,
+            iconBgColor: `${themes[currentTheme].card3iconbg}`,
+          }}
         />
 
         <Card
           Icon={IoCheckmarkSharp}
           heading="Completed"
           number={`${completedAssignments}`}
-          theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
+          theme={{
+            bgColor: `${themes[currentTheme].card4bg}`,
+            iconBgColor: `${themes[currentTheme].card4iconbg}`,
+          }}
         />
       </div>
       <div className="flex justify-between w-full md:w-[81%] my-5">
@@ -196,7 +206,7 @@ const Dashboard = () => {
           onFilterChange={handleFilterChange}
         />
         <button
-          className="px-4 py-2 rounded-lg text-sm mt-4 text-white bg-[#5d5fef] hover:bg-purple-600 transition-colors"
+          className={`px-4 py-2 rounded-lg text-sm mt-4 text-white bg-[${themes[currentTheme].btnbg}] hover:${themes[currentTheme].btnhover} transition-colors`}
           onClick={() => setorderPopup(true)}
         >
           +Create Order
