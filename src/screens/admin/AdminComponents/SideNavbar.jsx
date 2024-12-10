@@ -73,6 +73,18 @@ const SideNavbar = ({ onClose, isMobile }) => {
         </div>
         <div>
           <NavLink
+            to="/admin/adminpayments"
+            className={({ isActive }) =>
+              `${linkStyles} ${isActive ? activeLinkStyles : ""}`
+            }
+            onClick={() => isMobile && onClose?.()}
+          >
+            <FaWallet className="w-5 h-5" />
+            <span>Payments</span>
+          </NavLink>
+        </div>
+        <div>
+          <NavLink
             to="/admin/adminwritermanagement"
             className={({ isActive }) =>
               `${linkStyles} ${isActive ? activeLinkStyles : ""}`
@@ -168,18 +180,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
             <span>QR request</span>
           </NavLink>
         </div>
-        <div>
-          <NavLink
-            to="/admin/adminpayments"
-            className={({ isActive }) =>
-              `${linkStyles} ${isActive ? activeLinkStyles : ""}`
-            }
-            onClick={() => isMobile && onClose?.()}
-          >
-            <FaWallet className="w-5 h-5" />
-            <span>Payments</span>
-          </NavLink>
-        </div>
+        
         <div>
           <NavLink
             to="/admin/adminsettings"

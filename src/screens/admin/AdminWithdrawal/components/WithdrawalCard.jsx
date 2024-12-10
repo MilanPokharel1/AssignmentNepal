@@ -80,7 +80,7 @@ const WithdrawalCard = ({ item }) => {
                 : "text-red-500"
             }`}
           >
-            {status==="approved"?"Approved": "Declined"}
+            {status==="approved"?"Approved":status==="declined"? "Declined":"Pending"}
             {/* Capitalize */}
           </div>
         </div>
