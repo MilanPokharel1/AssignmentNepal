@@ -291,7 +291,7 @@ const CsClientRequest = () => {
                             onClick={() => {
                               changeUserStatus(item, "approved");
                             }}
-                            className={`rounded-lg m-1 flex items-center border text-sm f ${themes[currentTheme].approvetext} ${themes[currentTheme].approvebg} hover:bg-green-200 hover:cursor-pointer px-3 py-1`}
+                            className={`rounded-lg m-1 flex items-center border text-sm ${themes[currentTheme].approvetext} ${themes[currentTheme].approvetext} ${themes[currentTheme].approvebg} hover:bg-green-200 hover:cursor-pointer px-3 py-1`}
                           >
                             Approve
                           </button>
