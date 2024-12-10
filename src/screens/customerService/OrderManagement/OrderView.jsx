@@ -15,7 +15,7 @@ import { FiBell } from "react-icons/fi";
 const OrdertView = () => {
   const [comments, setComments] = useState("");
   const [assignment, setAssignment] = useState({
-    files: [], // Initialize with empty array
+    files: [],
     assignmentTitle: "",
     description: "",
   });
@@ -27,7 +27,7 @@ const OrdertView = () => {
   const [downloadingFiles, setDownloadingFiles] = useState({});
   const [newComment, setNewComment] = useState("");
   const commentsContainerRef = useRef(null);
-  const { orderId } = useParams(); // Get orderId from the URL
+  const { orderId } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [status, setStatus] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -49,14 +49,14 @@ const OrdertView = () => {
   useEffect(() => {
     scrollToBottom();
     if (commenttextareaRef.current) {
-      commenttextareaRef.current.style.height = "auto"; // Reset the height
-      commenttextareaRef.current.style.height = `${commenttextareaRef.current.scrollHeight}px`; // Set height to match content
+      commenttextareaRef.current.style.height = "auto";
+      commenttextareaRef.current.style.height = `${commenttextareaRef.current.scrollHeight}px`;
     }
   }, [comments]);
 
   const handleStatusChange = async () => {
     try {
-      const token = localStorage.getItem("token"); // Replace with the actual token
+      const token = localStorage.getItem("token");
       const response = await fetch(order_status, {
         method: "POST",
         headers: {
@@ -77,7 +77,7 @@ const OrdertView = () => {
 
       const data = await response.json();
       console.log("Status updated successfully:", data);
-      setStatus(data.assignment.status); // Update the local status state
+      setStatus(data.assignment.status);
     } catch (error) {
       console.error("Failed to update status:", error);
     }
@@ -95,7 +95,7 @@ const OrdertView = () => {
         !remainderType
       )
         return;
-      const token = localStorage.getItem("token"); // Replace with the actual token
+      const token = localStorage.getItem("token");
       const response = await fetch(create_remainder, {
         method: "POST",
         headers: {
@@ -120,7 +120,7 @@ const OrdertView = () => {
 
       const data = await response.json();
       console.log("Status updated successfully:", data);
-      setIsOpen(false); // Update the local status state
+      setIsOpen(false);
     } catch (error) {
       console.error("Failed to update status:", error);
     }
@@ -130,10 +130,10 @@ const OrdertView = () => {
     const fetchOrderById = async () => {
       setIsLoading(true);
       try {
-        const token = localStorage.getItem("token"); // Replace with the actual token
+        const token = localStorage.getItem("token");
         const response = await fetch(get_orderById, {
           method: "POST",
-          body: JSON.stringify({ orderId }), // Convert body to JSON string
+          body: JSON.stringify({ orderId }),
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -168,15 +168,13 @@ const OrdertView = () => {
 
       const contactRegex = /\b\d{10}\b/;
 
-      // Mask the phone number if it matches the regex
       let maskedComment = newComment;
       setNewComment("");
       if (commentAreaRef.current) {
-        commentAreaRef.current.style.height = "auto"; // Reset height to initial size
+        commentAreaRef.current.style.height = "auto";
       }
       if (contactRegex.test(maskedComment)) {
         maskedComment = maskedComment.replace(contactRegex, (match) => {
-          // Mask the middle digits, keeping the first 2 and last 2 digits
           return match.slice(0, 2) + "******" + match.slice(-2);
         });
       }
@@ -204,7 +202,7 @@ const OrdertView = () => {
 
   const changeFileStatus = async (fileId, status) => {
     try {
-      // Ensure fileId and status are provided
+
       if (!fileId || !status) {
         console.error("File ID or status missing");
         return;
@@ -213,7 +211,7 @@ const OrdertView = () => {
       const token = localStorage.getItem("token");
       console.log("Hit the API");
 
-      // Make the API request to update the file status
+
       const response = await fetch(file_status, {
         method: "POST",
         headers: {
@@ -365,7 +363,7 @@ const OrdertView = () => {
   };
   const handleConfirm = () => {
     handleStatusChange();
-  
+
     setIsModalOpen(false);
     alert("Status changed successfully!");
   };
