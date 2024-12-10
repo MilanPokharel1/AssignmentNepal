@@ -1,7 +1,15 @@
 import React, { useState } from "react";
-import { FileIcon, AlertCircle, CreditCard, QrCode, Upload, X } from "lucide-react";
-
+import {
+  FileIcon,
+  AlertCircle,
+  CreditCard,
+  QrCode,
+  Upload,
+  X,
+} from "lucide-react";
+import { UseTheme } from "../../../../contexts/ThemeContext/useTheme";
 const PaymentPopup = ({ onClose, assignment }) => {
+  const { currentTheme, themes } = UseTheme();
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const [showScreenshotPopup, setShowScreenshotPopup] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -71,7 +79,9 @@ const PaymentPopup = ({ onClose, assignment }) => {
               <div className="space-y-4">
                 {/* Assignment Title */}
                 <div>
-                  <label className="text-sm text-gray-500">Assignment Title:</label>
+                  <label className="text-sm text-gray-500">
+                    Assignment Title:
+                  </label>
                   <div className="mt-1 px-2 bg-gray-50 rounded-md text-sm line-clamp-2 overflow-hidden">
                     {assignment.assignmentTitle}
                   </div>
@@ -90,7 +100,9 @@ const PaymentPopup = ({ onClose, assignment }) => {
                   <label className="text-sm text-gray-500">File:</label>
                   <div className="mt-1 flex items-center gap-2 p-2 bg-gray-50 rounded-md">
                     <FileIcon className="h-4 w-4 text-blue-500" />
-                    <span className="text-sm">theprojetks-design-tokens.zip</span>
+                    <span className="text-sm">
+                      theprojetks-design-tokens.zip
+                    </span>
                     <span className="text-xs text-gray-500">5.3MB</span>
                   </div>
                 </div>
@@ -99,23 +111,35 @@ const PaymentPopup = ({ onClose, assignment }) => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-sm text-gray-500">Deadline:</label>
-                    <div className="text-sm text-red-500">{assignment.deadline}</div>
+                    <div className="text-sm text-red-500">
+                      {assignment.deadline}
+                    </div>
                   </div>
                   <div>
-                    <label className="text-sm text-gray-500">Assignment Status:</label>
+                    <label className="text-sm text-gray-500">
+                      Assignment Status:
+                    </label>
                     <div className="text-sm">
-                      <span className={`px-2 py-1 rounded-full text-xs ${statusColors[assignment.status.toLowerCase()]}`}>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs ${
+                          statusColors[assignment.status.toLowerCase()]
+                        }`}
+                      >
                         {assignment.status}
                       </span>
                     </div>
                   </div>
                   <div>
-                    <label className="text-sm text-gray-500">Payment Status:</label>
+                    <label className="text-sm text-gray-500">
+                      Payment Status:
+                    </label>
                     <div className="text-sm text-red-500">Unpaid</div>
                   </div>
                   <div>
                     <label className="text-sm text-gray-500">Remaining:</label>
-                    <div className="text-sm text-red-500">{assignment.totalAmount}</div>
+                    <div className="text-sm text-red-500">
+                      {assignment.totalAmount}
+                    </div>
                   </div>
                 </div>
 
@@ -136,9 +160,11 @@ const PaymentPopup = ({ onClose, assignment }) => {
                   onClick={handleProceedToPay}
                   className={`
                     w-full py-2 rounded-md text-white mt-4
-                    ${selectedPaymentMethod 
-                      ? 'bg-[#5d5fef] hover:bg-opacity-90' 
-                      : 'bg-gray-400 cursor-not-allowed'}
+                    ${
+                      selectedPaymentMethod
+                        ? "bg-[#5d5fef] hover:bg-opacity-90"
+                        : "bg-gray-400 cursor-not-allowed"
+                    }
                   `}
                   disabled={!selectedPaymentMethod}
                 >
@@ -149,8 +175,9 @@ const PaymentPopup = ({ onClose, assignment }) => {
                 <div className="bg-red-50 border-red-200 p-2 rounded-md flex mt-4">
                   <AlertCircle className="h-auto mr-2 w-9 text-red-600" />
                   <div className="text-xs text-red-600">
-                    Warning: You cannot download this file until your due payment is cleared. Please
-                    settle the outstanding balance to proceed.
+                    Warning: You cannot download this file until your due
+                    payment is cleared. Please settle the outstanding balance to
+                    proceed.
                   </div>
                 </div>
               </div>
@@ -159,7 +186,9 @@ const PaymentPopup = ({ onClose, assignment }) => {
 
           {/* Payment Methods Sidebar */}
           <div className="w-1/3 pl-6 border-l border-gray-200">
-            <h2 className="text-lg font-semibold mb-4">Select Payment Method</h2>
+            <h2 className="text-lg font-semibold mb-4">
+              Select Payment Method
+            </h2>
             <div className="space-y-4">
               {paymentMethods.map((method) => (
                 <div
@@ -167,9 +196,11 @@ const PaymentPopup = ({ onClose, assignment }) => {
                   onClick={() => setSelectedPaymentMethod(method.id)}
                   className={`
                     flex items-center p-4 rounded-md cursor-pointer transition-all border
-                    ${selectedPaymentMethod === method.id 
-                      ? 'bg-[#5d5fef] text-white border-[#5d5fef]' 
-                      : 'hover:bg-gray-100 text-gray-700 border-gray-200'}
+                    ${
+                      selectedPaymentMethod === method.id
+                        ? "bg-[#5d5fef] text-white border-[#5d5fef]"
+                        : "hover:bg-gray-100 text-gray-700 border-gray-200"
+                    }
                   `}
                 >
                   <div className="mr-4">{method.icon}</div>
@@ -181,13 +212,17 @@ const PaymentPopup = ({ onClose, assignment }) => {
             {/* Static QR Code Display */}
             {selectedPaymentMethod === "fonepay-static" && (
               <div className="mt-6 text-center">
-                <h3 className="text-md font-semibold mb-4">Fonepay Static QR</h3>
+                <h3 className="text-md font-semibold mb-4">
+                  Fonepay Static QR
+                </h3>
                 <img
                   src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg"
                   alt="Static QR Code"
                   className="mx-auto border-2 border-gray-200 rounded-lg"
                 />
-                <p className="mt-2 text-sm text-gray-600">Scan to complete payment</p>
+                <p className="mt-2 text-sm text-gray-600">
+                  Scan to complete payment
+                </p>
               </div>
             )}
           </div>
@@ -207,7 +242,9 @@ const PaymentPopup = ({ onClose, assignment }) => {
               <X size={24} />
             </button>
 
-            <h2 className="text-xl font-semibold mb-4 text-center">Upload Payment Screenshot</h2>
+            <h2 className="text-xl font-semibold mb-4 text-center">
+              Upload Payment Screenshot
+            </h2>
 
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
               <input
@@ -238,7 +275,7 @@ const PaymentPopup = ({ onClose, assignment }) => {
 
             <button
               onClick={handleFinish}
-              className="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md"
+              className={`w-full mt-4 bg-[${themes[currentTheme].navActive}] hover:bg-blue-600 text-white py-2 rounded-md`}
               disabled={!selectedFile}
             >
               Finish
