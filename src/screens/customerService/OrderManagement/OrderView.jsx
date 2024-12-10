@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Download, Loader, Loader2 } from "lucide-react";
 import { FolderIcon } from "@heroicons/react/solid";
 import {
+  create_remainder,
   download_file,
   file_status,
   get_orderById,
@@ -30,6 +31,11 @@ const OrdertView = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [status, setStatus] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+
+
+  const [remainderTitle, setRemainderTitle] = useState("");
+  const [remainderDescription, setRemainderDescription] = useState("");
+  const [remainderType, setRemainderType] = useState("warning");
 
   const toggleModal = () => {
     setIsOpen(!isOpen);
@@ -77,6 +83,48 @@ const OrdertView = () => {
       console.error("Failed to update status:", error);
     }
   };
+
+
+
+  const handleSendRemainder = async (e) => {
+    e.preventDefault();
+    try {
+      if (
+        !assignment.assignmentTitle || !assignment.instagramTitle || !assignment.userId || !remainderTitle || !remainderDescription || !remainderType
+      ) return;
+      const token = localStorage.getItem("token"); // Replace with the actual token
+      const response = await fetch(create_remainder, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          assignmentTitle: assignment.assignmentTitle,
+          instagramTitle: assignment.instagramTitle,
+          userId: assignment.userId,
+          title: remainderTitle,
+          description: remainderDescription,
+          type: remainderType
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error updating status:", errorData);
+        return;
+      }
+
+      const data = await response.json();
+      console.log("Status updated successfully:", data);
+      setIsOpen(false) // Update the local status state
+    } catch (error) {
+      console.error("Failed to update status:", error);
+    }
+  };
+
+
+
 
   useEffect(() => {
     const fetchOrderById = async () => {
@@ -492,6 +540,19 @@ const OrdertView = () => {
                               </p>
                             </div>
                           </div>
+                          {file.fileStatus === "pending" && (
+                            <button className="focus:outline-none flex gap-2 items-center">
+                              <span
+                                onClick={() =>
+                                  changeFileStatus(file.fileId, "approved")
+                                }
+                                className="px-1 py-0 rounded-xl text-sm  border border-white bg-white text-blue-500"
+                              >
+                                Approve
+                              </span>
+                              
+                            </button>
+                          )}
                           <div className="ml-2 flex-shrink-0">
                             <button
                               className="focus:outline-none"
@@ -598,6 +659,19 @@ const OrdertView = () => {
                               </p>
                             </div>
                           </div>
+                          {file.fileStatus === "pending" && (
+                            <button className="focus:outline-none flex gap-2 items-center">
+                              <span
+                                onClick={() =>
+                                  changeFileStatus(file.fileId, "approved")
+                                }
+                                className="px-1 py-0 rounded-xl text-sm  border border-white bg-white text-blue-500"
+                              >
+                                Approve
+                              </span>
+                              
+                            </button>
+                          )}
                           <div className="ml-2 flex-shrink-0">
                             <button
                               className="focus:outline-none"
@@ -707,7 +781,7 @@ const OrdertView = () => {
       </div>
       {isOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-lg">
+          <form onSubmit={handleSendRemainder} className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-lg">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">
               Send Reminder
             </h2>
@@ -717,6 +791,9 @@ const OrdertView = () => {
                 Title
               </label>
               <input
+                value={remainderTitle}
+                onChange={(e) => setRemainderTitle(e.target.value)}
+
                 type="text"
                 className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               />
@@ -727,6 +804,9 @@ const OrdertView = () => {
                 Description
               </label>
               <textarea
+                value={remainderDescription}
+                onChange={(e) => setRemainderDescription(e.target.value)}
+
                 rows="5"
                 className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               ></textarea>
@@ -736,7 +816,10 @@ const OrdertView = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Category
               </label>
-              <select className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <select
+                value={remainderType}
+                onChange={(e) => setRemainderType(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
                 <option value="alert">Alert</option>
                 <option value="warning">Warning</option>
                 <option value="notice">Notice</option>
@@ -750,11 +833,13 @@ const OrdertView = () => {
               >
                 Cancel
               </button>
-              <button className="px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg shadow-md hover:opacity-90 focus:outline-none">
+              <button
+                type="submit"
+                className="px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg shadow-md hover:opacity-90 focus:outline-none">
                 Send
               </button>
             </div>
-          </div>
+          </form>
         </div>
       )}
     </div>
