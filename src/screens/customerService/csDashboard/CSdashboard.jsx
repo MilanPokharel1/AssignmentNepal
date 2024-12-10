@@ -4,41 +4,24 @@ import { HiArrowRight } from "react-icons/hi";
 import { IoBookSharp, IoCheckmarkSharp } from "react-icons/io5";
 import { MdCancel, MdShoppingCart } from "react-icons/md";
 import CircularProgress from "@material-ui/core/CircularProgress";
-
+import { UseTheme } from "../../../contexts/ThemeContext/useTheme";
 import Card from "./components/Card";
 import Chart from "./components/Chart";
-import WriterCard from "./components/WriterCard";
-import FilterButtons from "./components/FilterButtons";
 
 import OrderCard from "./components/OrderCard";
 import { cs_dashboard } from "../../../api/Api";
 
-// Dummy chart data
-const chartData = [
-  { month: "Jan", thisMonth: 0, lastMonth: 0 },
-  { month: "Fev", thisMonth: 0, lastMonth: 0 },
-  { month: "Mar", thisMonth: 0, lastMonth: 0 },
-  { month: "Apr", thisMonth: 0, lastMonth: 0 },
-  { month: "May", thisMonth: 0, lastMonth: 0 },
-  { month: "Jun", thisMonth: 0, lastMonth: 0 },
-  { month: "Jul", thisMonth: 0, lastMonth: 0 },
-  { month: "Aug", thisMonth: 0, lastMonth: 0 },
-  { month: "Sep", thisMonth: 0, lastMonth: 0 },
-  { month: "Oct", thisMonth: 0, lastMonth: 0 },
-  { month: "Nov", thisMonth: 0, lastMonth: 0 },
-  { month: "Dec", thisMonth: 3, lastMonth: 0 },
-];
 
 
 const Dashboard = () => {
+  const { currentTheme, themes } = UseTheme();
   const [filter, setFilter] = useState("active");
   const [csDashboard, setCsDashboard] = useState([]);
   const [assignments, setAssignments] = useState([]);
   const [writers, setWriters] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-
-  const[chartData , setChartData] = useState([
+  const [chartData, setChartData] = useState([
     { month: "Jan", thisMonth: 0, lastMonth: 0 },
     { month: "Fev", thisMonth: 0, lastMonth: 0 },
     { month: "Mar", thisMonth: 0, lastMonth: 0 },
@@ -51,7 +34,7 @@ const Dashboard = () => {
     { month: "Oct", thisMonth: 0, lastMonth: 0 },
     { month: "Nov", thisMonth: 0, lastMonth: 0 },
     { month: "Dec", thisMonth: 3, lastMonth: 0 },
-  ])
+  ]);
 
   useEffect(() => {
     const fetchCsDashboard = async () => {
@@ -83,8 +66,6 @@ const Dashboard = () => {
               : entry
           )
         );
-
-
       } catch (error) {
         console.error("Error fetching reminders:", error);
       } finally {
@@ -108,25 +89,37 @@ const Dashboard = () => {
             Icon={IoBookSharp}
             heading="Total Assignment"
             number={csDashboard.totalAssignments}
-            theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
+            theme={{
+              bgColor: `${themes[currentTheme].card2bg}`,
+              iconBgColor: `${themes[currentTheme].card2iconbg}`,
+            }}
           />
           <Card
             Icon={IoBookSharp}
             heading="Active Assignment"
             number={csDashboard.activeAssignment}
-            theme={{ bgColor: "bg-yellow-100", iconBgColor: "bg-orange-400" }}
+            theme={{
+              bgColor: `${themes[currentTheme].card3bg}`,
+              iconBgColor: `${themes[currentTheme].card3iconbg}`,
+            }}
           />
           <Card
             Icon={IoCheckmarkSharp}
             heading="Completed"
             number={csDashboard.completedAssignment}
-            theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
+            theme={{
+              bgColor: `${themes[currentTheme].card4bg}`,
+              iconBgColor: `${themes[currentTheme].card4iconbg}`,
+            }}
           />
           <Card
             Icon={MdCancel}
             heading="Cancelled"
             number={csDashboard.cancelledAssignment}
-            theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
+            theme={{
+              bgColor: `${themes[currentTheme].card1bg}`,
+              iconBgColor: `${themes[currentTheme].card1iconbg}`,
+            }}
           />
         </div>
         <div className="bg-white p-4 rounded-2xl shadow mb-6 cols-span-12 md:col-span-5">

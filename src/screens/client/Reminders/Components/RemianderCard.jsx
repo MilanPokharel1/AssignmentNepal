@@ -7,31 +7,32 @@ const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
 };
 export const ReminderCard = ({ title, date, type, description }) => {
+  const { currentTheme, themes } = UseTheme();
   const getIconContent = () => {
     switch (type) {
       case "alert":
         return {
           icon: <PiSirenFill className="text-xl" />,
-          bgColor: "bg-red-100",
-          iconColor: "text-red-500 font-bold",
+          bgColor: `${themes[currentTheme].alertbgcolor}`,
+          iconColor: `${themes[currentTheme].alerticonColor}`,
         };
       case "warning":
         return {
           icon: <GrAnnounce className="text-xl" />,
-          bgColor: "bg-yellow-100",
-          iconColor: "text-black",
+          bgColor: `${themes[currentTheme].warningbgcolor}`,
+          iconColor: `${themes[currentTheme].warningiconColor}`,
         };
       case "update":
         return {
           icon: <LuRefreshCcw className="text-xl" />,
-          bgColor: "bg-green-100",
-          iconColor: "text-green-500",
+          bgColor: `${themes[currentTheme].updateColor}`,
+          iconColor: `${themes[currentTheme].updateiconColor}`,
         };
       default:
         return {
           icon: <IoMdAlert className="text-xl" />,
-          bgColor: "bg-red-100",
-          iconColor: "text-red-500",
+          bgColor: `${themes[currentTheme].alertbgcolor}`,
+          iconColor:`${themes[currentTheme].alerticonColor}`,
         };
     }
   };

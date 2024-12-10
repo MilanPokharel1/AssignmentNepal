@@ -6,12 +6,12 @@ import { change_pending_user, pending_users } from "../../../api/Api";
 import { BiExpandVertical } from "react-icons/bi";
 import { MdOutlineExpandMore } from "react-icons/md";
 import { MdOutlineExpandLess } from "react-icons/md";
-
+import { UseTheme } from "../../../contexts/ThemeContext/useTheme";
 const CsClientRequest = () => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(30);
-
+  const { currentTheme, themes } = UseTheme();
   const [clients, setClients] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [down, setdown] = useState(false);
@@ -215,7 +215,7 @@ const CsClientRequest = () => {
             <select
               value={itemsPerPage}
               onChange={handleItemsPerPageChange}
-              className="border border-[#7072f0] rounded p-1"
+              className={`border border-[${themes[currentTheme].filterButtonTableBorder}] rounded p-2 w-full sm:w-auto`}
             >
               <option value={10}>10</option>
               <option value={20}>20</option>
@@ -291,7 +291,7 @@ const CsClientRequest = () => {
                             onClick={() => {
                               changeUserStatus(item, "approved");
                             }}
-                            className="rounded-lg m-1 flex items-center border text-sm border-green-700 text-green-700 bg-green-50 hover:bg-green-200 hover:cursor-pointer px-3 py-1"
+                            className={`rounded-lg m-1 flex items-center border text-sm f ${themes[currentTheme].approvetext} ${themes[currentTheme].approvebg} hover:bg-green-200 hover:cursor-pointer px-3 py-1`}
                           >
                             Approve
                           </button>

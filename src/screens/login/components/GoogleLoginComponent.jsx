@@ -1,55 +1,55 @@
-import React from 'react';
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import React from "react";
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { jwtDecode } from "jwt-decode";
-import { useNavigate } from 'react-router-dom';
-import { google_login } from '../../../api/Api';
-import { FcGoogle } from 'react-icons/fc'; // Google icon
+import { useNavigate } from "react-router-dom";
+import { google_login } from "../../../api/Api";
+import { FcGoogle } from "react-icons/fc"; // Google icon
 
 const GoogleLoginComponent = () => {
   const navigate = useNavigate();
-  const clientId = '698971141602-9cscdsepkoln8c5gs65c0o26qmgtr9ro.apps.googleusercontent.com';
+  const clientId =
+    "698971141602-9cscdsepkoln8c5gs65c0o26qmgtr9ro.apps.googleusercontent.com";
 
   const handleLoginSuccess = async (response) => {
     try {
-      console.log('Login Success:', response);
+      console.log("Login Success:", response);
 
       const { credential } = response;
 
       const res = await fetch(google_login, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ token: credential }),
       });
 
       if (!res.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
 
       const data = await res.json();
-      console.log('Backend Response:', data);
+      console.log("Backend Response:", data);
 
-
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('firstName', data.user.firstName);
-      localStorage.setItem('lastName', data.user.lastName);
-      localStorage.setItem('picture', data.user.picture);
-      localStorage.setItem('status', data.user.status);
-      console.log(data.user.status)
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("firstName", data.user.firstName);
+      localStorage.setItem("lastName", data.user.lastName);
+      localStorage.setItem("picture", data.user.picture);
+      localStorage.setItem("status", data.user.status);
+      localStorage.setItem("role", data.user.role);
+  
       if (data.user.status === "pending") {
         navigate("/pending");
       } else {
         navigate(`/${data.user.role}`);
       }
     } catch (error) {
-      console.error('Error during login process:', error);
+      console.error("Error during login process:", error);
     }
-
   };
 
   const handleLoginFailure = (error) => {
-    console.error('Login Failed:', error);
+    console.error("Login Failed:", error);
   };
 
   return (
@@ -57,11 +57,9 @@ const GoogleLoginComponent = () => {
       <GoogleLogin
         onSuccess={handleLoginSuccess}
         onError={handleLoginFailure}
-        text='continue_with'
-        size='large'
-
+        text="continue_with"
+        size="large"
         render={(renderProps) => (
-
           <button
             onClick={renderProps.onClick}
             disabled={renderProps.disabled}
