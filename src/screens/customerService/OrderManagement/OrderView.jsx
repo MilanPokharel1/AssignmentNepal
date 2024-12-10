@@ -31,7 +31,7 @@ const OrdertView = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [status, setStatus] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [remainderTitle, setRemainderTitle] = useState("");
   const [remainderDescription, setRemainderDescription] = useState("");
@@ -45,7 +45,7 @@ const OrdertView = () => {
     commentsContainerRef.current.scrollTop =
       commentsContainerRef.current.scrollHeight;
   };
-
+  const handleCloseModal = () => setIsModalOpen(false);
   useEffect(() => {
     scrollToBottom();
     if (commenttextareaRef.current) {
@@ -53,7 +53,6 @@ const OrdertView = () => {
       commenttextareaRef.current.style.height = `${commenttextareaRef.current.scrollHeight}px`; // Set height to match content
     }
   }, [comments]);
-
 
   const handleStatusChange = async () => {
     try {
@@ -84,14 +83,18 @@ const OrdertView = () => {
     }
   };
 
-
-
   const handleSendRemainder = async (e) => {
     e.preventDefault();
     try {
       if (
-        !assignment.assignmentTitle || !assignment.instagramTitle || !assignment.userId || !remainderTitle || !remainderDescription || !remainderType
-      ) return;
+        !assignment.assignmentTitle ||
+        !assignment.instagramTitle ||
+        !assignment.userId ||
+        !remainderTitle ||
+        !remainderDescription ||
+        !remainderType
+      )
+        return;
       const token = localStorage.getItem("token"); // Replace with the actual token
       const response = await fetch(create_remainder, {
         method: "POST",
@@ -105,7 +108,7 @@ const OrdertView = () => {
           userId: assignment.userId,
           title: remainderTitle,
           description: remainderDescription,
-          type: remainderType
+          type: remainderType,
         }),
       });
 
@@ -117,14 +120,11 @@ const OrdertView = () => {
 
       const data = await response.json();
       console.log("Status updated successfully:", data);
-      setIsOpen(false) // Update the local status state
+      setIsOpen(false); // Update the local status state
     } catch (error) {
       console.error("Failed to update status:", error);
     }
   };
-
-
-
 
   useEffect(() => {
     const fetchOrderById = async () => {
@@ -146,7 +146,7 @@ const OrdertView = () => {
 
         const data = await response.json();
         setAssignment(data);
-        console.log(data)
+        console.log(data);
         setStatus(data.status);
         setComments(data.comments);
       } catch (error) {
@@ -363,7 +363,12 @@ const OrdertView = () => {
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
   };
-
+  const handleConfirm = () => {
+    handleStatusChange();
+  
+    setIsModalOpen(false);
+    alert("Status changed successfully!");
+  };
   return (
     <div className="w-full mx-auto p-6 bg-[#fafbfc] rounded-lg pb-10">
       {isLoading && (
@@ -386,10 +391,13 @@ const OrdertView = () => {
               <option value="completed">Completed</option>
             </select>
           </div>
-          <button onClick={
-            handleStatusChange
-          }
-            className="bg-[#5D5FEF] text-white  px-2 py-1 hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 rounded-lg focus:outline-none">
+          <button
+            // onClick={handleStatusChange}
+            onClick={() => {
+              setIsModalOpen(true);
+            }}
+            className="bg-[#5D5FEF] text-white  px-2 py-1 hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 rounded-lg focus:outline-none"
+          >
             Change
           </button>
           <button
@@ -550,7 +558,6 @@ const OrdertView = () => {
                               >
                                 Approve
                               </span>
-                              
                             </button>
                           )}
                           <div className="ml-2 flex-shrink-0">
@@ -669,7 +676,6 @@ const OrdertView = () => {
                               >
                                 Approve
                               </span>
-                              
                             </button>
                           )}
                           <div className="ml-2 flex-shrink-0">
@@ -747,24 +753,25 @@ const OrdertView = () => {
           </div>
           <div className="space-y-4 text-sm">
             <h2 className="text-2xl font-bold">Payments</h2>
-            {assignment.payments && assignment.payments.map((payment, index) => (
-              <div key={index} className="bg-white shadow-md rounded-lg p-4 ">
-                <div className="flex items-center gap-2 ">
-                  <p className="text-gray-600">Payment Date:</p>
-                  <p>{formatDate(payment.date)}</p>
+            {assignment.payments &&
+              assignment.payments.map((payment, index) => (
+                <div key={index} className="bg-white shadow-md rounded-lg p-4 ">
+                  <div className="flex items-center gap-2 ">
+                    <p className="text-gray-600">Payment Date:</p>
+                    <p>{formatDate(payment.date)}</p>
+                  </div>
+                  <div className="flex items-center gap-2 ">
+                    <p className="text-gray-600">Payment Method:</p>
+                    <p>{payment.method}</p>
+                  </div>
+                  <div className="flex items-center gap-2 ">
+                    <p className="text-gray-600">Amount:</p>
+                    <p className="text-[#00b087] font-semibold">
+                      {payment.paidAmount}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 ">
-                  <p className="text-gray-600">Payment Method:</p>
-                  <p>{payment.method}</p>
-                </div>
-                <div className="flex items-center gap-2 ">
-                  <p className="text-gray-600">Amount:</p>
-                  <p className="text-[#00b087] font-semibold">
-                    {payment.paidAmount}
-                  </p>
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
           <div className="max-w-sm mx-auto mt-8 p-4 border rounded-md shadow-md bg-white">
             <h2 className="text-lg font-semibold mb-4">Pay Writer</h2>
@@ -781,7 +788,10 @@ const OrdertView = () => {
       </div>
       {isOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <form onSubmit={handleSendRemainder} className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-lg">
+          <form
+            onSubmit={handleSendRemainder}
+            className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-lg"
+          >
             <h2 className="text-2xl font-bold text-gray-800 mb-6">
               Send Reminder
             </h2>
@@ -793,7 +803,6 @@ const OrdertView = () => {
               <input
                 value={remainderTitle}
                 onChange={(e) => setRemainderTitle(e.target.value)}
-
                 type="text"
                 className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               />
@@ -806,7 +815,6 @@ const OrdertView = () => {
               <textarea
                 value={remainderDescription}
                 onChange={(e) => setRemainderDescription(e.target.value)}
-
                 rows="5"
                 className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               ></textarea>
@@ -819,7 +827,8 @@ const OrdertView = () => {
               <select
                 value={remainderType}
                 onChange={(e) => setRemainderType(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              >
                 <option value="alert">Alert</option>
                 <option value="warning">Warning</option>
                 <option value="notice">Notice</option>
@@ -835,11 +844,35 @@ const OrdertView = () => {
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg shadow-md hover:opacity-90 focus:outline-none">
+                className="px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg shadow-md hover:opacity-90 focus:outline-none"
+              >
                 Send
               </button>
             </div>
           </form>
+        </div>
+      )}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+            <h2 className="text-lg font-semibold text-gray-800">
+              Are you sure you want to change the status?
+            </h2>
+            <div className="mt-4 flex justify-end space-x-4">
+              <button
+                onClick={handleCloseModal}
+                className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirm}
+                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
