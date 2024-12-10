@@ -4,14 +4,19 @@ import { FaChevronDown } from "react-icons/fa";
 import PaymentCard from "./components/PaymentCard";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { get_payment } from "../../../api/Api";
-
+import Card from "../../writer/WriterWithdrawl/components/Card";
+import { UseTheme } from "../../../contexts/ThemeContext/useTheme";
+import { MdAccountBalance } from "react-icons/md";
+import { MdPendingActions } from "react-icons/md";
+import { MdReceipt } from "react-icons/md";
+import { FaMoneyBillWave } from "react-icons/fa6";
 const CsPayments = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("Newest");
   const [showOptions, setShowOptions] = useState(false);
   const [paymentData, setPaymentData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
+  const { currentTheme, themes } = UseTheme();
   useEffect(() => {
     const fetchPayments = async () => {
       setIsLoading(true);
@@ -108,14 +113,41 @@ const CsPayments = () => {
   );
 
   return (
-    <div className="p-6 flex-1 bg-[#fafbfc] w-full md:w-[85%]">
+    <div className="p-6 flex-1 bg-[#fafbfc] w-full ">
       {isLoading && (
         <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
           <CircularProgress />
         </div>
       )}
+      <div className="flex flex-wrap gap-7 justify-center sm:justify-start mb-14">
+        <Card
+          Icon={MdAccountBalance}
+          heading="Balance"
+          number={40}
+          theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
+        />
+        <Card
+          Icon={MdPendingActions}
+          heading="Pending"
+          number={40}
+          theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
+        />
+        <Card
+          Icon={MdReceipt}
+          heading="Withdrawaled"
+          number={40}
+          theme={{ bgColor: "bg-yellow-100", iconBgColor: "bg-orange-400" }}
+        />
+
+        <Card
+          Icon={FaMoneyBillWave}
+          heading="Total"
+          number={40}
+          theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
+        />
+      </div>
       <div className="flex justify-between items-center flex-row-reverse">
-        <div className="flex justify-between items-center mb-4 gap-3">
+        <div className="flex justify-between items-center mb-4 mr-9 gap-3">
           <div className="relative">
             <input
               type="text"

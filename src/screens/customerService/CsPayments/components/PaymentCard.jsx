@@ -9,12 +9,11 @@ const PaymentCard = ({
   amount,
   name,
 }) => {
-
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
   };
   return (
-    <div className="bg-white shadow-lg py-4 md:py-7 rounded-lg mb-4 w-full px-4 md:px-7">
+    <div className="bg-white shadow-lg py-4 md:py-7 rounded-lg mb-4 w-full md:w-[83%] px-4 md:px-7">
       <div className="flex flex-col md:flex-row md:justify-between md:items-center w-full">
         {/* First Column */}
         <div className="flex flex-col mb-3 md:mb-0">
