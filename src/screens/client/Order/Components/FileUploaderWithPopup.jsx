@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { FiUpload, FiTrash2 } from "react-icons/fi";
+import { FiUpload, FiTrash2, FiCheckCircle } from "react-icons/fi";
 import { ImCross } from "react-icons/im";
 import { upload_file_after_order } from "../../../../api/Api";
 
-const FileUploaderWithPopup = ({ orderId, readData }) => {
+const FileUploaderWithPopup = ({ orderId }) => {
   const [files, setFiles] = useState([]);
   const [progress, setProgress] = useState({});
+  const [status, setStatus] = useState({});
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [isSubmittedPopupOpen, setIsSubmittedPopupOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isAllComplete, setIsAllComplete] = useState(false);
 
   const handleFileChange = (event) => {
     const selectedFiles = Array.from(event.target.files);
@@ -27,10 +28,17 @@ const FileUploaderWithPopup = ({ orderId, readData }) => {
 
   const removeFile = (index) => {
     setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+    setProgress((prevProgress) => {
+      const updatedProgress = { ...prevProgress };
+      delete updatedProgress[index];
+      return updatedProgress;
+    });
+    setStatus((prevStatus) => {
+      const updatedStatus = { ...prevStatus };
+      delete updatedStatus[index];
+      return updatedStatus;
+    });
   };
-  const sendData = (requiredData) => {
-    readData(requiredData);
-  }
 
   const uploadFile = (file, index) => {
     return new Promise((resolve, reject) => {
@@ -51,15 +59,30 @@ const FileUploaderWithPopup = ({ orderId, readData }) => {
 
       xhr.onload = () => {
         if (xhr.status >= 200 && xhr.status < 300) {
+          setStatus((prevStatus) => ({
+            ...prevStatus,
+            [index]: "success",
+          }));
           resolve(xhr.response);
         } else {
+          setStatus((prevStatus) => ({
+            ...prevStatus,
+            [index]: "failure",
+          }));
           reject(xhr.statusText);
         }
       };
 
-      xhr.onerror = () => reject("Network error occurred during upload");
+      xhr.onerror = () => {
+        setStatus((prevStatus) => ({
+          ...prevStatus,
+          [index]: "failure",
+        }));
+        reject("Network error occurred during upload");
+      };
+
       const token = localStorage.getItem("token");
-      xhr.open("POST", upload_file_after_order); // Replace with your API endpoint
+      xhr.open("POST", upload_file_after_order);
       xhr.setRequestHeader("Authorization", `Bearer ${token}`);
       xhr.send(formData);
     });
@@ -71,25 +94,45 @@ const FileUploaderWithPopup = ({ orderId, readData }) => {
 
     setIsUploading(true);
     const newProgress = {};
+    const newStatus = {};
     files.forEach((_, index) => {
       newProgress[index] = 0;
+      newStatus[index] = "pending";
     });
     setProgress(newProgress);
+    setStatus(newStatus);
 
     try {
-      const uploadPromises = files.map((file, index) => uploadFile(file, index));
-      const responses = await Promise.all(uploadPromises);
-      const data = JSON.parse(responses[0])
-      console.log(data.data);
-      sendData(data.data);
-      setIsUploading(false);
-      setIsPopupOpen(false);
-      setIsSubmittedPopupOpen(true);
-      setFiles([]); // Clear files after successful upload
+      for (let index = 0; index < files.length; index++) {
+        const file = files[index];
+        if (status[index] !== "failure") {
+          await uploadFile(file, index).catch(() => {
+            // Continue even if a file fails
+          });
+        }
+      }
     } catch (error) {
       console.error("Upload error:", error);
+    } finally {
       setIsUploading(false);
+      setIsAllComplete(true);
+    }
+  };
 
+  const retryFailedUploads = async () => {
+    setIsUploading(true);
+    try {
+      for (let index = 0; index < files.length; index++) {
+        if (status[index] === "failure") {
+          await uploadFile(files[index], index).catch(() => {
+            // Continue even if a file fails
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Retry error:", error);
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -145,8 +188,8 @@ const FileUploaderWithPopup = ({ orderId, readData }) => {
                   key={index}
                   className="flex items-center justify-between bg-gray-100 p-3 mb-2 rounded-lg shadow-sm"
                 >
-                  <div className="w-full">
-                    <p className="text-sm font-medium text-gray-700 truncate">
+                  <div className="w-[90%]">
+                    <p className="text-sm w-[80%] font-medium text-gray-700 truncate">
                       {file.name}
                     </p>
                     {isUploading && (
@@ -160,16 +203,25 @@ const FileUploaderWithPopup = ({ orderId, readData }) => {
                       </div>
                     )}
                   </div>
-                  <button
-                    onClick={() => removeFile(index)}
-                    className="text-red-500 hover:text-red-700 ml-3"
-                  >
-                    <FiTrash2 className="text-lg" />
-                  </button>
+                  {status[index] === "success" && (
+                    <FiCheckCircle className="text-green-500 ml-3 text-lg" />
+                  )}
+                  {status[index] === "failure" && (
+                    <ImCross className="text-red-500 ml-3 min-w-4 text-lg" />
+                  )}
+                  {!isUploading && (
+                    <button
+                      onClick={() => removeFile(index)}
+                      className="text-red-500 hover:text-red-700 ml-3"
+                    >
+                      <FiTrash2 className="text-lg" />
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>
 
+<<<<<<< HEAD
             <button
               className="bg-[#5d5fef] text-white px-4 py-2 mt-4 rounded-lg hover-bg-[#5d5fef] w-full"
               onClick={handleSubmit}
@@ -197,6 +249,38 @@ const FileUploaderWithPopup = ({ orderId, readData }) => {
             <p className="text-center text-gray-600">
               Thank you for uploading your files.
             </p>
+=======
+            <div className="flex justify-end gap-4 mt-4">
+              {!isAllComplete && (
+                <button
+                  className="bg-[#5d5fef] text-white px-4 py-2 rounded-lg hover:bg-[#4b4ded]"
+                  onClick={handleSubmit}
+                  disabled={isUploading}
+                >
+                  Submit
+                </button>
+              )}
+              {isAllComplete && (
+                <>
+                  <button
+                    className="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400"
+                    onClick={() => setIsPopupOpen(false)}
+                  >
+                    Close
+                  </button>
+                  {Object.values(status).includes("failure") && (
+                    <button
+                      className="bg-[#5d5fef] text-white px-4 py-2 rounded-lg hover:bg-[#4b4ded]"
+                      onClick={retryFailedUploads}
+                      disabled={isUploading}
+                    >
+                      Retry
+                    </button>
+                  )}
+                </>
+              )}
+            </div>
+>>>>>>> b3b4ca90b4e36a51fdfc41ad062dad101ca1b3b3
           </div>
         </div>
       )}

@@ -44,12 +44,16 @@ const ClientOrderPopup = ({ setorderPopup }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (Number(formData.paidAmount) > Number(formData.totalAmount)) {
+      setError("Paid Amount cannot be greater than Total Amount");
+      return;
+    }
+  
     if (!formData.file) {
       setError("Please select a file to upload");
       return;
     }
-
-    console.log("this if file i have: ", formData.file)
 
     setUploading(true);
     setError("");
