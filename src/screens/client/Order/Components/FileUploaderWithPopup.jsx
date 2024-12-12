@@ -184,14 +184,14 @@ const FileUploaderWithPopup = ({ orderId, readData }) => {
       {/* Submission Confirmation Popup */}
       {isSubmittedPopupOpen && (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-3/4 max-w-md relative">
+          <div className="bg-white rounded-lg shadow-lg p-8 w-[70%] max-w-md relative">
             <button
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
               onClick={() => setIsSubmittedPopupOpen(false)}
             >
-              <ImCross className="text-xl text-red-500 font-bold" />
+              <ImCross className="text-lg  " />
             </button>
-            <h2 className="text-2xl font-semibold mb-4 text-center text-blue-600">
+            <h2 className="text-2xl font-semibold mb-4 text-center ">
               Files Submitted Successfully!
             </h2>
             <p className="text-center text-gray-600">

@@ -12,6 +12,7 @@ import {
 import { useParams } from "react-router-dom";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { FiBell } from "react-icons/fi";
+
 const OrdertView = () => {
   const [comments, setComments] = useState("");
   const [assignment, setAssignment] = useState({
@@ -202,7 +203,6 @@ const OrdertView = () => {
 
   const changeFileStatus = async (fileId, status) => {
     try {
-
       if (!fileId || !status) {
         console.error("File ID or status missing");
         return;
@@ -210,7 +210,6 @@ const OrdertView = () => {
 
       const token = localStorage.getItem("token");
       console.log("Hit the API");
-
 
       const response = await fetch(file_status, {
         method: "POST",
@@ -365,7 +364,6 @@ const OrdertView = () => {
     handleStatusChange();
 
     setIsModalOpen(false);
-    alert("Status changed successfully!");
   };
   return (
     <div className="w-full mx-auto p-6 bg-[#fafbfc] rounded-lg pb-10">
@@ -852,7 +850,7 @@ const OrdertView = () => {
       )}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 className="text-lg font-semibold text-gray-800">
               Are you sure you want to change the status?
             </h2>
@@ -865,7 +863,7 @@ const OrdertView = () => {
               </button>
               <button
                 onClick={handleConfirm}
-                className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                className="px-4 py-2 bg-[#5d5fef] text-white rounded-md hover:bg-blue-600"
               >
                 Confirm
               </button>
