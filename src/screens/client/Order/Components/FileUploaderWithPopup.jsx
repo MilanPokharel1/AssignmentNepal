@@ -49,7 +49,9 @@ const FileUploaderWithPopup = ({ orderId }) => {
 
       xhr.upload.addEventListener("progress", (event) => {
         if (event.lengthComputable) {
-          const percentComplete = Math.round((event.loaded / event.total) * 100);
+          const percentComplete = Math.round(
+            (event.loaded / event.total) * 100
+          );
           setProgress((prevProgress) => ({
             ...prevProgress,
             [index]: percentComplete,
@@ -221,35 +223,6 @@ const FileUploaderWithPopup = ({ orderId }) => {
               ))}
             </ul>
 
-<<<<<<< HEAD
-            <button
-              className="bg-[#5d5fef] text-white px-4 py-2 mt-4 rounded-lg hover-bg-[#5d5fef] w-full"
-              onClick={handleSubmit}
-              disabled={files.length === 0 || isUploading}
-            >
-              Submit
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Submission Confirmation Popup */}
-      {isSubmittedPopupOpen && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-lg p-8 w-[70%] max-w-md relative">
-            <button
-              className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
-              onClick={() => setIsSubmittedPopupOpen(false)}
-            >
-              <ImCross className="text-lg  " />
-            </button>
-            <h2 className="text-2xl font-semibold mb-4 text-center ">
-              Files Submitted Successfully!
-            </h2>
-            <p className="text-center text-gray-600">
-              Thank you for uploading your files.
-            </p>
-=======
             <div className="flex justify-end gap-4 mt-4">
               {!isAllComplete && (
                 <button
@@ -280,7 +253,6 @@ const FileUploaderWithPopup = ({ orderId }) => {
                 </>
               )}
             </div>
->>>>>>> b3b4ca90b4e36a51fdfc41ad062dad101ca1b3b3
           </div>
         </div>
       )}

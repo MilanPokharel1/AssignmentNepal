@@ -33,7 +33,7 @@ const OrdertView = () => {
   const [status, setStatus] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [showApprove, setshowApprove] = useState(true);
   const [remainderTitle, setRemainderTitle] = useState("");
   const [remainderDescription, setRemainderDescription] = useState("");
   const [remainderType, setRemainderType] = useState("warning");
@@ -202,6 +202,7 @@ const OrdertView = () => {
   };
 
   const changeFileStatus = async (fileId, status) => {
+    setshowApprove(false);
     try {
       if (!fileId || !status) {
         console.error("File ID or status missing");
@@ -383,7 +384,7 @@ const OrdertView = () => {
               className="border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="approved">Approved</option>
-              <option value="ongoing">Ongoing</option>
+
               <option value="completed">Completed</option>
             </select>
           </div>
@@ -451,7 +452,7 @@ const OrdertView = () => {
                 comments.map((comment) => (
                   <div key={comment._id} className="flex items-top">
                     <img
-                      src={comment.picture}
+                      src="https://icons-for-free.com/iff/png/512/man+person+profile+user+icon-1320073176482503236.png"
                       alt={comment.name}
                       className="w-8 h-8 rounded-full"
                     />
@@ -490,7 +491,9 @@ const OrdertView = () => {
                 type="text"
                 ref={commentAreaRef}
                 value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
+                onChange={(e) =>
+                  setNewComment(e.target.value.replace(/\n/g, ""))
+                }
                 placeholder={`Comment as ${localStorage.getItem(
                   "firstName"
                 )}...`}
@@ -546,14 +549,16 @@ const OrdertView = () => {
                           </div>
                           {file.fileStatus === "pending" && (
                             <button className="focus:outline-none flex gap-2 items-center">
-                              <span
-                                onClick={() =>
-                                  changeFileStatus(file.fileId, "approved")
-                                }
-                                className="px-1 py-0 rounded-xl text-sm  border border-white bg-white text-blue-500"
-                              >
-                                Approve
-                              </span>
+                              {showApprove && (
+                                <span
+                                  onClick={() =>
+                                    changeFileStatus(file.fileId, "approved")
+                                  }
+                                  className="px-1 py-0 rounded-xl text-sm  border border-white bg-white text-blue-500"
+                                >
+                                  Approve
+                                </span>
+                              )}
                             </button>
                           )}
                           <div className="ml-2 flex-shrink-0">

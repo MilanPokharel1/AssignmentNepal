@@ -34,11 +34,10 @@ const TopNavbar = ({
   }, [location.pathname]);
 
   useEffect(() => {
-    const pictureUrl = localStorage.getItem("picture");
-    if (pictureUrl) {
-      setProfilePicture(pictureUrl);
-    }
-  }, [localStorage.getItem("picture")]);
+    const pictureUrl =
+      "https://icons-for-free.com/iff/png/512/man+person+profile+user+icon-1320073176482503236.png";
+    setProfilePicture(pictureUrl);
+  }, []);
 
   return (
     <nav className="w-full bg-white px-4 py-4 flex items-center justify-between shadow-sm pl-1">

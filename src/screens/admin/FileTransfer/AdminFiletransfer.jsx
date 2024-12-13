@@ -7,7 +7,6 @@ import { ImSearch } from "react-icons/im";
 import { FaChevronDown } from "react-icons/fa";
 import { file_requests } from "../../../api/Api";
 
-
 const AdminFiletransfer = () => {
   const [assignments, setAssignments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -77,15 +76,8 @@ const AdminFiletransfer = () => {
         No Results Found
       </h3>
       <p className="text-gray-500 text-center max-w-md">
-        We couldn't find any payments matching "{searchTerm}". Try adjusting
-        your search terms or filters.
+        We couldn't find any results.
       </p>
-      <button
-        onClick={() => setSearchTerm("")}
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-      >
-        Clear Search
-      </button>
     </div>
   );
 

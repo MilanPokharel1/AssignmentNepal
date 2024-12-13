@@ -21,7 +21,7 @@ const Client = () => {
     mediaQuery.addEventListener("change", checkSideNavVisibility);
 
     return () => {
-      // Clean up the listener
+ 
       mediaQuery.removeEventListener("change", checkSideNavVisibility);
     };
   }, []);
@@ -61,7 +61,7 @@ const Client = () => {
       >
         <div className="h-[6rem] md:h-[4rem]">
           <TopNavbar
-            notificationCount={19}
+            notificationCount={0}
             isSideNavVisible={isSideNavVisible}
             onMenuClick={() => setIsMobileMenuOpen(true)}
           />

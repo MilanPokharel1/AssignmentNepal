@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { HiArrowRight } from "react-icons/hi";
-
+import { useNavigate } from "react-router-dom";
 import { IoBookSharp, IoCheckmarkSharp } from "react-icons/io5";
 import { MdCancel, MdShoppingCart } from "react-icons/md";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -11,11 +11,10 @@ import Chart from "./components/Chart";
 import OrderCard from "./components/OrderCard";
 import { cs_dashboard } from "../../../api/Api";
 
-
-
 const Dashboard = () => {
   const { currentTheme, themes } = UseTheme();
   const [filter, setFilter] = useState("active");
+  const navigate = useNavigate();
   const [csDashboard, setCsDashboard] = useState([]);
   const [assignments, setAssignments] = useState([]);
   const [writers, setWriters] = useState([]);
@@ -135,7 +134,7 @@ const Dashboard = () => {
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-semibold mb-4">Orders</h2>
           <div
-            onClick={() => console.log("view all clicked")}
+            onClick={() => navigate("/cs/ordermanagement")}
             className={`flex items-center gap-1 cursor-pointer hover:text-blue-600 mr-11`}
           >
             View all
@@ -152,7 +151,7 @@ const Dashboard = () => {
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-semibold mb-4">writers</h2>
         <div
-          onClick={() => console.log("view all clicked")}
+          onClick={() => navigate("/cs/assignwriter")}
           className={`flex items-center gap-1 cursor-pointer hover:text-blue-600 mr-11`}
         >
           View all
