@@ -1,6 +1,6 @@
 // const url = "http://46.202.164.135:3000/api/v1";
-// const url = "http://localhost:3000/api/v1";
-const url = "https://server.assignmentnepal.com/api/v1";
+const url = "http://localhost:3000/api/v1";
+// const url = "https://server.assignmentnepal.com/api/v1";
 
 export const google_login = `${url}/auth/google-login`;
 export const manual_login = `${url}/auth/login`;
@@ -24,6 +24,8 @@ export const cs_dashboard = `${url}/cs/dashboard`;
 export const admin_dashboard = `${url}/admin/dashboard`;
 
 export const QR_payment = `${url}/user/uploadpayment`
+export const QR_payment_request = `${url}/user/paymentrequests`
+
 
 export const cs_writers = `${url}/cs/getWriters`;
 export const pending_users = `${url}/user/pendingusers`;
