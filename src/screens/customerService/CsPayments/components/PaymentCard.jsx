@@ -10,7 +10,12 @@ const PaymentCard = ({
   name,
 }) => {
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
+    const options = { year: "numeric", month: "short", day: "2-digit" };
+    const formattedDate = new Date(dateString).toLocaleDateString(
+      "en-GB",
+      options
+    ); // en-GB gives day-month-year order
+    return formattedDate.replace(",", ""); // Remove any commas if present
   };
   return (
     <div className="bg-white shadow-lg py-4 md:py-7 rounded-lg mb-4 w-full md:w-[83%] px-4 md:px-7">

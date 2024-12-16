@@ -46,9 +46,13 @@ const WriterReminder = () => {
         return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
       })
     : [];
-
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
+    const options = { year: "numeric", month: "short", day: "2-digit" };
+    const formattedDate = new Date(dateString).toLocaleDateString(
+      "en-GB",
+      options
+    ); // en-GB gives day-month-year order
+    return formattedDate.replace(",", ""); // Remove any commas if present
   };
 
   return (

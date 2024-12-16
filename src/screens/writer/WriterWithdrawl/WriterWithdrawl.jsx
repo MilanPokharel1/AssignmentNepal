@@ -4,7 +4,6 @@ import { FiX } from "react-icons/fi";
 import Card from "./components/Card";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
-
 import { MdAccountBalance } from "react-icons/md";
 import { MdPendingActions } from "react-icons/md";
 import { MdReceipt } from "react-icons/md";
@@ -12,14 +11,14 @@ import { FaMoneyBillWave } from "react-icons/fa6";
 import { create_withdrawal, get_withdrawal_request } from "../../../api/Api";
 // Dummy data
 
-
 const FilterButton = ({ label, active, onClick }) => (
   <button
     onClick={onClick}
-    className={`px-4 py-1.5 rounded-lg text-base transition-colors ${active
-      ? "bg-indigo-600 text-white"
-      : "bg-white text-gray-700 border border-indigo-600 hover:bg-gray-50 "
-      }`}
+    className={`px-4 py-1.5 rounded-lg text-base transition-colors ${
+      active
+        ? "bg-indigo-600 text-white"
+        : "bg-white text-gray-700 border border-indigo-600 hover:bg-gray-50 "
+    }`}
   >
     {label}
   </button>
@@ -32,9 +31,13 @@ const WriterWithdrawal = () => {
   const [remark, setRemark] = useState("");
   const [withdrawalData, setWithdrawalData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
+    const options = { year: "numeric", month: "short", day: "2-digit" };
+    const formattedDate = new Date(dateString).toLocaleDateString(
+      "en-GB",
+      options
+    ); // en-GB gives day-month-year order
+    return formattedDate.replace(",", ""); // Remove any commas if present
   };
   // Filter options
   const filters = ["All", "Approved", "Declined"];
@@ -94,19 +97,20 @@ const WriterWithdrawal = () => {
       const data = await response.json();
       console.log("success:", data);
       setWithdrawalData([...withdrawalData, data.newWithdrawal]);
-      toggleModal()
+      toggleModal();
     } catch (error) {
       console.error("Failed:", error);
     }
-  }
-
-
+  };
 
   // Filter logic
-  const filteredData = withdrawalData.length > 0 ? withdrawalData.filter((item) => {
-    if (activeFilter === "All") return true;
-    return item.status.toLowerCase() === activeFilter.toLowerCase();
-  }) : []
+  const filteredData =
+    withdrawalData.length > 0
+      ? withdrawalData.filter((item) => {
+          if (activeFilter === "All") return true;
+          return item.status.toLowerCase() === activeFilter.toLowerCase();
+        })
+      : [];
   const toggleModal = () => setIsModalOpen(!isModalOpen);
   return (
     <div className="w-full min-h-screen p-6 bg-gray-50">
@@ -162,9 +166,10 @@ const WriterWithdrawal = () => {
       </div>
 
       <div>
-        {withdrawalData.length > 0 && filteredData.map((item) => (
-          <WithdrawalCard key={item.id} item={item} />
-        ))}
+        {withdrawalData.length > 0 &&
+          filteredData.map((item) => (
+            <WithdrawalCard key={item.id} item={item} />
+          ))}
       </div>
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -178,15 +183,9 @@ const WriterWithdrawal = () => {
             </button>
 
             <h2 className="text-lg font-semibold mb-4">Basic Information</h2>
-            <form
-              onSubmit={handleSubmit}
-              className="space-y-4">
-
-
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  Amount
-                </label>
+                <label className="block text-sm font-medium mb-1">Amount</label>
                 <input
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
@@ -196,9 +195,7 @@ const WriterWithdrawal = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  Remark
-                </label>
+                <label className="block text-sm font-medium mb-1">Remark</label>
                 <input
                   value={remark}
                   onChange={(e) => setRemark(e.target.value)}
@@ -209,7 +206,6 @@ const WriterWithdrawal = () => {
               </div>
               <div className="w-full flex justify-center">
                 <button
-
                   type="submit"
                   className="w-32 bg-indigo-600 text-white py-2 rounded-lg"
                 >

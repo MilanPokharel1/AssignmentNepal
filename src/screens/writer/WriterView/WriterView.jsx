@@ -277,9 +277,13 @@ const WriterView = () => {
     if (isExpanded || description.length <= maxLength) return description;
     return description.slice(0, maxLength) + "...";
   };
-
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
+    const options = { year: "numeric", month: "short", day: "2-digit" };
+    const formattedDate = new Date(dateString).toLocaleDateString(
+      "en-GB",
+      options
+    ); // en-GB gives day-month-year order
+    return formattedDate.replace(",", ""); // Remove any commas if present
   };
 
   return (
@@ -411,10 +415,11 @@ const WriterView = () => {
                   .map((file, index) => (
                     <div key={index} className="relative">
                       <div
-                        className={`flex flex-col p-2 rounded border ${file.fileUrl
-                          ? "bg-white border-gray-200"
-                          : "bg-gray-100 border-gray-300"
-                          }`}
+                        className={`flex flex-col p-2 rounded border ${
+                          file.fileUrl
+                            ? "bg-white border-gray-200"
+                            : "bg-gray-100 border-gray-300"
+                        }`}
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2 min-w-0 flex-grow">
@@ -439,17 +444,15 @@ const WriterView = () => {
                                 : "Download not approved"
                             }
                             disabled={
-                              file.fileStatus == "approved" &&
-                                file.fileUrl
+                              file.fileStatus == "approved" && file.fileUrl
                                 ? downloadingFiles[
-                                new URL(file.fileUrl).searchParams.get(
-                                  "id"
-                                )
-                                ]
+                                    new URL(file.fileUrl).searchParams.get("id")
+                                  ]
                                 : true
                             }
                           >
-                            {file?.fileUrl && downloadingFiles[
+                            {file?.fileUrl &&
+                            downloadingFiles[
                               new URL(file.fileUrl).searchParams.get("id")
                             ] ? (
                               <div className="flex flex-col items-end">
@@ -457,34 +460,28 @@ const WriterView = () => {
                               </div>
                             ) : (
                               <Download
-                                className={`w-4 h-4  ${file.fileStatus === "approved"
-                                  ? "text-gray-500"
-
-                                  : "text-gray-400"
-                                  } hover:cursor-pointer`}
-
-
+                                className={`w-4 h-4  ${
+                                  file.fileStatus === "approved"
+                                    ? "text-gray-500"
+                                    : "text-gray-400"
+                                } hover:cursor-pointer`}
                                 disabled={
-                                  file.fileStatus == "approved" &&
-                                    file.fileUrl
+                                  file.fileStatus == "approved" && file.fileUrl
                                     ? downloadingFiles[
-                                    new URL(file.fileUrl).searchParams.get(
-                                      "id"
-                                    )
-                                    ]
+                                        new URL(file.fileUrl).searchParams.get(
+                                          "id"
+                                        )
+                                      ]
                                     : true
                                 }
-
                               />
-
                             )}
                           </button>
                         </div>
                         {file.fileUrl &&
                           downloadingFiles?.[
-                          new URL(file.fileUrl).searchParams.get("id")
+                            new URL(file.fileUrl).searchParams.get("id")
                           ] && (
-
                             <div className="mt-2 ml-7">
                               <div className="text-xs text-gray-500 mb-1">
                                 {
@@ -503,12 +500,13 @@ const WriterView = () => {
                                 <div
                                   className="h-2 bg-blue-500 rounded-full"
                                   style={{
-                                    width: `${downloadingFiles[
-                                      new URL(file.fileUrl).searchParams.get(
-                                        "id"
-                                      )
-                                    ]?.progress
-                                      }%`,
+                                    width: `${
+                                      downloadingFiles[
+                                        new URL(file.fileUrl).searchParams.get(
+                                          "id"
+                                        )
+                                      ]?.progress
+                                    }%`,
                                   }}
                                 ></div>
                               </div>
@@ -538,10 +536,11 @@ const WriterView = () => {
                   .map((file, index) => (
                     <div key={index} className="relative">
                       <div
-                        className={`flex flex-col p-2 rounded border ${file.fileUrl
-                          ? "bg-white border-gray-200"
-                          : "bg-gray-100 border-gray-300"
-                          }`}
+                        className={`flex flex-col p-2 rounded border ${
+                          file.fileUrl
+                            ? "bg-white border-gray-200"
+                            : "bg-gray-100 border-gray-300"
+                        }`}
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2 min-w-0 flex-grow">
@@ -566,17 +565,15 @@ const WriterView = () => {
                                 : "Download not approved"
                             }
                             disabled={
-                              file.fileStatus == "approved" &&
-                                file.fileUrl
+                              file.fileStatus == "approved" && file.fileUrl
                                 ? downloadingFiles[
-                                new URL(file.fileUrl).searchParams.get(
-                                  "id"
-                                )
-                                ]
+                                    new URL(file.fileUrl).searchParams.get("id")
+                                  ]
                                 : true
                             }
                           >
-                            {file?.fileUrl && downloadingFiles[
+                            {file?.fileUrl &&
+                            downloadingFiles[
                               new URL(file.fileUrl).searchParams.get("id")
                             ] ? (
                               <div className="flex flex-col items-end">
@@ -584,34 +581,28 @@ const WriterView = () => {
                               </div>
                             ) : (
                               <Download
-                                className={`w-4 h-4  ${file.fileStatus === "approved"
-                                  ? "text-gray-500"
-
-                                  : "text-gray-400"
-                                  } hover:cursor-pointer`}
-
-
+                                className={`w-4 h-4  ${
+                                  file.fileStatus === "approved"
+                                    ? "text-gray-500"
+                                    : "text-gray-400"
+                                } hover:cursor-pointer`}
                                 disabled={
-                                  file.fileStatus == "approved" &&
-                                    file.fileUrl
+                                  file.fileStatus == "approved" && file.fileUrl
                                     ? downloadingFiles[
-                                    new URL(file.fileUrl).searchParams.get(
-                                      "id"
-                                    )
-                                    ]
+                                        new URL(file.fileUrl).searchParams.get(
+                                          "id"
+                                        )
+                                      ]
                                     : true
                                 }
-
                               />
-
                             )}
                           </button>
                         </div>
                         {file.fileUrl &&
                           downloadingFiles?.[
-                          new URL(file.fileUrl).searchParams.get("id")
+                            new URL(file.fileUrl).searchParams.get("id")
                           ] && (
-
                             <div className="mt-2 ml-7">
                               <div className="text-xs text-gray-500 mb-1">
                                 {
@@ -630,12 +621,13 @@ const WriterView = () => {
                                 <div
                                   className="h-2 bg-blue-500 rounded-full"
                                   style={{
-                                    width: `${downloadingFiles[
-                                      new URL(file.fileUrl).searchParams.get(
-                                        "id"
-                                      )
-                                    ]?.progress
-                                      }%`,
+                                    width: `${
+                                      downloadingFiles[
+                                        new URL(file.fileUrl).searchParams.get(
+                                          "id"
+                                        )
+                                      ]?.progress
+                                    }%`,
                                   }}
                                 ></div>
                               </div>

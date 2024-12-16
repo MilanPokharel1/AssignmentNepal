@@ -27,7 +27,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
   };
 
   return (
-    <div className="h-full w-full bg-white flex flex-col p-6 shadow-xl drop-shadow-lg relative">
+    <div className="h-full w-full bg-white flex flex-col p-6 shadow-xl drop-shadow-lg relative overflow-y-auto">
       {isMobile && (
         <button
           onClick={onClose}

@@ -29,7 +29,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
   };
 
   return (
-    <div className="h-full w-full bg-white flex flex-col p-6 shadow-xl drop-shadow-lg relative">
+    <div className="h-full w-full bg-white flex flex-col p-6 shadow-xl drop-shadow-lg relative overflow-y-auto">
       {isMobile && (
         <button
           onClick={onClose}
@@ -42,8 +42,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
       <div className="w-44 h-22 overflow-hidden mx-auto mb-10">
         <img src={logo} className="w-full object-cover" alt="logo" />
       </div>
-
-      <div className="w-[98%]  gap-7 flex-col flex h-[50%] justify-between navbarClass2">
+      <div className="w-[98%] flex-col flex justify-between gap-7 sm:gap-4 h-[50vh] sm:h-[40vh] navbarClass2">
         <div>
           <NavLink
             to="/cs"

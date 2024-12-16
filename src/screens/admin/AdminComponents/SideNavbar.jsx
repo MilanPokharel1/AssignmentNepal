@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { FaWallet, FaBell, FaCog, FaSignOutAlt, FaTimes, FaUserPlus } from "react-icons/fa";
+import {
+  FaWallet,
+  FaBell,
+  FaCog,
+  FaSignOutAlt,
+  FaTimes,
+  FaUserPlus,
+} from "react-icons/fa";
 import logo from "../../../assets/random-logo.png";
 import { RiPieChart2Fill } from "react-icons/ri";
 import { MdShoppingCart } from "react-icons/md";
@@ -30,7 +37,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
   };
 
   return (
-    <div className="h-full w-full bg-white flex flex-col p-6 shadow-xl drop-shadow-lg relative">
+    <div className="h-full w-full bg-white flex flex-col p-6 shadow-xl drop-shadow-lg relative overflow-y-auto">
       {isMobile && (
         <button
           onClick={onClose}
@@ -164,7 +171,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
             }
             onClick={() => isMobile && onClose?.()}
           >
-             <FaFolder className="w-5 h-5" />
+            <FaFolder className="w-5 h-5" />
             <span>File Transfer</span>
           </NavLink>
         </div>
@@ -180,7 +187,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
             <span>QR request</span>
           </NavLink>
         </div>
-        
+
         <div>
           <NavLink
             to="/admin/adminsettings"
