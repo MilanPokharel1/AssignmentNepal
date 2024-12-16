@@ -50,9 +50,13 @@ const QRRequest = () => {
 
   const getValidImageUrl = (filePath) => {
     console.log(filePath)
+    // const filePath2 = "/root/assignmentNepal/assignmentNepalBackend/public/uploads/image-1734348896233-186322326.png"
     const serverBaseUrl = "https://server.assignmentnepal.com"; // Replace with your server's base URL
-
-    // Replace the local path prefix with the public URL prefix
+    // const valid = filePath2.replace(
+    //   "/root/assignmentNepal/assignmentNepalBackend/public/uploads/",
+    //   `${serverBaseUrl}/uploads/`)
+    // // Replace the local path prefix with the public URL prefix
+    // console.log(valid)
     return filePath.replace(
       "/root/assignmentNepal/assignmentNepalBackend/public/uploads/",
       `${serverBaseUrl}/uploads/`
