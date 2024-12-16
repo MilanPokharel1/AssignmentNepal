@@ -11,6 +11,10 @@ import {
 import { useParams } from "react-router-dom";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FileUploaderWithPopup from "../../client/Order/Components/FileUploaderWithPopup";
+import adminIcon from "../../../assets/admin.png";
+import csIcon from "../../../assets/customer-service.png";
+import clientIcon from "../../../assets/user.png";
+import writerIcon from "../../../assets/writer.png";
 const WriterOrderView = () => {
   const [comments, setComments] = useState("");
   const [assignment, setAssignment] = useState({
@@ -38,6 +42,12 @@ const WriterOrderView = () => {
     setIsOpen(!isOpen);
   };
 
+  const roleIcons = {
+    admin: adminIcon,
+    cs: csIcon,
+    client: clientIcon,
+    writer: writerIcon,
+  };
   const handleAccept = async () => {
     try {
       const token = localStorage.getItem("token"); // Replace with the actual token
@@ -352,9 +362,9 @@ const WriterOrderView = () => {
             >
               {comments && comments.length > 0 ? (
                 comments.map((comment) => (
-                  <div key={comment._id} className="flex items-top">
+                  <div key={comment._id} className="flex items-top mt-3">
                     <img
-                      src="https://icons-for-free.com/iff/png/512/man+person+profile+user+icon-1320073176482503236.png"
+                      src={roleIcons[comment.role] || clientIcon}
                       alt={comment.name}
                       className="w-8 h-8 rounded-full"
                     />
