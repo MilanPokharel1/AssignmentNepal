@@ -1,73 +1,94 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FiCheck, FiX, FiEye } from "react-icons/fi";
+import { QR_payment_request } from "../../../api/Api";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
 
 const QRRequest = () => {
   const [expandedCard, setExpandedCard] = useState(null);
   const [fullScreenPhoto, setFullScreenPhoto] = useState(null);
+  const [payments, setPayments] = useState([]);
   const [confirmation, setConfirmation] = useState({
     open: false,
     action: "",
     id: null,
   });
+  const [isLoading, setIsLoading] = useState(false);
 
-  const data = [
-    {
-      id: 1,
-      clientName: "Milan",
-      title: "The Future of Renewable Energy and its Impact on Society",
-      date: "2024-12-04",
-      method: "Instagram",
-      amount: 400,
-      currency: "NRs",
-      remarks: "First payment from Instagram",
-      photo:
-        "https://media.istockphoto.com/id/1381637603/photo/mountain-landscape.jpg?s=612x612&w=0&k=20&c=w64j3fW8C96CfYo3kbi386rs_sHH_6BGe8lAAAFS-y4=",
-    },
-    {
-      id: 2,
-      clientName: "Milan",
-      title: "Exploring Emerging Technologies in the Modern World",
-      date: "2024-11-29",
-      method: "Instagram",
-      amount: 32000,
-      currency: "NRs",
-      remarks: "First payment from Instagram",
-      photo:
-        "https://media.istockphoto.com/id/1381637603/photo/mountain-landscape.jpg?s=612x612&w=0&k=20&c=w64j3fW8C96CfYo3kbi386rs_sHH_6BGe8lAAAFS-y4=",
-    },
-    {
-      id: 3,
-      clientName: "Sachet",
-      title: "Machine Learning",
-      date: "2024-11-28",
-      method: "Instagram",
-      amount: 2000,
-      currency: "NRs",
-      remarks: "First payment from Instagram",
-      photo:
-        "https://media.istockphoto.com/id/1381637603/photo/mountain-landscape.jpg?s=612x612&w=0&k=20&c=w64j3fW8C96CfYo3kbi386rs_sHH_6BGe8lAAAFS-y4=",
-    },
-  ];
+
+
+  useEffect(() => {
+    const fetchPayments = async () => {
+      setIsLoading(true);
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
+
+        const response = await fetch(QR_payment_request, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch orders");
+        }
+
+        const data = await response.json();
+        setPayments(data.payments);
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPayments();
+  }, []);
+
+
+  const getValidImageUrl = (filePath) => {
+    console.log(filePath)
+    // const filePath2 = "/root/assignmentNepal/assignmentNepalBackend/public/uploads/image-1734348896233-186322326.png"
+    const serverBaseUrl = "https://server.assignmentnepal.com"; // Replace with your server's base URL
+    // const valid = filePath2.replace(
+    //   "/root/assignmentNepal/assignmentNepalBackend/public/uploads/",
+    //   `${serverBaseUrl}/uploads/`)
+    // // Replace the local path prefix with the public URL prefix
+    // console.log(valid)
+    return filePath.replace(
+      "/root/assignmentNepal/assignmentNepalBackend/public/uploads/",
+      `${serverBaseUrl}/uploads/`
+    );
+  };
+
+
 
   return (
     <div className="p-4 space-y-4 w-full md:w-[81%]">
-      {data.map((item) => (
+      {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
+          <CircularProgress />
+        </div>
+      )}
+      {payments.length > 0 && payments.map((item) => (
         <div
-          key={item.id}
+          key={item._id}
           className="bg-white shadow-lg rounded-lg p-4 space-y-2"
         >
           <div className="flex justify-between items-center">
             <div>
               <p className="text-sm text-gray-400">
                 Client Name:{" "}
-                <span className="font-thin text-black">{item.clientName}</span>
+                <span className="font-thin text-black">{item.instagramTitle}</span>
               </p>
               <p className="text-sm text-gray-400 truncate max-w-[200px] sm:max-w-none">
                 Assignment Title:{" "}
-                <span className="font-thin text-black" title={item.title}>
-                  {item.title.length > 30
-                    ? `${item.title.substring(0, 30)}...`
-                    : item.title}
+                <span className="font-thin text-black" title={item.assignmentTitle}>
+                  {item.assignmentTitle.length > 30
+                    ? `${item.assignmentTitle.substring(0, 30)}...`
+                    : item.assignmentTitle}
                 </span>
               </p>
               <p className="text-sm text-gray-400 flex gap-3">
@@ -78,51 +99,52 @@ const QRRequest = () => {
                 <div>
                   {" "}
                   Payment Method:{" "}
-                  <span className="font-thin text-black">{item.method}</span>
+                  <span className="font-thin text-black">{item.paymentMethod}</span>
                 </div>
               </p>
             </div>
             <p className="text-[#00b087] font-thin  text-sm md:text-lg">
-              Amount: {item.currency} {item.amount}
+              Amount: {item.paymentCurrency} {item.paidAmount}
             </p>
           </div>
           <p className="text-sm text-gray-400">
             Remarks:{" "}
-            <span className="font-thin text-black">{item.remarks}</span>
+            <span className="font-thin text-black">{item.remark}</span>
           </p>
           <div className="flex space-x-2 mt-2 flex-row-reverse gap-3">
+
             <button
-              className="px-3 py-0 text-sm text-emerald-600 bg-emerald-200 hover:bg-emerald-400 hover:text-white rounded-md transition-all duration-200 border-2 border-emerald-400"
+              className="px-3 py-0 text-sm h-8 text-red-600 bg-red-200 hover:bg-red-400 hover:text-white rounded-md transition-all duration-200 border-2 border-red-400"
               onClick={() =>
-                setConfirmation({ open: true, action: "Approve", id: item.id })
-              }
-            >
-              Approve
-            </button>
-            <button
-              className="px-3 py-0 text-sm text-red-600 bg-red-200 hover:bg-red-400 hover:text-white rounded-md transition-all duration-200 border-2 border-red-400"
-              onClick={() =>
-                setConfirmation({ open: true, action: "Decline", id: item.id })
+                setConfirmation({ open: true, action: "Decline", id: item._id })
               }
             >
               Decline
             </button>
             <button
-              className="bg-blue-500 text-white px-4 py-2 rounded flex items-center"
+              className="px-3 py-0 text-sm text-emerald-600 bg-emerald-200 hover:bg-emerald-400 hover:text-white rounded-md transition-all duration-200 border-2 border-emerald-400"
               onClick={() =>
-                setExpandedCard(expandedCard === item.id ? null : item.id)
+                setConfirmation({ open: true, action: "Approve", id: item._id })
+              }
+            >
+              Approve
+            </button>
+            <button
+              className="bg-blue-500 text-white h-8 px-4 py-2 rounded flex items-center"
+              onClick={() =>
+                setExpandedCard(expandedCard === item._id ? null : item._id)
               }
             >
               <FiEye className="mr-2" /> View
             </button>
           </div>
-          {expandedCard === item.id && (
+          {expandedCard === item._id && (
             <div className="mt-4">
               <img
-                src={item.photo}
+                src={getValidImageUrl(item.images)}
                 alt="Assignment"
                 className="w-40 h-40 object-cover rounded cursor-pointer"
-                onClick={() => setFullScreenPhoto(item.photo)}
+                onClick={() => setFullScreenPhoto(getValidImageUrl(item.images))}
               />
             </div>
           )}

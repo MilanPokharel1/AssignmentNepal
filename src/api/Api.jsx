@@ -24,6 +24,8 @@ export const cs_dashboard = `${url}/cs/dashboard`;
 export const admin_dashboard = `${url}/admin/dashboard`;
 
 export const QR_payment = `${url}/user/uploadpayment`
+export const QR_payment_request = `${url}/user/paymentrequests`
+
 
 export const cs_writers = `${url}/cs/getWriters`;
 export const pending_users = `${url}/user/pendingusers`;
