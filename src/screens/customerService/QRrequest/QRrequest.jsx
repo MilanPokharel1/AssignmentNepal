@@ -108,6 +108,7 @@ const QRRequest = () => {
 
   const changePaymentStatus = async (paymentId, paymentStatus) => {
     setIsLoading(true);
+    console.log(paymentId, paymentStatus)
     try {
       const token = localStorage.getItem("token"); // Replace with the actual token
 
@@ -124,11 +125,16 @@ const QRRequest = () => {
         throw new Error("Failed to change status");
       }
 
-      setPayments((prevPayments) =>
-        prevPayments.map((payment) =>
-          payment._id === paymentId ? { ...payment, paymentStatus: paymentStatus } : payment
-        )
+      // setPayments((prevPayments) =>
+      //   prevPayments.map((payment) =>
+      //     payment._id === paymentId ? { ...payment, paymentStatus: "approved" } : payment
+      //   )
+      // );
+
+      const updatedPayments = payments.map((payment) =>
+        payment._id === paymentId ? { ...payment, paymentStatus: paymentStatus } : payment
       );
+      setPayments(updatedPayments)
       setConfirmation({ open: false, action: "", id: null })
     } catch (error) {
       console.error("Error fetching reminders:", error);
@@ -231,11 +237,7 @@ const QRRequest = () => {
                 <button
                   className="px-3 py-0 text-sm h-8 text-red-600 bg-red-200 hover:bg-red-400 hover:text-white rounded-md transition-all duration-200 border-2 border-red-400"
                   onClick={() =>
-                    setConfirmation({
-                      open: true,
-                      action: "Decline",
-                      id: item._id,
-                    })
+                    setConfirmation({ open: true, action: "Decline", status: "declined", id: item._id })
                   }
                 >
                   Decline
@@ -243,11 +245,7 @@ const QRRequest = () => {
                 <button
                   className="px-3 py-0 text-sm text-emerald-600 bg-emerald-200 hover:bg-emerald-400 hover:text-white rounded-md transition-all duration-200 border-2 border-emerald-400"
                   onClick={() =>
-                    setConfirmation({
-                      open: true,
-                      action: "Approve",
-                      id: item._id,
-                    })
+                    setConfirmation({ open: true, action: "Approve", status: "approved", id: item._id })
                   }
                 >
                   Approve
@@ -274,22 +272,7 @@ const QRRequest = () => {
                 </button>
               </>
             )}
-            <button
-              className="px-3 py-0 text-sm h-8 text-red-600 bg-red-200 hover:bg-red-400 hover:text-white rounded-md transition-all duration-200 border-2 border-red-400"
-              onClick={() =>
-                setConfirmation({ open: true, action: "Decline", id: item._id })
-              }
-            >
-              Decline
-            </button>
-            <button
-              className="px-3 py-0 text-sm text-emerald-600 bg-emerald-200 hover:bg-emerald-400 hover:text-white rounded-md transition-all duration-200 border-2 border-emerald-400"
-              onClick={() =>
-                setConfirmation({ open: true, action: "Approve", status: "approve", id: item._id })
-              }
-            >
-              Approve
-            </button>
+            
             <button
               className="bg-blue-500 text-white h-8 px-4 py-2 rounded flex items-center"
               onClick={() =>
