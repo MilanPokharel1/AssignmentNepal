@@ -2,6 +2,7 @@ import React from "react";
 import { PiSirenFill } from "react-icons/pi";
 import { GrAnnounce } from "react-icons/gr";
 import { LuRefreshCcw } from "react-icons/lu";
+import { IoMdAlert } from "react-icons/io";
 
 export const ReminderCard = ({
   title,
