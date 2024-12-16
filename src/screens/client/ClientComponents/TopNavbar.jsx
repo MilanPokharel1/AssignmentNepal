@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MdOutlineNotifications, MdMenu } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
+import ClientIcon from "../../../assets/user.png";
 import { UseTheme } from "../../../contexts/ThemeContext/useTheme.js";
 const pathToTitleMap = {
   "/client": "Dashboard",
@@ -31,10 +32,10 @@ const TopNavbar = ({
   }, [location.pathname]);
 
   useEffect(() => {
-    const pictureUrl = "https://icons-for-free.com/iff/png/512/man+person+profile+user+icon-1320073176482503236.png";
+    const pictureUrl =
+      "https://icons-for-free.com/iff/png/512/man+person+profile+user+icon-1320073176482503236.png";
     setProfilePicture(pictureUrl);
   }, []);
-  
 
   return (
     <nav className="w-full bg-white px-4 py-4 flex items-center justify-between shadow-sm pl-1">
@@ -68,7 +69,7 @@ const TopNavbar = ({
         <div className="flex items-center space-x-2 mr-3">
           <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden">
             <img
-              src={profilePicture || ""}
+              src={ClientIcon || ""}
               alt="User profile"
               className="w-full h-full object-cover"
             />

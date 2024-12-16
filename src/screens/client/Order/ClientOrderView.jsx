@@ -5,6 +5,11 @@ import { download_file, get_orderById, send_comment } from "../../../api/Api";
 import { useParams } from "react-router-dom";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import FileUploaderWithPopup from "../Order/Components/FileUploaderWithPopup";
+import adminIcon from "../../../assets/admin.png";
+import csIcon from "../../../assets/customer-service.png";
+import clientIcon from "../../../assets/user.png";
+import writerIcon from "../../../assets/writer.png";
+import FileIconRenderer from "./Components/FileIconRenderer";
 const AssignmentView = () => {
   const [comments, setComments] = useState("");
   const [assignment, setAssignment] = useState({
@@ -22,6 +27,7 @@ const AssignmentView = () => {
   const commentsContainerRef = useRef(null);
   const { orderId } = useParams(); // Get orderId from the URL
   const [isLoading, setIsLoading] = useState(true);
+  const [icon, seticon] = useState("client");
 
   const scrollToBottom = () => {
     commentsContainerRef.current.scrollTop =
@@ -40,10 +46,10 @@ const AssignmentView = () => {
     const fetchOrderById = async () => {
       setIsLoading(true);
       try {
-        const token = localStorage.getItem("token"); // Replace with the actual token
+        const token = localStorage.getItem("token");
         const response = await fetch(get_orderById, {
           method: "POST",
-          body: JSON.stringify({ orderId }), // Convert body to JSON string
+          body: JSON.stringify({ orderId }),
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -57,6 +63,7 @@ const AssignmentView = () => {
         const data = await response.json();
         setAssignment(data);
         setComments(data.comments);
+        console.log(data);
       } catch (error) {
         console.error("Error fetching orders:", error);
       } finally {
@@ -103,7 +110,7 @@ const AssignmentView = () => {
       }
 
       const res = await response.json();
-      console.log(res);
+
       setComments([...comments, res.newComment]);
     } catch (error) {
       console.error("Add comment error:", error);
@@ -225,6 +232,12 @@ const AssignmentView = () => {
     setIsExpanded((prev) => !prev);
   };
 
+  const roleIcons = {
+    admin: adminIcon,
+    cs: csIcon,
+    client: clientIcon,
+    writer: writerIcon,
+  };
   const getDisplayText = (description) => {
     if (!description) return;
     const maxLength = 700;
@@ -293,10 +306,11 @@ const AssignmentView = () => {
                 comments.map((comment) => (
                   <div key={comment._id} className="flex items-top">
                     <img
-                      src="https://icons-for-free.com/iff/png/512/man+person+profile+user+icon-1320073176482503236.png"
+                      src={roleIcons[comment.role] || clientIcon}
                       alt={comment.name}
                       className="w-8 h-8 rounded-full"
                     />
+                    {console.log("This is role", comment.role)}
                     <div className="flex-1 bg-white rounded-lg px-3">
                       <div className="flex items-center space-x-auto mb-1">
                         <span className="text-sm font-medium ">
@@ -378,7 +392,10 @@ const AssignmentView = () => {
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2 min-w-0 flex-grow">
-                            <FolderIcon className="h-5 min-w-5 text-yellow-500" />
+                            <FileIconRenderer
+                              fileName={file.fileName}
+                              className="h-5 min-w-5 text-gray-500"
+                            />
                             <div className="flex flex-col min-w-0 overflow-hidden flex-grow">
                               <p className="text-sm font-medium text-gray-700 truncate">
                                 {file.fileName}

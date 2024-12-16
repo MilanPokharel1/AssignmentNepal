@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MdOutlineNotifications, MdMenu } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import adminIcon from "../../../assets/admin.png"
 const pathToTitleMap = {
   "/admin": "Admin Dashboard",
   "/admin/adminordermanagement": "Order Management",
@@ -76,7 +76,7 @@ const TopNavbar = ({
         <div className="flex items-center space-x-2 mr-3">
           <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden">
             <img
-              src={profilePicture || ""}
+              src={adminIcon || ""}
               alt="User profile"
               className="w-full h-full object-cover"
             />
