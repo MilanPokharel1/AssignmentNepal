@@ -10,9 +10,9 @@ export const ReminderCard = ({
   description,
   clientName,
 }) => {
-
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
+    const options = { year: "numeric", month: "short", day: "2-digit" };
+    return new Date(dateString).toLocaleDateString("en-CA", options);
   };
   const getIconContent = () => {
     switch (type) {
@@ -60,7 +60,9 @@ export const ReminderCard = ({
         <div className="flex-1">
           <div className="flex justify-between items-start">
             <h3 className="font-medium text-gray-800 mb-2">{title}</h3>
-            <span className="text-sm text-gray-500">Date: {formatDate(date)}</span>
+            <span className="text-sm text-gray-500">
+              Date: {formatDate(date)}
+            </span>
           </div>
           <p className="text-sm text-gray-600 leading-relaxed">{description}</p>
         </div>

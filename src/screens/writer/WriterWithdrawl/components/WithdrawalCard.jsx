@@ -2,7 +2,8 @@ import React from "react";
 
 const WithdrawalCard = ({ item }) => {
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
+    const options = { year: "numeric", month: "short", day: "2-digit" };
+    return new Date(dateString).toLocaleDateString("en-CA", options);
   };
   const { date, time, status, remark, amount } = item; // Destructure from `item`
 

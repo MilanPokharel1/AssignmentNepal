@@ -19,9 +19,9 @@ const OrderCard = ({
   const navigate = useNavigate();
   const [currentStatus, setCurrentStatus] = useState("pending");
   paidAmount = payments[0].paidAmount;
-
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
+    const options = { year: "numeric", month: "short", day: "2-digit" };
+    return new Date(dateString).toLocaleDateString("en-CA", options);
   };
   const handleView = () => {
     navigate(`/admin/adminordermanagement/adminorderview/${_id}`);

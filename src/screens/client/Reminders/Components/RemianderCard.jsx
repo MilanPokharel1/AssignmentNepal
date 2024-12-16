@@ -4,7 +4,8 @@ import { GrAnnounce } from "react-icons/gr";
 import { LuRefreshCcw } from "react-icons/lu";
 import { UseTheme } from "../../../../contexts/ThemeContext/useTheme";
 const formatDate = (dateString) => {
-  return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
+  const options = { year: "numeric", month: "short", day: "2-digit" };
+  return new Date(dateString).toLocaleDateString("en-CA", options);
 };
 export const ReminderCard = ({ title, date, type, description }) => {
   const { currentTheme, themes } = UseTheme();
@@ -32,7 +33,7 @@ export const ReminderCard = ({ title, date, type, description }) => {
         return {
           icon: <IoMdAlert className="text-xl" />,
           bgColor: `${themes[currentTheme].alertbgcolor}`,
-          iconColor:`${themes[currentTheme].alerticonColor}`,
+          iconColor: `${themes[currentTheme].alerticonColor}`,
         };
     }
   };

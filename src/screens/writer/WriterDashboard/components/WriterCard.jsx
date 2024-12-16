@@ -22,9 +22,9 @@ const WriterCard = ({
   const [acceptStatus, setIsAccepted] = useState("approved");
 
   paidAmount = payments[0].paidAmount;
-
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
+    const options = { year: "numeric", month: "short", day: "2-digit" };
+    return new Date(dateString).toLocaleDateString("en-CA", options);
   };
 
   const handleAccept = async () => {
@@ -128,9 +128,7 @@ const WriterCard = ({
                 : "bg-gray-300 cursor-not-allowed"
             }`}
             disabled={status !== "approved"}
-            onClick={() =>
-              navigate(`/writer/writerorder/writerView/${_id}`)
-            }
+            onClick={() => navigate(`/writer/writerorder/writerView/${_id}`)}
           >
             View
           </button>

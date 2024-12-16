@@ -10,7 +10,8 @@ const PaymentCard = ({
   name,
 }) => {
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
+    const options = { year: "numeric", month: "short", day: "2-digit" };
+    return new Date(dateString).toLocaleDateString("en-CA", options);
   };
   return (
     <div className="bg-white shadow-lg py-4 md:py-7 rounded-lg mb-4 w-full md:w-[83%] px-4 md:px-7">

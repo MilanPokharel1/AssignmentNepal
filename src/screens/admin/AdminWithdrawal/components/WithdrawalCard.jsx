@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { withdrawal_status } from "../../../../api/Api";
 
-
-
 const WithdrawalCard = ({ item }) => {
   const { date, time, status, _id, firstName, lastName, email, amount } = item;
   const [currentStatus, setCurrentStatus] = useState(status);
-
 
   const handleStatusChange = async (newStatus) => {
     console.log("New: ", newStatus);
@@ -40,11 +37,9 @@ const WithdrawalCard = ({ item }) => {
     }
   };
 
-
-
-
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
+    const options = { year: "numeric", month: "short", day: "2-digit" };
+    return new Date(dateString).toLocaleDateString("en-CA", options);
   };
   // const { date, time, status, _id, firstName, lastName, email, amount } = item; // Destructure from `item`
 
@@ -58,7 +53,9 @@ const WithdrawalCard = ({ item }) => {
         </div>
         <div className="text-gray-500 text-base flex flex-col justify-center items-start md:items-center mb-4 md:mb-0">
           <div>Requested by:</div>
-          <div className="font-medium text-black">{firstName}{" "}{lastName}</div>
+          <div className="font-medium text-black">
+            {firstName} {lastName}
+          </div>
         </div>
         <div className="text-gray-500 text-base flex flex-col justify-center items-start md:items-center mb-4 md:mb-0">
           <div>Email:</div>
@@ -80,7 +77,11 @@ const WithdrawalCard = ({ item }) => {
                 : "text-red-500"
             }`}
           >
-            {status==="approved"?"Approved":status==="declined"? "Declined":"Pending"}
+            {status === "approved"
+              ? "Approved"
+              : status === "declined"
+              ? "Declined"
+              : "Pending"}
             {/* Capitalize */}
           </div>
         </div>
@@ -94,26 +95,20 @@ const WithdrawalCard = ({ item }) => {
       <div className="flex gap-4 justify-end mt-7">
         {currentStatus === "pending" && (
           <>
-            <button 
-            onClick={() =>
-              handleStatusChange(
-                "approved"
-              )
-            }
-            className="px-3 py-1 text-sm text-emerald-600 bg-emerald-200 
+            <button
+              onClick={() => handleStatusChange("approved")}
+              className="px-3 py-1 text-sm text-emerald-600 bg-emerald-200 
                            hover:bg-emerald-400 hover:text-white rounded-md transition-all duration-200 
-                           border-2 border-emerald-400">
+                           border-2 border-emerald-400"
+            >
               Approve
             </button>
-            <button 
-            onClick={() =>
-              handleStatusChange(
-                "declined"
-              )
-            }
-            className="px-3 py-1 text-sm text-red-600 bg-red-200 
+            <button
+              onClick={() => handleStatusChange("declined")}
+              className="px-3 py-1 text-sm text-red-600 bg-red-200 
                            hover:bg-red-400 hover:text-white rounded-md transition-all duration-200 
-                           border-2 border-red-400">
+                           border-2 border-red-400"
+            >
               Decline
             </button>
           </>

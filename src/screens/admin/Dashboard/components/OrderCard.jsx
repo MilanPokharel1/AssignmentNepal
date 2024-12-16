@@ -36,7 +36,8 @@ const OrderCard = ({
     return percentage.toFixed(0);
   };
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
+    const options = { year: "numeric", month: "short", day: "2-digit" };
+    return new Date(dateString).toLocaleDateString("en-CA", options);
   };
   const percentage = calculatePercentage(totalAmount, paidAmount);
 
