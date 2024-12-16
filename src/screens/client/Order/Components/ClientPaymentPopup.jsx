@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
 import {
   FileIcon,
   AlertCircle,
@@ -8,12 +10,15 @@ import {
   X,
 } from "lucide-react";
 import { UseTheme } from "../../../../contexts/ThemeContext/useTheme";
+import { QR_payment } from "../../../../api/Api";
 const PaymentPopup = ({ onClose, assignment }) => {
   const { currentTheme, themes } = UseTheme();
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
   const [showScreenshotPopup, setShowScreenshotPopup] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [file, setSelectedFile] = useState(null);
   const [amount, setAmount] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
 
   const paymentMethods = [
     {
@@ -54,14 +59,72 @@ const PaymentPopup = ({ onClose, assignment }) => {
     setShowScreenshotPopup(true);
   };
 
-  const handleFinish = () => {
-    console.log("Uploaded file:", selectedFile);
-    setShowScreenshotPopup(false);
-    onClose();
+  // const handleFinish = () => {
+  //   console.log("Uploaded file:", file);
+  //   setShowScreenshotPopup(false);
+  //   onClose();
+  // };
+
+
+
+
+
+  const handlePaymentSubmit = async (e) => {
+    e.preventDefault();
+    if (!file) {
+      return alert("Please insert a screenshot.");
+    }
+    setIsLoading(true);
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        return alert("User not authenticated. Please log in.");
+      }
+
+      const formData = new FormData();
+      formData.append("assignmentTitle", assignment.assignmentTitle);
+      formData.append("instagramTitle", assignment.instagramTitle);
+      formData.append("paidAmount", amount);
+      formData.append("remark", "Static QR Payment");
+      formData.append("orderId", assignment._id);
+      formData.append("image", file);
+
+      const response = await fetch(QR_payment, { // Replace with your actual endpoint
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create orders");
+      }
+
+      const data = await response.json();
+      console.log("success:", data);
+      setShowScreenshotPopup(false);
+      setSelectedFile(null)
+
+    } catch (error) {
+      console.error("Failed:", error);
+    } finally {
+      setIsLoading(false)
+    }
   };
+
+
+
+
 
   return (
     <>
+      {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-20 backdrop-blur-sm z-[100]">
+          <CircularProgress />
+        </div>
+      )}
       <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
         <div className="relative w-full max-w-5xl mx-auto bg-white p-6 rounded-md shadow-lg flex">
           {/* Payment Details */}
@@ -121,9 +184,8 @@ const PaymentPopup = ({ onClose, assignment }) => {
                     </label>
                     <div className="text-sm">
                       <span
-                        className={`px-2 py-1 rounded-full text-xs ${
-                          statusColors[assignment.status.toLowerCase()]
-                        }`}
+                        className={`px-2 py-1 rounded-full text-xs ${statusColors[assignment.status.toLowerCase()]
+                          }`}
                       >
                         {assignment.status}
                       </span>
@@ -144,6 +206,7 @@ const PaymentPopup = ({ onClose, assignment }) => {
                 </div>
 
                 {/* Amount Input */}
+
                 <div>
                   <label className="text-sm text-gray-500">Amount</label>
                   <input
@@ -160,10 +223,9 @@ const PaymentPopup = ({ onClose, assignment }) => {
                   onClick={handleProceedToPay}
                   className={`
                     w-full py-2 rounded-md text-white mt-4
-                    ${
-                      selectedPaymentMethod
-                        ? "bg-[#5d5fef] hover:bg-opacity-90"
-                        : "bg-gray-400 cursor-not-allowed"
+                    ${selectedPaymentMethod
+                      ? "bg-[#5d5fef] hover:bg-opacity-90"
+                      : "bg-gray-400 cursor-not-allowed"
                     }
                   `}
                   disabled={!selectedPaymentMethod}
@@ -196,10 +258,9 @@ const PaymentPopup = ({ onClose, assignment }) => {
                   onClick={() => setSelectedPaymentMethod(method.id)}
                   className={`
                     flex items-center p-4 rounded-md cursor-pointer transition-all border
-                    ${
-                      selectedPaymentMethod === method.id
-                        ? "bg-[#5d5fef] text-white border-[#5d5fef]"
-                        : "hover:bg-gray-100 text-gray-700 border-gray-200"
+                    ${selectedPaymentMethod === method.id
+                      ? "bg-[#5d5fef] text-white border-[#5d5fef]"
+                      : "hover:bg-gray-100 text-gray-700 border-gray-200"
                     }
                   `}
                 >
@@ -258,9 +319,9 @@ const PaymentPopup = ({ onClose, assignment }) => {
                 htmlFor="fileUpload"
                 className="cursor-pointer flex flex-col items-center"
               >
-                {selectedFile ? (
+                {file ? (
                   <img
-                    src={URL.createObjectURL(selectedFile)}
+                    src={URL.createObjectURL(file)}
                     alt="Uploaded Screenshot"
                     className="w-full max-h-[60vh] object-contain rounded-lg mb-4"
                   />
@@ -268,15 +329,15 @@ const PaymentPopup = ({ onClose, assignment }) => {
                   <Upload className="w-12 h-12 text-gray-400" />
                 )}
                 <span className="text-sm text-gray-500 mt-2">
-                  {selectedFile ? selectedFile.name : "Upload screenshot"}
+                  {file ? file.name : "Upload screenshot"}
                 </span>
               </label>
             </div>
 
             <button
-              onClick={handleFinish}
+              onClick={handlePaymentSubmit}
               className={`w-full mt-4 bg-[${themes[currentTheme].navActive}] hover:bg-blue-600 text-white py-2 rounded-md`}
-              disabled={!selectedFile}
+              disabled={!file}
             >
               Finish
             </button>

@@ -6,6 +6,7 @@ import { UseTheme } from "../../../../contexts/ThemeContext/useTheme";
 const AssignmentCard = ({
   _id,
   assignmentTitle,
+  instagramTitle,
   description,
   status,
   totalAmount,
@@ -73,6 +74,7 @@ const AssignmentCard = ({
   const handlePay = () => {
     setShowPaymentPopup(true);
   };
+  
 
   const progressClasses = getProgressClasses();
 
@@ -161,6 +163,7 @@ const AssignmentCard = ({
           onClose={() => setShowPaymentPopup(false)}
           assignment={{
             _id,
+            instagramTitle,
             assignmentTitle,
             description,
             status,
@@ -173,5 +176,14 @@ const AssignmentCard = ({
     </div>
   );
 };
+
+
+// instagramTitle,
+//     assignmentTitle,
+//     paidAmount,
+//     paymentCurrency,
+//     remark,
+//     orderId,
+//     imagePath
 
 export default AssignmentCard;
