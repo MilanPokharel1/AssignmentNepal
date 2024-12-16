@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FiCheck, FiX, FiEye } from "react-icons/fi";
-import { QR_payment_request } from "../../../api/Api";
+import { imagePath, QR_payment_request, QR_payment_status } from "../../../api/Api";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 
@@ -8,11 +8,14 @@ const QRRequest = () => {
   const [expandedCard, setExpandedCard] = useState(null);
   const [fullScreenPhoto, setFullScreenPhoto] = useState(null);
   const [payments, setPayments] = useState([]);
+
   const [confirmation, setConfirmation] = useState({
     open: false,
     action: "",
     id: null,
+    status: null
   });
+
   const [isLoading, setIsLoading] = useState(false);
 
 
@@ -50,18 +53,50 @@ const QRRequest = () => {
 
   const getValidImageUrl = (filePath) => {
     console.log(filePath)
-    // const filePath2 = "/root/assignmentNepal/assignmentNepalBackend/public/uploads/image-1734348896233-186322326.png"
-    const serverBaseUrl = "https://server.assignmentnepal.com"; // Replace with your server's base URL
-    // const valid = filePath2.replace(
-    //   "/root/assignmentNepal/assignmentNepalBackend/public/uploads/",
-    //   `${serverBaseUrl}/uploads/`)
-    // // Replace the local path prefix with the public URL prefix
-    // console.log(valid)
+    const serverBaseUrl = imagePath; // Replace with your server's base URL
     return filePath.replace(
       "/root/assignmentNepal/assignmentNepalBackend/public/uploads/",
       `${serverBaseUrl}/uploads/`
     );
   };
+
+
+
+
+
+  const changePaymentStatus = async (paymentId, paymentStatus) => {
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem("token"); // Replace with the actual token
+
+      const response = await fetch(QR_payment_status, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ paymentId: paymentId, paymentStatus: paymentStatus }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to change status");
+      }
+
+      setPayments((prevPayments) =>
+        prevPayments.map((payment) =>
+          payment._id === paymentId ? { ...payment, paymentStatus: paymentStatus } : payment
+        )
+      );
+      setConfirmation({ open: false, action: "", id: null })
+    } catch (error) {
+      console.error("Error fetching reminders:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
+
 
 
 
@@ -124,7 +159,7 @@ const QRRequest = () => {
             <button
               className="px-3 py-0 text-sm text-emerald-600 bg-emerald-200 hover:bg-emerald-400 hover:text-white rounded-md transition-all duration-200 border-2 border-emerald-400"
               onClick={() =>
-                setConfirmation({ open: true, action: "Approve", id: item._id })
+                setConfirmation({ open: true, action: "Approve", status: "approve", id: item._id })
               }
             >
               Approve
@@ -173,7 +208,7 @@ const QRRequest = () => {
               <span className="font-bold text-blue-600">
                 {confirmation.action}
               </span>{" "}
-              this request?
+              this payment?
             </p>
 
             {/* Buttons */}
@@ -183,7 +218,8 @@ const QRRequest = () => {
                      hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 
                      transition duration-300"
                 onClick={() =>
-                  setConfirmation({ open: false, action: "", id: null })
+                  changePaymentStatus(confirmation.id, confirmation.action === "Approve" ? "approved" : "declined")
+                  // setConfirmation({ open: false, action: "", id: null })
                 }
               >
                 Confirm
