@@ -459,7 +459,7 @@ const OrdertView = () => {
             >
               {comments && comments.length > 0 ? (
                 comments.map((comment) => (
-                  <div key={comment._id} className="flex items-top">
+                  <div key={comment._id} className="flex items-top mt-3">
                     <img
                       src={roleIcons[comment.role] || clientIcon}
                       alt={comment.name}

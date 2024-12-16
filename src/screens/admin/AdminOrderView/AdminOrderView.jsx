@@ -12,6 +12,10 @@ import {
 import { useParams } from "react-router-dom";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { FiBell } from "react-icons/fi";
+import adminIcon from "../../../assets/admin.png";
+import csIcon from "../../../assets/customer-service.png";
+import clientIcon from "../../../assets/user.png";
+import writerIcon from "../../../assets/writer.png";
 const AdminOrderView = () => {
   const [comments, setComments] = useState("");
   const [assignment, setAssignment] = useState({
@@ -36,7 +40,6 @@ const AdminOrderView = () => {
   const [remainderDescription, setRemainderDescription] = useState("");
   const [remainderType, setRemainderType] = useState("warning");
 
-
   const toggleModal = () => {
     setIsOpen(!isOpen);
   };
@@ -53,6 +56,13 @@ const AdminOrderView = () => {
       commenttextareaRef.current.style.height = `${commenttextareaRef.current.scrollHeight}px`; // Set height to match content
     }
   }, [comments]);
+
+  const roleIcons = {
+    admin: adminIcon,
+    cs: csIcon,
+    client: clientIcon,
+    writer: writerIcon,
+  };
 
   const handleStatusChange = async () => {
     try {
@@ -83,15 +93,18 @@ const AdminOrderView = () => {
     }
   };
 
-
-
-
   const handleSendRemainder = async (e) => {
     e.preventDefault();
     try {
       if (
-        !assignment.assignmentTitle || !assignment.instagramTitle || !assignment.userId || !remainderTitle || !remainderDescription || !remainderType
-      ) return;
+        !assignment.assignmentTitle ||
+        !assignment.instagramTitle ||
+        !assignment.userId ||
+        !remainderTitle ||
+        !remainderDescription ||
+        !remainderType
+      )
+        return;
       const token = localStorage.getItem("token"); // Replace with the actual token
       const response = await fetch(create_remainder, {
         method: "POST",
@@ -105,7 +118,7 @@ const AdminOrderView = () => {
           userId: assignment.userId,
           title: remainderTitle,
           description: remainderDescription,
-          type: remainderType
+          type: remainderType,
         }),
       });
 
@@ -117,15 +130,11 @@ const AdminOrderView = () => {
 
       const data = await response.json();
       console.log("Status updated successfully:", data);
-      setIsOpen(false) // Update the local status state
+      setIsOpen(false); // Update the local status state
     } catch (error) {
       console.error("Failed to update status:", error);
     }
   };
-
-
-
-
 
   useEffect(() => {
     const fetchOrderById = async () => {
@@ -448,9 +457,9 @@ const AdminOrderView = () => {
             >
               {comments && comments.length > 0 ? (
                 comments.map((comment) => (
-                  <div key={comment._id} className="flex items-top">
+                  <div key={comment._id} className="flex items-top mt-3">
                     <img
-                      src={comment.picture}
+                      src={roleIcons[comment.role] || clientIcon}
                       alt={comment.name}
                       className="w-8 h-8 rounded-full"
                     />
@@ -522,10 +531,11 @@ const AdminOrderView = () => {
                   .map((file, index) => (
                     <div key={index} className="relative">
                       <div
-                        className={`flex flex-col p-2 rounded border ${file.fileUrl
-                          ? "bg-white border-gray-200"
-                          : "bg-gray-100 border-gray-300"
-                          }`}
+                        className={`flex flex-col p-2 rounded border ${
+                          file.fileUrl
+                            ? "bg-white border-gray-200"
+                            : "bg-gray-100 border-gray-300"
+                        }`}
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2 min-w-0 flex-grow">
@@ -549,7 +559,6 @@ const AdminOrderView = () => {
                               >
                                 Approve
                               </span>
-
                             </button>
                           )}
                           <button
@@ -557,18 +566,16 @@ const AdminOrderView = () => {
                             onClick={() =>
                               handleDownload(file.fileUrl, file.fileName)
                             }
-
                             disabled={
                               file.fileUrl
                                 ? downloadingFiles[
-                                new URL(file.fileUrl).searchParams.get(
-                                  "id"
-                                )
-                                ]
+                                    new URL(file.fileUrl).searchParams.get("id")
+                                  ]
                                 : true
                             }
                           >
-                            {file?.fileUrl && downloadingFiles[
+                            {file?.fileUrl &&
+                            downloadingFiles[
                               new URL(file.fileUrl).searchParams.get("id")
                             ] ? (
                               <div className="flex flex-col items-end">
@@ -577,29 +584,23 @@ const AdminOrderView = () => {
                             ) : (
                               <Download
                                 className={"w-4 h-4 text-gray-500"}
-
-
-
                                 disabled={
                                   file.fileUrl
                                     ? downloadingFiles[
-                                    new URL(file.fileUrl).searchParams.get(
-                                      "id"
-                                    )
-                                    ]
+                                        new URL(file.fileUrl).searchParams.get(
+                                          "id"
+                                        )
+                                      ]
                                     : true
                                 }
-
                               />
-
                             )}
                           </button>
                         </div>
                         {file.fileUrl &&
                           downloadingFiles?.[
-                          new URL(file.fileUrl).searchParams.get("id")
+                            new URL(file.fileUrl).searchParams.get("id")
                           ] && (
-
                             <div className="mt-2 ml-7">
                               <div className="text-xs text-gray-500 mb-1">
                                 {
@@ -618,12 +619,13 @@ const AdminOrderView = () => {
                                 <div
                                   className="h-2 bg-blue-500 rounded-full"
                                   style={{
-                                    width: `${downloadingFiles[
-                                      new URL(file.fileUrl).searchParams.get(
-                                        "id"
-                                      )
-                                    ]?.progress
-                                      }%`,
+                                    width: `${
+                                      downloadingFiles[
+                                        new URL(file.fileUrl).searchParams.get(
+                                          "id"
+                                        )
+                                      ]?.progress
+                                    }%`,
                                   }}
                                 ></div>
                               </div>
@@ -653,10 +655,11 @@ const AdminOrderView = () => {
                   .map((file, index) => (
                     <div key={index} className="relative">
                       <div
-                        className={`flex flex-col p-2 rounded border ${file.fileUrl
-                          ? "bg-white border-gray-200"
-                          : "bg-gray-100 border-gray-300"
-                          }`}
+                        className={`flex flex-col p-2 rounded border ${
+                          file.fileUrl
+                            ? "bg-white border-gray-200"
+                            : "bg-gray-100 border-gray-300"
+                        }`}
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2 min-w-0 flex-grow">
@@ -680,7 +683,6 @@ const AdminOrderView = () => {
                               >
                                 Approve
                               </span>
-
                             </button>
                           )}
                           <button
@@ -696,14 +698,13 @@ const AdminOrderView = () => {
                             disabled={
                               file.fileUrl
                                 ? downloadingFiles[
-                                new URL(file.fileUrl).searchParams.get(
-                                  "id"
-                                )
-                                ]
+                                    new URL(file.fileUrl).searchParams.get("id")
+                                  ]
                                 : true
                             }
                           >
-                            {file?.fileUrl && downloadingFiles[
+                            {file?.fileUrl &&
+                            downloadingFiles[
                               new URL(file.fileUrl).searchParams.get("id")
                             ] ? (
                               <div className="flex flex-col items-end">
@@ -712,29 +713,23 @@ const AdminOrderView = () => {
                             ) : (
                               <Download
                                 className={"w-4 h-4 text-gray-500"}
-
-
-
                                 disabled={
                                   file.fileUrl
                                     ? downloadingFiles[
-                                    new URL(file.fileUrl).searchParams.get(
-                                      "id"
-                                    )
-                                    ]
+                                        new URL(file.fileUrl).searchParams.get(
+                                          "id"
+                                        )
+                                      ]
                                     : true
                                 }
-
                               />
-
                             )}
                           </button>
                         </div>
                         {file.fileUrl &&
                           downloadingFiles?.[
-                          new URL(file.fileUrl).searchParams.get("id")
+                            new URL(file.fileUrl).searchParams.get("id")
                           ] && (
-
                             <div className="mt-2 ml-7">
                               <div className="text-xs text-gray-500 mb-1">
                                 {
@@ -753,12 +748,13 @@ const AdminOrderView = () => {
                                 <div
                                   className="h-2 bg-blue-500 rounded-full"
                                   style={{
-                                    width: `${downloadingFiles[
-                                      new URL(file.fileUrl).searchParams.get(
-                                        "id"
-                                      )
-                                    ]?.progress
-                                      }%`,
+                                    width: `${
+                                      downloadingFiles[
+                                        new URL(file.fileUrl).searchParams.get(
+                                          "id"
+                                        )
+                                      ]?.progress
+                                    }%`,
                                   }}
                                 ></div>
                               </div>
@@ -813,7 +809,10 @@ const AdminOrderView = () => {
       </div>
       {isOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <form onSubmit={handleSendRemainder} className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-lg">
+          <form
+            onSubmit={handleSendRemainder}
+            className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-lg"
+          >
             <h2 className="text-2xl font-bold text-gray-800 mb-6">
               Send Reminder
             </h2>
@@ -825,7 +824,6 @@ const AdminOrderView = () => {
               <input
                 value={remainderTitle}
                 onChange={(e) => setRemainderTitle(e.target.value)}
-
                 type="text"
                 className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               />
@@ -838,7 +836,6 @@ const AdminOrderView = () => {
               <textarea
                 value={remainderDescription}
                 onChange={(e) => setRemainderDescription(e.target.value)}
-
                 rows="5"
                 className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
               ></textarea>
@@ -851,7 +848,8 @@ const AdminOrderView = () => {
               <select
                 value={remainderType}
                 onChange={(e) => setRemainderType(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+              >
                 <option value="alert">Alert</option>
                 <option value="warning">Warning</option>
                 <option value="notice">Notice</option>
@@ -867,7 +865,8 @@ const AdminOrderView = () => {
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg shadow-md hover:opacity-90 focus:outline-none">
+                className="px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg shadow-md hover:opacity-90 focus:outline-none"
+              >
                 Send
               </button>
             </div>
