@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MdOutlineNotifications, MdMenu } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import csIcon from "../../../assets/customer-service.png";
 const pathToTitleMap = {
   "/cs": "Customer Service",
   "/cs/ordermanagement": "Order Management",
@@ -12,7 +12,7 @@ const pathToTitleMap = {
   "/cs/reminders": "Reminders",
   "/cs/payments": "Payments",
   "/cs/filetransfer": "File Transfer",
-  "/cs/csqrreuest":"QR Request",
+  "/cs/csqrreuest": "QR Request",
 };
 
 const TopNavbar = ({
@@ -37,10 +37,10 @@ const TopNavbar = ({
   }, [location.pathname]);
 
   useEffect(() => {
-    const pictureUrl = "https://icons-for-free.com/iff/png/512/man+person+profile+user+icon-1320073176482503236.png";
+    const pictureUrl =
+      "https://icons-for-free.com/iff/png/512/man+person+profile+user+icon-1320073176482503236.png";
     setProfilePicture(pictureUrl);
   }, []);
-  
 
   return (
     <nav className="w-full bg-white px-4 py-4 flex items-center justify-between shadow-sm pl-1">
@@ -74,7 +74,7 @@ const TopNavbar = ({
         <div className="flex items-center space-x-2 mr-3">
           <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden">
             <img
-              src={profilePicture || ""}
+              src={csIcon || ""}
               alt="User profile"
               className="w-full h-full object-cover"
             />

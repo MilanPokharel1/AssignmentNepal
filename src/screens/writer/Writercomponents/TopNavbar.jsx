@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MdOutlineNotifications, MdMenu } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import writerIcon from "../../../assets/writer.png";
 const pathToTitleMap = {
   "/writer": "Dashboard",
   "/writer/writerorder": "Order",
@@ -56,7 +56,7 @@ const TopNavbar = ({
       <div className="flex items-center space-x-4">
         <div className="relative w-auto h-auto p-1 rounded-2xl bg-yellow-100">
           <button
-            onClick={() => navigate("/client/reminders")}
+            onClick={() => navigate("/writer/writerRemainder")}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors"
           >
             <MdOutlineNotifications className="h-5 w-5 text-yellow-600" />
@@ -71,7 +71,7 @@ const TopNavbar = ({
         <div className="flex items-center space-x-2 mr-3">
           <div className="w-8 h-8 rounded-full bg-gray-200 overflow-hidden">
             <img
-              src={profilePicture || ""}
+              src={writerIcon || ""}
               alt="User profile"
               className="w-full h-full object-cover"
             />

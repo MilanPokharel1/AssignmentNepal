@@ -12,7 +12,10 @@ import {
 import { useParams } from "react-router-dom";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { FiBell } from "react-icons/fi";
-
+import adminIcon from "../../../assets/admin.png";
+import csIcon from "../../../assets/customer-service.png";
+import clientIcon from "../../../assets/user.png";
+import writerIcon from "../../../assets/writer.png";
 const OrdertView = () => {
   const [comments, setComments] = useState("");
   const [assignment, setAssignment] = useState({
@@ -55,6 +58,12 @@ const OrdertView = () => {
     }
   }, [comments]);
 
+  const roleIcons = {
+    admin: adminIcon,
+    cs: csIcon,
+    client: clientIcon,
+    writer: writerIcon,
+  };
   const handleStatusChange = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -452,7 +461,7 @@ const OrdertView = () => {
                 comments.map((comment) => (
                   <div key={comment._id} className="flex items-top">
                     <img
-                      src="https://icons-for-free.com/iff/png/512/man+person+profile+user+icon-1320073176482503236.png"
+                      src={roleIcons[comment.role] || clientIcon}
                       alt={comment.name}
                       className="w-8 h-8 rounded-full"
                     />
