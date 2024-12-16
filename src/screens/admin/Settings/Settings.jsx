@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Save, Upload, X } from "lucide-react";
 
 const Settings = () => {
@@ -10,6 +10,32 @@ const Settings = () => {
     cardPayment: false,
   });
   const [maintenanceMode, setMaintenanceMode] = useState(false);
+
+  const [isChanged, setIsChanged] = useState(false);
+
+  // Initial settings state for comparison
+  const initialSettings = {
+    logo: null,
+    staticQr: null,
+    paymentMethods: {
+      staticQr: false,
+      dynamicQr: false,
+      cardPayment: false,
+    },
+    maintenanceMode: false,
+  };
+
+  // Function to check if settings have changed
+  useEffect(() => {
+    const hasChanges =
+      logo !== initialSettings.logo ||
+      staticQr !== initialSettings.staticQr ||
+      JSON.stringify(paymentMethods) !==
+        JSON.stringify(initialSettings.paymentMethods) ||
+      maintenanceMode !== initialSettings.maintenanceMode;
+
+    setIsChanged(hasChanges);
+  }, [logo, staticQr, paymentMethods, maintenanceMode]);
 
   const handleFileUpload = (e, setFileState) => {
     const file = e.target.files[0];
@@ -33,13 +59,22 @@ const Settings = () => {
       paymentMethods,
       maintenanceMode,
     });
+
+    // Reset to the current state after saving
+    initialSettings.logo = logo;
+    initialSettings.staticQr = staticQr;
+    initialSettings.paymentMethods = { ...paymentMethods };
+    initialSettings.maintenanceMode = maintenanceMode;
+
+    setIsChanged(false); // Disable save button
   };
 
   return (
-    <div className="min-h-screen  p-4 sm:p-8">
+    <div className="min-h-screen p-4 sm:p-8">
       <div className="p-6 space-y-8">
         {/* Logo Upload Section */}
         <div className="grid md:grid-cols-2 gap-6 items-center">
+          {/* Logo Upload */}
           <div>
             <h2 className="text-lg font-semibold text-gray-700 mb-4">
               Logo Upload
@@ -81,7 +116,7 @@ const Settings = () => {
             </label>
           </div>
 
-          {/* Static QR Upload Section */}
+          {/* Static QR Upload */}
           <div>
             <h2 className="text-lg font-semibold text-gray-700 mb-4">
               Static QR Code
@@ -133,7 +168,7 @@ const Settings = () => {
             {Object.keys(paymentMethods).map((method) => (
               <div
                 key={method}
-                className="flex items-center border rounded-lg p-3 bg-gray-50"
+                className="flex items-center border rounded-lg p-3 "
               >
                 <input
                   type="checkbox"
@@ -156,41 +191,56 @@ const Settings = () => {
         </div>
 
         {/* Maintenance Mode */}
-        <div className="flex items-center justify-between bg-gray-50 p-4 rounded-lg">
+        <div className="flex items-center gap-2  p-4 rounded-lg">
           <span className="text-gray-700 font-medium">Maintenance Mode</span>
           <label className="flex items-center cursor-pointer">
-            <div className="relative">
-              <input
-                type="checkbox"
-                className="sr-only"
-                checked={maintenanceMode}
-                onChange={(e) => setMaintenanceMode(e.target.checked)}
-              />
-              <div className="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
-              <div
-                className={`
-                  dot absolute -left-1 -top-1 bg-white w-6 h-6 rounded-full 
-                  shadow transition-transform ${
-                    maintenanceMode
-                      ? "transform translate-x-full bg-blue-600"
-                      : ""
-                  }
-                `}
-              ></div>
-            </div>
+          <div className="relative">
+  {/* Hidden Checkbox */}
+  <input
+    type="checkbox"
+    id="maintenanceModeToggle"
+    className="sr-only peer"
+    checked={maintenanceMode}
+    onChange={(e) => setMaintenanceMode(e.target.checked)}
+  />
+  
+  {/* Background */}
+  <div
+    className="
+      w-10 h-4 rounded-full shadow-inner 
+      bg-gray-400 peer-checked:bg-blue-600 transition-colors
+    "
+  ></div>
+  
+  {/* Toggle Indicator */}
+  <div
+    className="
+      absolute top-[-2px] left-[-2px] w-6 h-6 bg-white rounded-full shadow 
+      transform transition-transform peer-checked:translate-x-6
+    "
+  ></div>
+</div>
+
           </label>
         </div>
 
         {/* Save Button */}
-        <div className="flex justify-end">
-          <button
-            onClick={handleSave}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
-          >
-            <Save className="w-5 h-5" />
-            Save Settings
-          </button>
-        </div>
+        {isChanged && (
+          <div className="flex justify-end">
+            <button
+              onClick={handleSave}
+              disabled={!isChanged}
+              className={`px-6 py-3 rounded-lg flex items-center gap-2 transition 
+             
+                 bg-blue-600 text-white hover:bg-blue-700
+            
+            `}
+            >
+              <Save className="w-5 h-5" />
+              Save Settings
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

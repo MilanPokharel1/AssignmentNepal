@@ -249,7 +249,11 @@ const AssignmentView = () => {
   };
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "short", day: "2-digit" };
-    return new Date(dateString).toLocaleDateString("en-CA", options);
+    const formattedDate = new Date(dateString).toLocaleDateString(
+      "en-GB",
+      options
+    ); // en-GB gives day-month-year order
+    return formattedDate.replace(",", ""); // Remove any commas if present
   };
 
   return (
