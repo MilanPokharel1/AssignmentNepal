@@ -1,223 +1,196 @@
 import React, { useState } from "react";
+import { Save, Upload, X } from "lucide-react";
 
 const Settings = () => {
-  const predefinedThemes = [
-    {
-      name: "Theme 1",
-      colors: {
-        primary: "#007BFF",
-        secondary: "#6C757D",
-        background: "#F8F9FA",
-      },
-    },
-    {
-      name: "Theme 2",
-      colors: {
-        primary: "#28A745",
-        secondary: "#17A2B8",
-        background: "#E9ECEF",
-      },
-    },
-    {
-      name: "Theme 3",
-      colors: {
-        primary: "#DC3545",
-        secondary: "#FFC107",
-        background: "#FFFFFF",
-      },
-    },
-    {
-      name: "Theme 4",
-      colors: {
-        primary: "#6F42C1",
-        secondary: "#343A40",
-        background: "#F1F1F1",
-      },
-    },
-  ];
-
-  const [selectedTheme, setSelectedTheme] = useState(predefinedThemes[0]);
-  const [customTheme, setCustomTheme] = useState({
-    primary: "#000000",
-    secondary: "#555555",
-    background: "#FFFFFF",
-  });
-
   const [logo, setLogo] = useState(null);
-  const [qrCode, setQrCode] = useState(null);
-  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [staticQr, setStaticQr] = useState(null);
   const [paymentMethods, setPaymentMethods] = useState({
-    paypal: true,
-    stripe: true,
-    bankTransfer: true,
+    staticQr: false,
+    dynamicQr: false,
+    cardPayment: false,
   });
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
 
-  const handleFileChange = (event, setFile) => {
-    const file = event.target.files[0];
+  const handleFileUpload = (e, setFileState) => {
+    const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = () => setFile(reader.result);
+      reader.onloadend = () => {
+        setFileState(reader.result);
+      };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleCustomThemeChange = (key, value) => {
-    setCustomTheme((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
-    setSelectedTheme(null); // Deselect predefined themes
+  const handleRemoveFile = (setFileState) => {
+    setFileState(null);
+  };
+
+  const handleSave = () => {
+    console.log("Saved Settings:", {
+      logo,
+      staticQr,
+      paymentMethods,
+      maintenanceMode,
+    });
   };
 
   return (
-    <div className="p-6 min-w-[60hw] max-w-[60vw]">
-
-      {/* Theme Options */}
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold mb-4">Theme Options</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-          {predefinedThemes.map((theme, index) => (
-            <div
-              key={index}
-              className={`border-2 rounded-lg p-4 cursor-pointer ${selectedTheme?.name === theme.name ? "border-black" : "border-transparent"
-                }`}
-              onClick={() => setSelectedTheme(theme)}
+    <div className="min-h-screen  p-4 sm:p-8">
+      <div className="p-6 space-y-8">
+        {/* Logo Upload Section */}
+        <div className="grid md:grid-cols-2 gap-6 items-center">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-700 mb-4">
+              Logo Upload
+            </h2>
+            <input
+              type="file"
+              id="logoUpload"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => handleFileUpload(e, setLogo)}
+            />
+            <label
+              htmlFor="logoUpload"
+              className="flex items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-100 transition"
             >
+              {logo ? (
+                <div className="relative">
+                  <img
+                    src={logo}
+                    alt="Uploaded Logo"
+                    className="max-h-40 max-w-full object-contain"
+                  />
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleRemoveFile(setLogo);
+                    }}
+                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <div className="text-center text-gray-500">
+                  <Upload className="mx-auto mb-2 w-12 h-12" />
+                  <p>Click to upload logo</p>
+                </div>
+              )}
+            </label>
+          </div>
+
+          {/* Static QR Upload Section */}
+          <div>
+            <h2 className="text-lg font-semibold text-gray-700 mb-4">
+              Static QR Code
+            </h2>
+            <input
+              type="file"
+              id="staticQrUpload"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => handleFileUpload(e, setStaticQr)}
+            />
+            <label
+              htmlFor="staticQrUpload"
+              className="flex items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-100 transition"
+            >
+              {staticQr ? (
+                <div className="relative">
+                  <img
+                    src={staticQr}
+                    alt="Uploaded Static QR"
+                    className="max-h-40 max-w-full object-contain"
+                  />
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleRemoveFile(setStaticQr);
+                    }}
+                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <div className="text-center text-gray-500">
+                  <Upload className="mx-auto mb-2 w-12 h-12" />
+                  <p>Click to upload static QR</p>
+                </div>
+              )}
+            </label>
+          </div>
+        </div>
+
+        {/* Payment Methods Section */}
+        <div>
+          <h2 className="text-lg font-semibold text-gray-700 mb-4">
+            Payment Methods
+          </h2>
+          <div className="grid md:grid-cols-3 gap-4">
+            {Object.keys(paymentMethods).map((method) => (
               <div
-                className="w-full h-8 rounded mb-2"
-                style={{ backgroundColor: theme.colors.primary }}
-              ></div>
+                key={method}
+                className="flex items-center border rounded-lg p-3 bg-gray-50"
+              >
+                <input
+                  type="checkbox"
+                  id={method}
+                  checked={paymentMethods[method]}
+                  onChange={() => {
+                    setPaymentMethods((prev) => ({
+                      ...prev,
+                      [method]: !prev[method],
+                    }));
+                  }}
+                  className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500"
+                />
+                <label htmlFor={method} className="text-gray-700 capitalize">
+                  {method.replace(/([A-Z])/g, " $1").trim()}
+                </label>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Maintenance Mode */}
+        <div className="flex items-center justify-between bg-gray-50 p-4 rounded-lg">
+          <span className="text-gray-700 font-medium">Maintenance Mode</span>
+          <label className="flex items-center cursor-pointer">
+            <div className="relative">
+              <input
+                type="checkbox"
+                className="sr-only"
+                checked={maintenanceMode}
+                onChange={(e) => setMaintenanceMode(e.target.checked)}
+              />
+              <div className="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
               <div
-                className="w-full h-8 rounded mb-2"
-                style={{ backgroundColor: theme.colors.secondary }}
+                className={`
+                  dot absolute -left-1 -top-1 bg-white w-6 h-6 rounded-full 
+                  shadow transition-transform ${
+                    maintenanceMode
+                      ? "transform translate-x-full bg-blue-600"
+                      : ""
+                  }
+                `}
               ></div>
-              <div
-                className="w-full h-8 rounded"
-                style={{ backgroundColor: theme.colors.background }}
-              ></div>
-              <p className="text-center text-sm mt-2">{theme.name}</p>
             </div>
-          ))}
-        </div>
-
-        {/* Custom Theme Selector */}
-        <div className="mb-4">
-          <h3 className="text-md font-semibold mb-2">Custom Theme</h3>
-          <div className="flex items-center gap-4 mb-2">
-            <label htmlFor="customPrimary" className="text-sm font-medium">
-              Primary:
-            </label>
-            <input
-              type="color"
-              id="customPrimary"
-              value={customTheme.primary}
-              onChange={(e) => handleCustomThemeChange("primary", e.target.value)}
-              className="w-10 h-10 cursor-pointer"
-            />
-          </div>
-          <div className="flex items-center gap-4 mb-2">
-            <label htmlFor="customSecondary" className="text-sm font-medium">
-              Secondary:
-            </label>
-            <input
-              type="color"
-              id="customSecondary"
-              value={customTheme.secondary}
-              onChange={(e) => handleCustomThemeChange("secondary", e.target.value)}
-              className="w-10 h-10 cursor-pointer"
-            />
-          </div>
-          <div className="flex items-center gap-4">
-            <label htmlFor="customBackground" className="text-sm font-medium">
-              Background:
-            </label>
-            <input
-              type="color"
-              id="customBackground"
-              value={customTheme.background}
-              onChange={(e) => handleCustomThemeChange("background", e.target.value)}
-              className="w-10 h-10 cursor-pointer"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Logo Update */}
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold mb-4">Logo Update</h2>
-        {logo && <img src={logo} alt="Previous Logo" className="h-24 mb-4" />}
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => handleFileChange(e, setLogo)}
-          className="block"
-        />
-      </div>
-
-      {/* QR Code Update */}
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold mb-4">Payment QR Code Update</h2>
-        {qrCode && <img src={qrCode} alt="Previous QR Code" className="h-24 mb-4" />}
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => handleFileChange(e, setQrCode)}
-          className="block"
-        />
-      </div>
-
-      {/* Payment Methods */}
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold mb-4">Disable Payment Methods</h2>
-        {Object.keys(paymentMethods).map((method) => (
-          <div key={method} className="flex items-center gap-2 mb-2">
-            <input
-              type="checkbox"
-              checked={!paymentMethods[method]}
-              onChange={() =>
-                setPaymentMethods((prev) => ({
-                  ...prev,
-                  [method]: !prev[method],
-                }))
-              }
-              id={method}
-            />
-            <label htmlFor={method} className="text-sm font-medium capitalize">
-              Disable {method}
-            </label>
-          </div>
-        ))}
-      </div>
-
-      {/* Maintenance Mode */}
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold mb-4">Maintenance Mode</h2>
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={maintenanceMode}
-            onChange={(e) => setMaintenanceMode(e.target.checked)}
-            id="maintenanceMode"
-          />
-          <label htmlFor="maintenanceMode" className="text-sm font-medium">
-            Enable Maintenance Mode
           </label>
         </div>
-      </div>
 
-      {/* Preview Section */}
-      <div
-        className="p-6 rounded-md"
-        style={{
-          backgroundColor: selectedTheme?.colors.background || customTheme.background,
-          color: selectedTheme?.colors.primary || customTheme.primary,
-          border: `1px solid ${selectedTheme?.colors.secondary || customTheme.secondary
-            }`,
-          transition: "background-color 0.3s ease",
-        }}
-      >
-        <h3 className="text-lg font-semibold mb-2">Theme Preview</h3>
-        <p>This is how your theme looks with the current settings!</p>
+        {/* Save Button */}
+        <div className="flex justify-end">
+          <button
+            onClick={handleSave}
+            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
+          >
+            <Save className="w-5 h-5" />
+            Save Settings
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -28,7 +28,7 @@ const Client = () => {
 
   return (
     <div className="min-h-screen flex gap-2 bg-white">
-      <div className="w-0 SideNavHide2:w-[19%] h-screen bg-gray-50 fixed invisible SideNavHide2:visible">
+      <div className="w-0 SideNavHide2:w-[19%] h-screen bg-gray-50 fixed invisible SideNavHide2:visible ">
         <SideNavbar />
       </div>
 
