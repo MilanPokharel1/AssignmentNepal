@@ -37,6 +37,7 @@ const OrdertView = () => {
   const [status, setStatus] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAmountConform, setIsAmount] = useState(false);
   const [showApprove, setshowApprove] = useState(true);
   const [remainderTitle, setRemainderTitle] = useState("");
   const [remainderDescription, setRemainderDescription] = useState("");
@@ -160,8 +161,7 @@ const OrdertView = () => {
         console.log(data);
         setStatus(data.status);
         setComments(data.comments);
-        setPrice(data.price?data.price:0)
-        console.log(data.price?data.price:0)
+        setPrice(data.price ? data.price : 0)
       } catch (error) {
         console.error("Error fetching orders:", error);
       } finally {
@@ -280,6 +280,7 @@ const OrdertView = () => {
       // Process the response data
       const res = await response.json();
       console.log(res);
+      setIsAmount(false)
 
       // Optionally, handle any UI updates based on response here
     } catch (error) {
@@ -408,6 +409,10 @@ const OrdertView = () => {
   const toggleExpand = () => {
     setIsExpanded((prev) => !prev);
   };
+
+  const handlepopup = () =>{
+    setIsAmount(true)
+  }
 
   const getDisplayText = (description) => {
     if (!description) return;
@@ -843,7 +848,7 @@ const OrdertView = () => {
               className="w-full px-3 py-2 border rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <button
-              onClick={() => handleSetPrice(assignment._id, price)}
+              onClick={handlepopup}
               className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
               Save
             </button>
@@ -931,6 +936,29 @@ const OrdertView = () => {
               </button>
               <button
                 onClick={handleConfirm}
+                className="px-4 py-2 bg-[#5d5fef] text-white rounded-md hover:bg-blue-600"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {isAmountConform && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-lg font-semibold text-gray-800">
+              Are you sure you want to update the price to {price}?
+            </h2>
+            <div className="mt-4 flex justify-end space-x-4">
+              <button
+                onClick={()=>setIsAmount(false)}
+                className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleSetPrice(assignment._id, price)}
                 className="px-4 py-2 bg-[#5d5fef] text-white rounded-md hover:bg-blue-600"
               >
                 Confirm

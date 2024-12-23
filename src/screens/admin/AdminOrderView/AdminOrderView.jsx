@@ -35,6 +35,10 @@ const AdminOrderView = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [status, setStatus] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [price, setPrice] = useState(null);
+  const [isAmountConform, setIsAmount] = useState(false);
+
+
 
   const [remainderTitle, setRemainderTitle] = useState("");
   const [remainderDescription, setRemainderDescription] = useState("");
@@ -93,6 +97,44 @@ const AdminOrderView = () => {
     }
   };
 
+
+  const handleSetPrice = async (orderId, price) => {
+    try {
+      if (!orderId || !price) {
+        console.error("Order ID or Amount missing");
+        return;
+      }
+      console.log("order Id: ", orderId)
+      console.log("order price: ", price)
+
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(set_price, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ orderId, price }),
+      });
+
+      // Check for a successful response
+      if (!response.ok) {
+        throw new Error("Failed to update Amount");
+      }
+
+      // Process the response data
+      const res = await response.json();
+      console.log(res);
+
+      // Optionally, handle any UI updates based on response here
+    } catch (error) {
+      console.error("Failed to update amount:", error);
+    }
+  };
+
+
+
   const handleSendRemainder = async (e) => {
     e.preventDefault();
     try {
@@ -136,6 +178,10 @@ const AdminOrderView = () => {
     }
   };
 
+  const handlepopup = () => {
+    setIsAmount(true)
+  }
+
   useEffect(() => {
     const fetchOrderById = async () => {
       setIsLoading(true);
@@ -158,6 +204,7 @@ const AdminOrderView = () => {
         setAssignment(data);
         console.log(data);
         setStatus(data.status);
+        setPrice(data.price ? data.price : 0)
         setComments(data.comments);
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -535,11 +582,10 @@ const AdminOrderView = () => {
                   .map((file, index) => (
                     <div key={index} className="relative">
                       <div
-                        className={`flex flex-col p-2 rounded border ${
-                          file.fileUrl
-                            ? "bg-white border-gray-200"
-                            : "bg-gray-100 border-gray-300"
-                        }`}
+                        className={`flex flex-col p-2 rounded border ${file.fileUrl
+                          ? "bg-white border-gray-200"
+                          : "bg-gray-100 border-gray-300"
+                          }`}
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2 min-w-0 flex-grow">
@@ -573,15 +619,15 @@ const AdminOrderView = () => {
                             disabled={
                               file.fileUrl
                                 ? downloadingFiles[
-                                    new URL(file.fileUrl).searchParams.get("id")
-                                  ]
+                                new URL(file.fileUrl).searchParams.get("id")
+                                ]
                                 : true
                             }
                           >
                             {file?.fileUrl &&
-                            downloadingFiles[
+                              downloadingFiles[
                               new URL(file.fileUrl).searchParams.get("id")
-                            ] ? (
+                              ] ? (
                               <div className="flex flex-col items-end">
                                 <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
                               </div>
@@ -591,10 +637,10 @@ const AdminOrderView = () => {
                                 disabled={
                                   file.fileUrl
                                     ? downloadingFiles[
-                                        new URL(file.fileUrl).searchParams.get(
-                                          "id"
-                                        )
-                                      ]
+                                    new URL(file.fileUrl).searchParams.get(
+                                      "id"
+                                    )
+                                    ]
                                     : true
                                 }
                               />
@@ -603,7 +649,7 @@ const AdminOrderView = () => {
                         </div>
                         {file.fileUrl &&
                           downloadingFiles?.[
-                            new URL(file.fileUrl).searchParams.get("id")
+                          new URL(file.fileUrl).searchParams.get("id")
                           ] && (
                             <div className="mt-2 ml-7">
                               <div className="text-xs text-gray-500 mb-1">
@@ -623,13 +669,12 @@ const AdminOrderView = () => {
                                 <div
                                   className="h-2 bg-blue-500 rounded-full"
                                   style={{
-                                    width: `${
-                                      downloadingFiles[
-                                        new URL(file.fileUrl).searchParams.get(
-                                          "id"
-                                        )
-                                      ]?.progress
-                                    }%`,
+                                    width: `${downloadingFiles[
+                                      new URL(file.fileUrl).searchParams.get(
+                                        "id"
+                                      )
+                                    ]?.progress
+                                      }%`,
                                   }}
                                 ></div>
                               </div>
@@ -659,11 +704,10 @@ const AdminOrderView = () => {
                   .map((file, index) => (
                     <div key={index} className="relative">
                       <div
-                        className={`flex flex-col p-2 rounded border ${
-                          file.fileUrl
-                            ? "bg-white border-gray-200"
-                            : "bg-gray-100 border-gray-300"
-                        }`}
+                        className={`flex flex-col p-2 rounded border ${file.fileUrl
+                          ? "bg-white border-gray-200"
+                          : "bg-gray-100 border-gray-300"
+                          }`}
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2 min-w-0 flex-grow">
@@ -702,15 +746,15 @@ const AdminOrderView = () => {
                             disabled={
                               file.fileUrl
                                 ? downloadingFiles[
-                                    new URL(file.fileUrl).searchParams.get("id")
-                                  ]
+                                new URL(file.fileUrl).searchParams.get("id")
+                                ]
                                 : true
                             }
                           >
                             {file?.fileUrl &&
-                            downloadingFiles[
+                              downloadingFiles[
                               new URL(file.fileUrl).searchParams.get("id")
-                            ] ? (
+                              ] ? (
                               <div className="flex flex-col items-end">
                                 <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
                               </div>
@@ -720,10 +764,10 @@ const AdminOrderView = () => {
                                 disabled={
                                   file.fileUrl
                                     ? downloadingFiles[
-                                        new URL(file.fileUrl).searchParams.get(
-                                          "id"
-                                        )
-                                      ]
+                                    new URL(file.fileUrl).searchParams.get(
+                                      "id"
+                                    )
+                                    ]
                                     : true
                                 }
                               />
@@ -732,7 +776,7 @@ const AdminOrderView = () => {
                         </div>
                         {file.fileUrl &&
                           downloadingFiles?.[
-                            new URL(file.fileUrl).searchParams.get("id")
+                          new URL(file.fileUrl).searchParams.get("id")
                           ] && (
                             <div className="mt-2 ml-7">
                               <div className="text-xs text-gray-500 mb-1">
@@ -752,13 +796,12 @@ const AdminOrderView = () => {
                                 <div
                                   className="h-2 bg-blue-500 rounded-full"
                                   style={{
-                                    width: `${
-                                      downloadingFiles[
-                                        new URL(file.fileUrl).searchParams.get(
-                                          "id"
-                                        )
-                                      ]?.progress
-                                    }%`,
+                                    width: `${downloadingFiles[
+                                      new URL(file.fileUrl).searchParams.get(
+                                        "id"
+                                      )
+                                    ]?.progress
+                                      }%`,
                                   }}
                                 ></div>
                               </div>
@@ -801,11 +844,16 @@ const AdminOrderView = () => {
           <div className="max-w-sm mx-auto mt-8 p-4 border rounded-md shadow-md bg-white">
             <h2 className="text-lg font-semibold mb-4">Pay Writer</h2>
             <input
-              type="text"
+              type="number"
+              id="price"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
               placeholder="Enter amount"
               className="w-full px-3 py-2 border rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <button className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
+            <button
+              onClick={handlepopup}
+              className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
               Save
             </button>
           </div>
@@ -875,6 +923,29 @@ const AdminOrderView = () => {
               </button>
             </div>
           </form>
+        </div>
+      )}
+      {isAmountConform && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-lg font-semibold text-gray-800">
+              Are you sure you want to update the price to {price}?
+            </h2>
+            <div className="mt-4 flex justify-end space-x-4">
+              <button
+                onClick={() => setIsAmount(false)}
+                className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleSetPrice(assignment._id, price)}
+                className="px-4 py-2 bg-[#5d5fef] text-white rounded-md hover:bg-blue-600"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
