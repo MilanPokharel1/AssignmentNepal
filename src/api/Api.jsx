@@ -33,6 +33,7 @@ export const cs_writers = `${url}/cs/getWriters`;
 export const pending_users = `${url}/user/pendingusers`;
 export const change_pending_user = `${url}/user/changependingstatus`;
 export const cs_clients = `${url}/cs/getClients`;
+export const set_price = `${url}/user/setprice`;
 
 
 

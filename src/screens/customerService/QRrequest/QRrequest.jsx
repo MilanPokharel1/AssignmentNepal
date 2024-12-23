@@ -73,38 +73,14 @@ const QRRequest = () => {
     filterPayments(payments, status);
   };
 
-  const handleApproveDecline = async (id, action) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`${QR_payment_request}/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ paymentStatus: action.toLowerCase() }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to ${action.toLowerCase()} payment`);
-      }
-
-      // Update local state
-      const updatedPayments = payments.map((payment) =>
-        payment._id === id
-          ? { ...payment, paymentStatus: action.toLowerCase() }
-          : payment
-      );
-
-      setPayments(updatedPayments);
-      filterPayments(updatedPayments, currentFilter);
-      setConfirmation({ open: false, action: "", id: null });
-    } catch (error) {
-      console.error(`Error ${action.toLowerCase()}ing payment:`, error);
-    }
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "short", day: "2-digit" };
+    const formattedDate = new Date(dateString).toLocaleDateString(
+      "en-GB",
+      options
+    ); // en-GB gives day-month-year order
+    return formattedDate.replace(",", ""); // Remove any commas if present
   };
-
-
 
   const changePaymentStatus = async (paymentId, paymentStatus) => {
     setIsLoading(true);
@@ -156,8 +132,8 @@ const QRRequest = () => {
           <button
             key={status}
             className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${currentFilter === status
-                ? "bg-[#5d5fef] text-white"
-                : "bg-gray-100 text-gray-700"
+              ? "bg-[#5d5fef] text-white"
+              : "bg-gray-100 text-gray-700"
               }`}
             onClick={() => handleFilterChange(status)}
           >
@@ -207,7 +183,7 @@ const QRRequest = () => {
               <p className="text-sm text-gray-400 flex gap-3">
                 <div>
                   Date:{" "}
-                  <span className="font-thin text-black">{item.date}</span>
+                  <span className="font-thin text-black">{formatDate(item.createdAt)}</span>
                 </div>
                 <div>
                   {" "}
@@ -218,19 +194,22 @@ const QRRequest = () => {
                 </div>
               </p>
             </div>
-            <p className="text-[#00b087] font-thin  text-sm md:text-lg">
-              Amount: {item.paymentCurrency} {item.paidAmount}
-            </p>
-          </div>
+            <div>
           <p className="text-sm text-gray-400">
             Status:{" "}
-            <span className="font-thin text-black uppercase">
+            <span className={`font-medium text-black ${item.paymentStatus === "pending"?"text-yellow-500":item.paymentStatus === "declined"?"text-red-600":"text-green-600"} `}>
               {item.paymentStatus}
             </span>
           </p>
           <p className="text-sm text-gray-400">
             Remarks: <span className="font-thin text-black">{item.remark}</span>
           </p>
+          </div>
+            <p className="text-[#00b087] font-thin  text-sm md:text-lg">
+              Amount: {item.paymentCurrency} {item.paidAmount}
+            </p>
+          </div>
+          
           <div className="flex space-x-2 mt-2 flex-row-reverse gap-3">
             {item.paymentStatus === "pending" && (
               <>
@@ -272,9 +251,9 @@ const QRRequest = () => {
                 </button>
               </>
             )}
-            
+
             <button
-              className="bg-blue-500 text-white h-8 px-4 py-2 rounded flex items-center"
+              className="bg-[#5d5fef] text-white h-8 px-4 py-2 rounded flex items-center"
               onClick={() =>
                 setExpandedCard(expandedCard === item._id ? null : item._id)
               }
@@ -286,7 +265,7 @@ const QRRequest = () => {
             <div className="mt-4">
               <img
                 src={getValidImageUrl(item.images)}
-                alt="Assignment"
+                alt="image"
                 className="w-40 h-40 object-cover rounded cursor-pointer"
                 onClick={() =>
                   setFullScreenPhoto(getValidImageUrl(item.images))

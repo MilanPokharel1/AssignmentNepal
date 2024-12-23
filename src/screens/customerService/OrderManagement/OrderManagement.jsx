@@ -68,6 +68,18 @@ const OrderManagement = () => {
     );
   };
 
+
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "short", day: "2-digit" };
+    const formattedDate = new Date(dateString).toLocaleDateString(
+      "en-GB",
+      options
+    ); // en-GB gives day-month-year order
+    return formattedDate.replace(",", ""); // Remove any commas if present
+  };
+
+
+
   const NoDataFound = () => (
     <div className="flex flex-col items-center mx-[25%] justify-center py-16 px-4">
       <div className="bg-gray-100 rounded-full  p-6 mb-4">
@@ -194,7 +206,7 @@ const OrderManagement = () => {
                     ? highlightText(assignment.writerName, searchTerm)
                     : "Not Assigned"
                 }
-                deadline={highlightText(assignment.deadline, searchTerm)}
+                deadline={highlightText(formatDate(assignment.deadline), searchTerm)}
               />
             ))
           ) : (

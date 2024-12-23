@@ -8,6 +8,7 @@ import {
   get_orderById,
   order_status,
   send_comment,
+  set_price,
 } from "../../../api/Api";
 import { useParams } from "react-router-dom";
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -24,7 +25,7 @@ const OrdertView = () => {
     description: "",
   });
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isDownloading, setisDownloading] = useState(false);
+  const [price, setPrice] = useState(null);
   const textareaRef = useRef(null);
   const commenttextareaRef = useRef(null);
   const commentAreaRef = useRef(null);
@@ -159,6 +160,8 @@ const OrdertView = () => {
         console.log(data);
         setStatus(data.status);
         setComments(data.comments);
+        setPrice(data.price?data.price:0)
+        console.log(data.price?data.price:0)
       } catch (error) {
         console.error("Error fetching orders:", error);
       } finally {
@@ -244,6 +247,52 @@ const OrdertView = () => {
       console.error("Failed to update file status:", error);
     }
   };
+
+
+
+
+
+  const handleSetPrice = async (orderId, price) => {
+    try {
+      if (!orderId || !price) {
+        console.error("Order ID or Amount missing");
+        return;
+      }
+      console.log("order Id: ", orderId)
+      console.log("order price: ", price)
+
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(set_price, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ orderId, price }),
+      });
+
+      // Check for a successful response
+      if (!response.ok) {
+        throw new Error("Failed to update Amount");
+      }
+
+      // Process the response data
+      const res = await response.json();
+      console.log(res);
+
+      // Optionally, handle any UI updates based on response here
+    } catch (error) {
+      console.error("Failed to update amount:", error);
+    }
+  };
+
+
+
+
+
+
+
 
   function formatTimeRemaining(timeRemaining) {
     if (timeRemaining < 60) {
@@ -539,11 +588,10 @@ const OrdertView = () => {
                   .map((file, index) => (
                     <div key={index} className="relative">
                       <div
-                        className={`flex flex-col p-2 rounded border ${
-                          file.fileUrl
-                            ? "bg-white border-gray-200"
-                            : "bg-gray-100 border-gray-300"
-                        }`}
+                        className={`flex flex-col p-2 rounded border ${file.fileUrl
+                          ? "bg-white border-gray-200"
+                          : "bg-gray-100 border-gray-300"
+                          }`}
                       >
                         <div className="flex items-center justify-between w-full">
                           <div className="flex items-center space-x-2 min-w-0 flex-grow">
@@ -583,17 +631,17 @@ const OrdertView = () => {
                               disabled={
                                 file.fileUrl
                                   ? downloadingFiles[
-                                      new URL(file.fileUrl).searchParams.get(
-                                        "id"
-                                      )
-                                    ]
+                                  new URL(file.fileUrl).searchParams.get(
+                                    "id"
+                                  )
+                                  ]
                                   : false
                               }
                             >
                               {file?.fileUrl &&
-                              downloadingFiles[
+                                downloadingFiles[
                                 new URL(file.fileUrl).searchParams.get("id")
-                              ] ? (
+                                ] ? (
                                 <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
                               ) : (
                                 <Download className="w-4 h-4 text-gray-700 hover:cursor-pointer" />
@@ -603,7 +651,7 @@ const OrdertView = () => {
                         </div>
                         {file.fileUrl &&
                           downloadingFiles[
-                            new URL(file.fileUrl).searchParams.get("id")
+                          new URL(file.fileUrl).searchParams.get("id")
                           ] && (
                             <div className="mt-2 ml-7">
                               <div className="text-xs text-gray-500 mb-1">
@@ -623,13 +671,12 @@ const OrdertView = () => {
                                 <div
                                   className="h-2 bg-blue-500 rounded-full"
                                   style={{
-                                    width: `${
-                                      downloadingFiles[
-                                        new URL(file.fileUrl).searchParams.get(
-                                          "id"
-                                        )
-                                      ].progress
-                                    }%`,
+                                    width: `${downloadingFiles[
+                                      new URL(file.fileUrl).searchParams.get(
+                                        "id"
+                                      )
+                                    ].progress
+                                      }%`,
                                   }}
                                 ></div>
                               </div>
@@ -659,11 +706,10 @@ const OrdertView = () => {
                   .map((file, index) => (
                     <div key={index} className="relative">
                       <div
-                        className={`flex flex-col p-2 rounded border ${
-                          file.fileUrl
-                            ? "bg-white border-gray-200"
-                            : "bg-gray-100 border-gray-300"
-                        }`}
+                        className={`flex flex-col p-2 rounded border ${file.fileUrl
+                          ? "bg-white border-gray-200"
+                          : "bg-gray-100 border-gray-300"
+                          }`}
                       >
                         <div className="flex items-center justify-between w-full">
                           <div className="flex items-center space-x-2 min-w-0 flex-grow">
@@ -701,17 +747,17 @@ const OrdertView = () => {
                               disabled={
                                 file.fileUrl
                                   ? downloadingFiles[
-                                      new URL(file.fileUrl).searchParams.get(
-                                        "id"
-                                      )
-                                    ]
+                                  new URL(file.fileUrl).searchParams.get(
+                                    "id"
+                                  )
+                                  ]
                                   : false
                               }
                             >
                               {file?.fileUrl &&
-                              downloadingFiles[
+                                downloadingFiles[
                                 new URL(file.fileUrl).searchParams.get("id")
-                              ] ? (
+                                ] ? (
                                 <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
                               ) : (
                                 <Download className="w-4 h-4 text-gray-700 hover:cursor-pointer" />
@@ -721,7 +767,7 @@ const OrdertView = () => {
                         </div>
                         {file.fileUrl &&
                           downloadingFiles[
-                            new URL(file.fileUrl).searchParams.get("id")
+                          new URL(file.fileUrl).searchParams.get("id")
                           ] && (
                             <div className="mt-2 ml-7">
                               <div className="text-xs text-gray-500 mb-1">
@@ -741,13 +787,12 @@ const OrdertView = () => {
                                 <div
                                   className="h-2 bg-blue-500 rounded-full"
                                   style={{
-                                    width: `${
-                                      downloadingFiles[
-                                        new URL(file.fileUrl).searchParams.get(
-                                          "id"
-                                        )
-                                      ].progress
-                                    }%`,
+                                    width: `${downloadingFiles[
+                                      new URL(file.fileUrl).searchParams.get(
+                                        "id"
+                                      )
+                                    ].progress
+                                      }%`,
                                   }}
                                 ></div>
                               </div>
@@ -790,11 +835,16 @@ const OrdertView = () => {
           <div className="max-w-sm mx-auto mt-8 p-4 border rounded-md shadow-md bg-white">
             <h2 className="text-lg font-semibold mb-4">Pay Writer</h2>
             <input
-              type="text"
+              type="number"
+              id="price"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
               placeholder="Enter amount"
               className="w-full px-3 py-2 border rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <button className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
+            <button
+              onClick={() => handleSetPrice(assignment._id, price)}
+              className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
               Save
             </button>
           </div>
