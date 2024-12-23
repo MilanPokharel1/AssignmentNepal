@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FiCheck, FiX, FiEye } from "react-icons/fi";
-import { QR_payment_request } from "../../../api/Api";
+import { imagePath, QR_payment_request, QR_payment_status } from "../../../api/Api";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 const QRRequest = () => {
@@ -13,7 +13,9 @@ const QRRequest = () => {
     open: false,
     action: "",
     id: null,
+    status: null
   });
+
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -47,7 +49,8 @@ const QRRequest = () => {
   }, []);
 
   const getValidImageUrl = (filePath) => {
-    const serverBaseUrl = "https://server.assignmentnepal.com";
+    console.log(filePath)
+    const serverBaseUrl = imagePath; // Replace with your server's base URL
     return filePath.replace(
       "/root/assignmentNepal/assignmentNepalBackend/public/uploads/",
       `${serverBaseUrl}/uploads/`
@@ -101,6 +104,50 @@ const QRRequest = () => {
     }
   };
 
+
+
+  const changePaymentStatus = async (paymentId, paymentStatus) => {
+    setIsLoading(true);
+    console.log(paymentId, paymentStatus)
+    try {
+      const token = localStorage.getItem("token"); // Replace with the actual token
+
+      const response = await fetch(QR_payment_status, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ paymentId: paymentId, paymentStatus: paymentStatus }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to change status");
+      }
+
+      // setPayments((prevPayments) =>
+      //   prevPayments.map((payment) =>
+      //     payment._id === paymentId ? { ...payment, paymentStatus: "approved" } : payment
+      //   )
+      // );
+
+      const updatedPayments = payments.map((payment) =>
+        payment._id === paymentId ? { ...payment, paymentStatus: paymentStatus } : payment
+      );
+      setPayments(updatedPayments)
+      setConfirmation({ open: false, action: "", id: null })
+    } catch (error) {
+      console.error("Error fetching reminders:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
+
+
+
+
   return (
     <div className="p-4 space-y-4 w-full md:w-[81%]">
       {/* Filter Buttons */}
@@ -108,11 +155,10 @@ const QRRequest = () => {
         {["all", "pending", "approved", "declined"].map((status) => (
           <button
             key={status}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-              currentFilter === status
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${currentFilter === status
                 ? "bg-[#5d5fef] text-white"
                 : "bg-gray-100 text-gray-700"
-            }`}
+              }`}
             onClick={() => handleFilterChange(status)}
           >
             {status.charAt(0).toUpperCase() + status.slice(1)}
@@ -191,11 +237,7 @@ const QRRequest = () => {
                 <button
                   className="px-3 py-0 text-sm h-8 text-red-600 bg-red-200 hover:bg-red-400 hover:text-white rounded-md transition-all duration-200 border-2 border-red-400"
                   onClick={() =>
-                    setConfirmation({
-                      open: true,
-                      action: "Decline",
-                      id: item._id,
-                    })
+                    setConfirmation({ open: true, action: "Decline", status: "declined", id: item._id })
                   }
                 >
                   Decline
@@ -203,11 +245,7 @@ const QRRequest = () => {
                 <button
                   className="px-3 py-0 text-sm text-emerald-600 bg-emerald-200 hover:bg-emerald-400 hover:text-white rounded-md transition-all duration-200 border-2 border-emerald-400"
                   onClick={() =>
-                    setConfirmation({
-                      open: true,
-                      action: "Approve",
-                      id: item._id,
-                    })
+                    setConfirmation({ open: true, action: "Approve", status: "approved", id: item._id })
                   }
                 >
                   Approve
@@ -234,8 +272,9 @@ const QRRequest = () => {
                 </button>
               </>
             )}
+            
             <button
-              className="bg-[#5d5fef] text-white h-8 px-4 py-2 rounded flex items-center"
+              className="bg-blue-500 text-white h-8 px-4 py-2 rounded flex items-center"
               onClick={() =>
                 setExpandedCard(expandedCard === item._id ? null : item._id)
               }
@@ -279,7 +318,7 @@ const QRRequest = () => {
               <span className="font-bold text-blue-600">
                 {confirmation.action}
               </span>{" "}
-              this request?
+              this payment?
             </p>
 
             <div className="flex justify-center gap-4">
@@ -288,7 +327,8 @@ const QRRequest = () => {
                      hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 
                      transition duration-300"
                 onClick={() =>
-                  handleApproveDecline(confirmation.id, confirmation.action)
+                  changePaymentStatus(confirmation.id, confirmation.action === "Approve" ? "approved" : "declined")
+                  // setConfirmation({ open: false, action: "", id: null })
                 }
               >
                 Confirm
