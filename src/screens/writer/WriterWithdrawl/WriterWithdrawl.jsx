@@ -123,26 +123,26 @@ const WriterWithdrawal = () => {
         <Card
           Icon={MdAccountBalance}
           heading="Balance"
-          number={40}
+          number={0}
           theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
         />
         <Card
           Icon={MdPendingActions}
           heading="Pending"
-          number={40}
+          number={0}
           theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
         />
         <Card
           Icon={MdReceipt}
           heading="Withdrawaled"
-          number={40}
+          number={5500}
           theme={{ bgColor: "bg-yellow-100", iconBgColor: "bg-orange-400" }}
         />
 
         <Card
           Icon={FaMoneyBillWave}
           heading="Total"
-          number={40}
+          number={5500}
           theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
         />
       </div>

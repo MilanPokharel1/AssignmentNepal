@@ -14,7 +14,7 @@ const Card = ({ Icon, heading, number, theme }) => {
         <p className="SideNavHide:text-lg  text-gray-600 font-medium">
           {heading}
         </p>
-        <p className="SideNavHide:text-xl text-lg font-bold">{number}</p>
+        <p className="SideNavHide:text-xl text-lg font-bold">{"Rs "}{number}</p>
       </div>
     </div>
   );

@@ -110,7 +110,7 @@ const WriterCard = ({
             >
               {acceptStatus == "approved" ? "Accept" : "Accepted"}
             </button>
-            <button
+            {/* <button
               className={`px-3 py-1 text-sm text-red-600 bg-red-200 
                            hover:bg-red-400 hover:text-white ${
                              acceptStatus == "accepted" ? "hidden" : ""
@@ -119,7 +119,7 @@ const WriterCard = ({
               onClick={() => console.log("Declined")}
             >
               Decline
-            </button>
+            </button> */}
           </div>
         ) : (
           <span className="text-sm font-light">Already Assigned</span>
