@@ -52,10 +52,12 @@ const Settings = () => {
           // Populate state with API data
           setLogo(data.data.logo ? `/uploads/${data.data.logo}` : null);
           setStaticQr(data.data.qrcode ? `/uploads/${data.data.qrcode}` : null);
-          setPaymentMethods(data.data.paymentMethods || initialSettings.paymentMethods);
+          setPaymentMethods(
+            data.data.paymentMethods || initialSettings.paymentMethods
+          );
           setAppPassword(data.data.apppass || "");
           setServiceAccountObject(data.data.driveCredentials || "");
-          console.log(data.data)
+          console.log(data.data);
           Object.assign(initialSettings, data.data);
         }
       } catch (error) {
@@ -74,11 +76,19 @@ const Settings = () => {
       serviceAccountObject !== initialSettings.serviceAccountObject ||
       logoFile !== null ||
       staticQrFile !== null ||
-      JSON.stringify(paymentMethods) !== JSON.stringify(initialSettings.paymentMethods) ||
+      JSON.stringify(paymentMethods) !==
+        JSON.stringify(initialSettings.paymentMethods) ||
       maintenanceMode !== initialSettings.maintenanceMode;
 
     setIsChanged(hasChanges);
-  }, [logoFile, staticQrFile, paymentMethods, maintenanceMode, appPassword, serviceAccountObject]);
+  }, [
+    logoFile,
+    staticQrFile,
+    paymentMethods,
+    maintenanceMode,
+    appPassword,
+    serviceAccountObject,
+  ]);
 
   const handleFileUpload = (e, setFileState, setFileUpload) => {
     const file = e.target.files[0];
@@ -152,9 +162,8 @@ const Settings = () => {
   //   }
   // };
 
-
   const handleSave = async (e) => {
-    console.log("clicked")
+    console.log("clicked");
     e.preventDefault();
     try {
       const token = localStorage.getItem("token"); // Replace with the actual token
@@ -167,7 +176,7 @@ const Settings = () => {
         body: JSON.stringify({
           appPass: appPassword,
           driveCredentials: serviceAccountObject,
-          paymentMethods: paymentMethods
+          paymentMethods: paymentMethods,
         }),
       });
 
@@ -179,11 +188,10 @@ const Settings = () => {
 
       const data = await response.json();
       console.log("success:", data);
-
     } catch (error) {
       console.error("Failed:", error);
     }
-  }
+  };
 
   // JSX remains the same, but update the file upload handlers
   return (
@@ -197,9 +205,14 @@ const Settings = () => {
         <div className="grid md:grid-cols-2 gap-6 items-center">
           {/* Logo Upload */}
           <div>
-            <h2 className="text-lg font-semibold text-gray-700 mb-4">
-              Logo Upload
-            </h2>
+            <div className="flex justify-between pr-6 items-center mb-4">
+              <h2 className="text-lg font-semibold text-gray-700 ">
+                Logo Upload
+              </h2>
+              <button className="bg-[#5d5fef] text-white place-content-center-5 px-5 py-1 rounded-md">
+                Save
+              </button>
+            </div>
             <input
               type="file"
               id="logoUpload"
@@ -239,15 +252,22 @@ const Settings = () => {
 
           {/* Static QR Upload */}
           <div>
-            <h2 className="text-lg font-semibold text-gray-700 mb-4">
-              Static QR Code
-            </h2>
+            <div className="flex justify-between pr-4 items-center mb-4">
+              <h2 className="text-lg font-semibold text-gray-700 ">
+                Static Qr Code
+              </h2>
+              <button className="bg-[#5d5fef] text-white place-content-center-5 px-5 py-1 rounded-md">
+                Save
+              </button>
+            </div>
             <input
               type="file"
               id="staticQrUpload"
               accept="image/*"
               className="hidden"
-              onChange={(e) => handleFileUpload(e, setStaticQr, setStaticQrFile)}
+              onChange={(e) =>
+                handleFileUpload(e, setStaticQr, setStaticQrFile)
+              }
             />
             <label
               htmlFor="staticQrUpload"
@@ -298,7 +318,10 @@ const Settings = () => {
 
             {/* Service Account Object Field */}
             <div className="mt-4">
-              <label htmlFor="serviceAccountObject" className="block text-gray-700">
+              <label
+                htmlFor="serviceAccountObject"
+                className="block text-gray-700"
+              >
                 Service Account Object
               </label>
               <textarea
@@ -314,7 +337,6 @@ const Settings = () => {
               ></textarea>
             </div>
           </div>
-
 
           {/* Payment Methods Section */}
           <div>
@@ -377,10 +399,8 @@ const Settings = () => {
     "
                 ></div>
               </div>
-
             </label>
           </div>
-
 
           {/* Save Button */}
           {isChanged && (
@@ -401,7 +421,7 @@ const Settings = () => {
           )}
         </form>
       </div>
-    </div >
+    </div>
   );
 };
 
