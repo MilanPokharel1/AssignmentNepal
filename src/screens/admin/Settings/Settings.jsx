@@ -81,14 +81,7 @@ const Settings = () => {
       maintenanceMode !== initialSettings.maintenanceMode;
 
     setIsChanged(hasChanges);
-  }, [
-    logoFile,
-    staticQrFile,
-    paymentMethods,
-    maintenanceMode,
-    appPassword,
-    serviceAccountObject,
-  ]);
+  }, [paymentMethods, maintenanceMode, appPassword, serviceAccountObject]);
 
   const handleFileUpload = (e, setFileState, setFileUpload) => {
     const file = e.target.files[0];
@@ -192,6 +185,14 @@ const Settings = () => {
       console.error("Failed:", error);
     }
   };
+  const handleSaveLogo = () => {
+    console.log("Logo preview URL:", logo);
+    console.log("Logo file object:", logoFile);
+  };
+  const handleSaveQr = () => {
+    console.log("Qr preview URL:", staticQr);
+    console.log("Qr file object:", staticQrFile);
+  };
 
   // JSX remains the same, but update the file upload handlers
   return (
@@ -209,7 +210,10 @@ const Settings = () => {
               <h2 className="text-lg font-semibold text-gray-700 ">
                 Logo Upload
               </h2>
-              <button className="bg-[#5d5fef] text-white place-content-center-5 px-5 py-1 rounded-md">
+              <button
+                className="bg-[#5d5fef] text-white place-content-center-5 px-5 py-1 rounded-md"
+                onClick={handleSaveLogo}
+              >
                 Save
               </button>
             </div>
@@ -256,7 +260,10 @@ const Settings = () => {
               <h2 className="text-lg font-semibold text-gray-700 ">
                 Static Qr Code
               </h2>
-              <button className="bg-[#5d5fef] text-white place-content-center-5 px-5 py-1 rounded-md">
+              <button
+                className="bg-[#5d5fef] text-white place-content-center-5 px-5 py-1 rounded-md"
+                onClick={handleSaveQr}
+              >
                 Save
               </button>
             </div>
@@ -359,7 +366,7 @@ const Settings = () => {
                         [method]: !prev[method],
                       }));
                     }}
-                    className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500"
+                    className="mr-3 h-4 w-4 text-[#5d5fef] focus:ring-[#5d5fef]"
                   />
                   <label htmlFor={method} className="text-gray-700 capitalize">
                     {method.replace(/([A-Z])/g, " $1").trim()}
@@ -387,7 +394,7 @@ const Settings = () => {
                 <div
                   className="
       w-10 h-4 rounded-full shadow-inner 
-      bg-gray-400 peer-checked:bg-blue-600 transition-colors
+      bg-gray-400 peer-checked:bg-[#5d5fef] transition-colors
     "
                 ></div>
 
@@ -410,7 +417,7 @@ const Settings = () => {
                 disabled={!isChanged}
                 className={`px-6 py-3 rounded-lg flex items-center gap-2 transition 
              
-                 bg-blue-600 text-white hover:bg-blue-700
+                 bg-[#5d5fef] text-white hover:bg-[#5d5fef]
             
             `}
               >
