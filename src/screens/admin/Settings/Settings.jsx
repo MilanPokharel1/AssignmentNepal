@@ -15,7 +15,8 @@ const Settings = () => {
     cardPayment: false,
   });
 
-  const [appPassword, setAppPassword] = useState("");
+  const [appPass, setAppPassword] = useState("");
+  const [emailuser, setEmailuser] = useState("");
   const [serviceAccountObject, setServiceAccountObject] = useState("");
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
@@ -23,7 +24,8 @@ const Settings = () => {
   const initialSettings = {
     logo: null,
     serviceAccountObject: "",
-    appPassword: "",
+    appPass: "",
+    emailuser: "",
     staticQr: null,
     paymentMethods: {
       staticQr: false,
@@ -55,7 +57,8 @@ const Settings = () => {
           setPaymentMethods(
             data.data.paymentMethods || initialSettings.paymentMethods
           );
-          setAppPassword(data.data.apppass || "");
+          setAppPassword(data.data.appPass || "");
+          setEmailuser(data.data.emailuser || "");
           setServiceAccountObject(data.data.driveCredentials || "");
           console.log(data.data);
           Object.assign(initialSettings, data.data);
@@ -72,16 +75,16 @@ const Settings = () => {
 
   useEffect(() => {
     const hasChanges =
-      appPassword !== initialSettings.appPassword ||
+      appPass !== initialSettings.appPass ||
+      emailuser !== initialSettings.emailuser ||
       serviceAccountObject !== initialSettings.serviceAccountObject ||
-      logoFile !== null ||
       staticQrFile !== null ||
       JSON.stringify(paymentMethods) !==
-        JSON.stringify(initialSettings.paymentMethods) ||
+      JSON.stringify(initialSettings.paymentMethods) ||
       maintenanceMode !== initialSettings.maintenanceMode;
 
     setIsChanged(hasChanges);
-  }, [paymentMethods, maintenanceMode, appPassword, serviceAccountObject]);
+  }, [paymentMethods, maintenanceMode, appPass,emailuser, serviceAccountObject, initialSettings]);
 
   const handleFileUpload = (e, setFileState, setFileUpload) => {
     const file = e.target.files[0];
@@ -167,7 +170,8 @@ const Settings = () => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          appPass: appPassword,
+          appPass: appPass,
+          emailuser: emailuser,
           driveCredentials: serviceAccountObject,
           paymentMethods: paymentMethods,
         }),
@@ -311,13 +315,25 @@ const Settings = () => {
           <div>
             {/* App Password Field */}
             <div className="mt-4">
-              <label htmlFor="appPassword" className="block text-gray-700">
+              <label htmlFor="emailuser" className="block text-gray-700">
+                Email User
+              </label>
+              <input
+                type="string"
+                id="emailuser"
+                value={emailuser}
+                onChange={(e) => setEmailuser(e.target.value)}
+                className="w-full mt-2 p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <div className="mt-4">
+              <label htmlFor="appPass" className="block text-gray-700">
                 App Password
               </label>
               <input
-                type="password"
-                id="appPassword"
-                value={appPassword}
+                type="string"
+                id="appPass"
+                value={appPass}
                 onChange={(e) => setAppPassword(e.target.value)}
                 className="w-full mt-2 p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
               />

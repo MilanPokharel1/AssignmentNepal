@@ -62,7 +62,10 @@ const Login = () => {
         localStorage.setItem("status", data.user.status);
         if (data.user.status === "pending") {
           navigate("/pending");
-        } else {
+        } else if (data.user.status === "disabled") {
+          navigate("/pending");
+        }
+        else {
           navigate(`/${data.user.role}`);
         }
       } else {
