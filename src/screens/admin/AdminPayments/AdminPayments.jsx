@@ -3,7 +3,10 @@ import { ImSearch } from "react-icons/im";
 import { FaChevronDown } from "react-icons/fa";
 import PaymentCard from "./components/PaymentCard";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { get_payment } from "../../../api/Api";
+import { admin_dashboard, admin_payment_tab, get_payment } from "../../../api/Api";
+import { MdShoppingCart } from "react-icons/md";
+import { FaUsers, FaPenFancy, FaMoneyBillWave } from "react-icons/fa";
+import Card from "../../client/Dashboard/components/Card";
 
 const AdminPayments = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -11,6 +14,49 @@ const AdminPayments = () => {
   const [showOptions, setShowOptions] = useState(false);
   const [paymentData, setPaymentData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [adminPayments, setAdminPayments] = useState([]);
+  useEffect(() => {
+    const fetchCsDashboard = async () => {
+      setIsLoading(true);
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
+
+        const response = await fetch(admin_payment_tab, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch payments");
+        }
+
+        const data = await response.json();
+        console.log(data);
+
+
+        setAdminPayments(data);
+
+        setChartData((prevChartData) =>
+          prevChartData.map((entry) =>
+            entry.month === "Dec"
+              ? { ...entry, thisMonth: data.totalOrders }
+              : entry
+          )
+        );
+
+
+        console.log("total amount:", data.totalPayment);
+      } catch (error) {
+        console.error("Error fetching reminders:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCsDashboard();
+  }, []);
 
   useEffect(() => {
     const fetchPayments = async () => {
@@ -108,13 +154,41 @@ const AdminPayments = () => {
   );
 
   return (
-    <div className="p-6 flex-1 bg-[#fafbfc] w-full md:w-[85%]">
+    <div className="p-6 flex-1 bg-[#fafbfc] w-full md:w-[90%]">
       {isLoading && (
         <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
           <CircularProgress />
         </div>
       )}
+      <div className="cols-span-12 md:col-span-7 flex flex-wrap gap-3 mb-5">
+        <Card
+          Icon={FaMoneyBillWave}
+          heading="Total Amount"
+          number={adminPayments.totalAmountToReceive}
+          theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
+        />
+        <Card
+          Icon={FaMoneyBillWave}
+          heading="Pending Amount"
+          number={adminPayments.totalAmountToReceive - adminPayments.totalPayment}
+          theme={{ bgColor: "bg-yellow-100", iconBgColor: "bg-orange-400" }}
+        />
+
+        <Card
+          Icon={FaMoneyBillWave}
+          heading="Total Received"
+          number={adminPayments.totalPayment}
+          theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
+        />
+        <Card
+          Icon={FaMoneyBillWave}
+          heading="Cancelled Amount"
+          number={`Rs ${adminPayments.totalCancelled}`}
+          theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
+        />
+      </div>
       <div className="flex justify-between items-center flex-row-reverse">
+
         <div className="flex justify-between items-center mb-4 gap-3">
           <div className="relative">
             <input

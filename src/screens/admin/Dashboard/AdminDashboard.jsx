@@ -115,7 +115,7 @@ const Dashboard = () => {
           />
           <Card
             Icon={FaMoneyBillWave}
-            heading="Total Amount"
+            heading="Total Income"
             number={`Rs ${adminDashboard.totalPayment}`}
             theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
           />
