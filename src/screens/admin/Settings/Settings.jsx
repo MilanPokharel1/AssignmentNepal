@@ -16,6 +16,7 @@ const Settings = () => {
   });
 
   const [appPass, setAppPassword] = useState("");
+  const [folderId, setFolderId] = useState("");
   const [emailuser, setEmailuser] = useState("");
   const [serviceAccountObject, setServiceAccountObject] = useState("");
   const [maintenanceMode, setMaintenanceMode] = useState(false);
@@ -25,6 +26,7 @@ const Settings = () => {
     logo: null,
     serviceAccountObject: "",
     appPass: "",
+    folderId: "",
     emailuser: "",
     staticQr: null,
     paymentMethods: {
@@ -46,7 +48,12 @@ const Settings = () => {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const response = await fetch(get_settings);
+        const token = localStorage.getItem("token");
+        const response = await fetch(get_settings, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
         if (!response.ok) throw new Error("Failed to fetch settings");
         const data = await response.json();
 
@@ -58,6 +65,7 @@ const Settings = () => {
             data.data.paymentMethods || initialSettings.paymentMethods
           );
           setAppPassword(data.data.appPass || "");
+          setFolderId(data.data.folderId || "");
           setEmailuser(data.data.emailuser || "");
           setServiceAccountObject(data.data.driveCredentials || "");
           console.log(data.data);
@@ -76,6 +84,7 @@ const Settings = () => {
   useEffect(() => {
     const hasChanges =
       appPass !== initialSettings.appPass ||
+      folderId !== initialSettings.folderId ||
       emailuser !== initialSettings.emailuser ||
       serviceAccountObject !== initialSettings.serviceAccountObject ||
       staticQrFile !== null ||
@@ -84,7 +93,7 @@ const Settings = () => {
       maintenanceMode !== initialSettings.maintenanceMode;
 
     setIsChanged(hasChanges);
-  }, [paymentMethods, maintenanceMode, appPass,emailuser, serviceAccountObject, initialSettings]);
+  }, [paymentMethods, maintenanceMode, appPass, folderId, emailuser, serviceAccountObject, initialSettings]);
 
   const handleFileUpload = (e, setFileState, setFileUpload) => {
     const file = e.target.files[0];
@@ -171,6 +180,7 @@ const Settings = () => {
         },
         body: JSON.stringify({
           appPass: appPass,
+          folderId: folderId,
           emailuser: emailuser,
           driveCredentials: serviceAccountObject,
           paymentMethods: paymentMethods,
@@ -335,6 +345,18 @@ const Settings = () => {
                 id="appPass"
                 value={appPass}
                 onChange={(e) => setAppPassword(e.target.value)}
+                className="w-full mt-2 p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              />
+            </div>
+            <div className="mt-4">
+              <label htmlFor="folderId" className="block text-gray-700">
+                Folder Id
+              </label>
+              <input
+                type="string"
+                id="folderId"
+                value={folderId}
+                onChange={(e) => setFolderId(e.target.value)}
                 className="w-full mt-2 p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
