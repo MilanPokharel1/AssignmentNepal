@@ -3,7 +3,7 @@ import { FiUpload, FiTrash2, FiCheckCircle } from "react-icons/fi";
 import { ImCross } from "react-icons/im";
 import { upload_file_after_order } from "../../../../api/Api";
 
-const FileUploaderWithPopup = ({ orderId }) => {
+const FileUploaderWithPopup = ({ orderId, instagramTitle }) => {
   const [files, setFiles] = useState([]);
   const [progress, setProgress] = useState({});
   const [status, setStatus] = useState({});
@@ -12,6 +12,7 @@ const FileUploaderWithPopup = ({ orderId }) => {
   const [isAllComplete, setIsAllComplete] = useState(false);
 
   const handleFileChange = (event) => {
+    console.log(instagramTitle)
     const selectedFiles = Array.from(event.target.files);
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
   };
@@ -46,6 +47,7 @@ const FileUploaderWithPopup = ({ orderId }) => {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("orderId", orderId);
+      formData.append("instagramTitle", instagramTitle);
 
       xhr.upload.addEventListener("progress", (event) => {
         if (event.lengthComputable) {

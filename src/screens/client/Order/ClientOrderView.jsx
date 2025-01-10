@@ -380,7 +380,7 @@ const AssignmentView = () => {
               <h3 className="text-sm font-medium text-gray-700 mb-2">
                 Uploaded Files
               </h3>
-              <FileUploaderWithPopup orderId={orderId} readData={readData} />
+              <FileUploaderWithPopup orderId={orderId} instagramTitle={assignment.instagramTitle} readData={readData} />
             </div>
             <div className="space-y-2">
               {assignment &&
@@ -389,11 +389,10 @@ const AssignmentView = () => {
                   .map((file, index) => (
                     <div key={index} className="relative">
                       <div
-                        className={`flex flex-col p-2 rounded border ${
-                          file.fileUrl
+                        className={`flex flex-col p-2 rounded border ${file.fileUrl
                             ? "bg-white border-gray-200"
                             : "bg-gray-100 border-gray-300"
-                        }`}
+                          }`}
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2 min-w-0 flex-grow">
@@ -423,32 +422,31 @@ const AssignmentView = () => {
                             disabled={
                               file.fileStatus == "approved" && file.fileUrl
                                 ? downloadingFiles[
-                                    new URL(file.fileUrl).searchParams.get("id")
-                                  ]
+                                new URL(file.fileUrl).searchParams.get("id")
+                                ]
                                 : true
                             }
                           >
                             {file?.fileUrl &&
-                            downloadingFiles[
+                              downloadingFiles[
                               new URL(file.fileUrl).searchParams.get("id")
-                            ] ? (
+                              ] ? (
                               <div className="flex flex-col items-end">
                                 <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
                               </div>
                             ) : (
                               <Download
-                                className={`w-4 h-4  ${
-                                  file.fileStatus === "approved"
+                                className={`w-4 h-4  ${file.fileStatus === "approved"
                                     ? "text-gray-500"
                                     : "text-gray-400"
-                                } hover:cursor-pointer`}
+                                  } hover:cursor-pointer`}
                                 disabled={
                                   file.fileStatus == "approved" && file.fileUrl
                                     ? downloadingFiles[
-                                        new URL(file.fileUrl).searchParams.get(
-                                          "id"
-                                        )
-                                      ]
+                                    new URL(file.fileUrl).searchParams.get(
+                                      "id"
+                                    )
+                                    ]
                                     : true
                                 }
                               />
@@ -457,7 +455,7 @@ const AssignmentView = () => {
                         </div>
                         {file.fileUrl &&
                           downloadingFiles?.[
-                            new URL(file.fileUrl).searchParams.get("id")
+                          new URL(file.fileUrl).searchParams.get("id")
                           ] && (
                             <div className="mt-2 ml-7">
                               <div className="text-xs text-gray-500 mb-1">
@@ -477,13 +475,12 @@ const AssignmentView = () => {
                                 <div
                                   className="h-2 bg-blue-500 rounded-full"
                                   style={{
-                                    width: `${
-                                      downloadingFiles[
+                                    width: `${downloadingFiles[
                                         new URL(file.fileUrl).searchParams.get(
                                           "id"
                                         )
                                       ]?.progress
-                                    }%`,
+                                      }%`,
                                   }}
                                 ></div>
                               </div>
@@ -513,11 +510,10 @@ const AssignmentView = () => {
                   .map((file, index) => (
                     <div key={index} className="relative">
                       <div
-                        className={`flex flex-col p-2 rounded border ${
-                          file.fileUrl
+                        className={`flex flex-col p-2 rounded border ${file.fileUrl
                             ? "bg-white border-gray-200"
                             : "bg-gray-100 border-gray-300"
-                        }`}
+                          }`}
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2 min-w-0 flex-grow">
@@ -544,32 +540,31 @@ const AssignmentView = () => {
                             disabled={
                               file.fileStatus == "approved" && file.fileUrl
                                 ? downloadingFiles[
-                                    new URL(file.fileUrl).searchParams.get("id")
-                                  ]
+                                new URL(file.fileUrl).searchParams.get("id")
+                                ]
                                 : true
                             }
                           >
                             {file?.fileUrl &&
-                            downloadingFiles[
+                              downloadingFiles[
                               new URL(file.fileUrl).searchParams.get("id")
-                            ] ? (
+                              ] ? (
                               <div className="flex flex-col items-end">
                                 <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
                               </div>
                             ) : (
                               <Download
-                                className={`w-4 h-4  ${
-                                  file.fileStatus === "approved"
+                                className={`w-4 h-4  ${file.fileStatus === "approved"
                                     ? "text-gray-500"
                                     : "text-gray-400"
-                                } hover:cursor-pointer`}
+                                  } hover:cursor-pointer`}
                                 disabled={
                                   file.fileStatus == "approved" && file.fileUrl
                                     ? downloadingFiles[
-                                        new URL(file.fileUrl).searchParams.get(
-                                          "id"
-                                        )
-                                      ]
+                                    new URL(file.fileUrl).searchParams.get(
+                                      "id"
+                                    )
+                                    ]
                                     : true
                                 }
                               />
@@ -578,7 +573,7 @@ const AssignmentView = () => {
                         </div>
                         {file.fileUrl &&
                           downloadingFiles?.[
-                            new URL(file.fileUrl).searchParams.get("id")
+                          new URL(file.fileUrl).searchParams.get("id")
                           ] && (
                             <div className="mt-2 ml-7">
                               <div className="text-xs text-gray-500 mb-1">
@@ -598,13 +593,12 @@ const AssignmentView = () => {
                                 <div
                                   className="h-2 bg-blue-500 rounded-full"
                                   style={{
-                                    width: `${
-                                      downloadingFiles[
+                                    width: `${downloadingFiles[
                                         new URL(file.fileUrl).searchParams.get(
                                           "id"
                                         )
                                       ]?.progress
-                                    }%`,
+                                      }%`,
                                   }}
                                 ></div>
                               </div>
