@@ -6,6 +6,7 @@ import { ImSearch } from "react-icons/im";
 import { FaChevronDown } from "react-icons/fa";
 import ClientOrderPopup from "./Components/ClientOrderPopup";
 import { get_orders } from "../../../api/Api";
+import NewOrderPopup from "./Components/NewOrderPopup";
 
 const AllClientOrder = () => {
   const [activeFilter, setActiveFilter] = useState("all");
@@ -175,7 +176,9 @@ const AllClientOrder = () => {
           >
             +Create Order
           </button>
-          {orderPopup && <ClientOrderPopup setorderPopup={setorderPopup} />}
+          {orderPopup && <NewOrderPopup setorderPopup={setorderPopup} />}
+          
+          
         </div>
 
         <div className="flex flex-wrap items-center gap-4 mt-4">

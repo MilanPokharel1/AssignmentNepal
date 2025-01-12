@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import {
@@ -18,8 +18,63 @@ import { RiShieldUserFill } from "react-icons/ri";
 import { Settings } from "lucide-react";
 import { FaFolder } from "react-icons/fa";
 import { BsQrCode } from "react-icons/bs";
+import { get_new_orders_count, reset_count } from "../../../api/Api";
 const SideNavbar = ({ onClose, isMobile }) => {
   const navigate = useNavigate();
+  const [newOrders, setNewOrders] = useState(0);
+
+
+
+  useEffect(() => {
+    const fetchOrdersCount = async () => {
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
+
+        const response = await fetch(get_new_orders_count, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch orders");
+        }
+
+        const data = await response.json();
+        setNewOrders(data);
+        console.log("ordercount: ", data);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      }
+    };
+
+    fetchOrdersCount();
+  }, []);
+
+
+  
+  const handleSeenReset = async (countof) => {
+    console.log("clicked: ");
+    if (newOrders == 0) {
+      return;
+    }
+    try {
+      const token = localStorage.getItem("token");
+      await fetch(reset_count, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ countof }),
+      });
+    } catch (error) {
+      console.error("error:", error);
+    }finally{
+      setNewOrders(0);
+    }
+  };
 
   const linkStyles =
     "flex items-center space-x-4 pl-6 text-gray-600 transition-all duration-300 ease-in-out py-2";
@@ -72,10 +127,22 @@ const SideNavbar = ({ onClose, isMobile }) => {
             className={({ isActive }) =>
               `${linkStyles} ${isActive ? activeLinkStyles : ""}`
             }
-            onClick={() => isMobile && onClose?.()}
+            // onClick={() => isMobile && onClose?.(handleSeenReset())}
+            onClick={() => {
+              handleSeenReset("order");
+              if (isMobile && onClose) {
+                onClose();
+              }
+            }}
           >
             <MdShoppingCart className="w-5 h-5" />
             <span>Order Management</span>
+            {newOrders > 0 && (
+              <span className="bg-red-600 text-white font-semibold text-xs h-5 w-5 flex items-center justify-center rounded-full">
+                {newOrders}
+              </span>
+            )}
+
           </NavLink>
         </div>
         <div>

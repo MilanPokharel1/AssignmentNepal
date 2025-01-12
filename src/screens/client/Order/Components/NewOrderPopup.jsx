@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IoClose } from "react-icons/io5";
-import { upload_file } from "../../../../api/Api.jsx";
-import MultiFileUpload from "./MultipleFileUpload.jsx";
-import FileUploaderWithPopup from "./FileUploaderWithPopup.jsx";
-import FileUploader from "./FileUploader.jsx";
-const ClientOrderPopup = ({ setorderPopup }) => {
+import { create_order, cs_names } from "../../../../api/Api";
+import { useNavigate } from "react-router-dom";
+
+import CircularProgress from "@material-ui/core/CircularProgress";
+
+// import FileUploader from "./FileUploader.jsx";
+const NewOrderPopup = ({ setorderPopup }) => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     instagramTitle: "",
     assignmentTitle: "",
@@ -16,34 +20,16 @@ const ClientOrderPopup = ({ setorderPopup }) => {
     paidAmount: "",
     paymentMethod: "Cash",
     paymentCurrency: "Rs",
-    file: [],
   });
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploading, setUploading] = useState(false);
+
   const [error, setError] = useState("");
-  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
-  const [estimatedTime, setEstimatedTime] = useState(0);
-  const [files, setFiles] = useState([]);
+  const [id, setId] = useState("");
+  const [csNames, setCsNames] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const categories = ["finance", "management", "civil", "electronic", "iot"];
 
-  const handleFilesChange = (newFiles) => {
-    setFiles(newFiles);
-    console.log(files);
-    setFormData((prevData) => ({
-      ...prevData,
-      file: newFiles[0], // or handle as needed
-    }));
-    console.log("this is file ", formData, "files changed")
-  };
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: files ? files[0] : value,
-    }));
-    console.log(formData)
-  };
-
+  // const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -51,100 +37,135 @@ const ClientOrderPopup = ({ setorderPopup }) => {
       setError("Paid Amount cannot be greater than Total Amount");
       return;
     }
-
-    if (!formData.file) {
-      setError("Please select a file to upload");
-      return;
-    }
-
-    setUploading(true);
-    setError("");
-    setUploadProgress(0);
-    setEstimatedTime(0);
-
-    const form = new FormData();
-    for (const key in formData) {
-      form.append(key, formData[key]);
-    }
+    setIsLoading(true)
 
     try {
-      const xhr = new XMLHttpRequest();
-      const startTime = Date.now();
-
-      xhr.upload.addEventListener("progress", (event) => {
-        if (event.lengthComputable) {
-          const percentComplete = (event.loaded / event.total) * 100;
-          setUploadProgress(percentComplete);
-
-          // Calculate estimated time remaining
-          const uploadSpeed = event.loaded / (Date.now() - startTime); // bytes per millisecond
-          const remainingBytes = event.total - event.loaded;
-          const estimatedTimeRemaining = remainingBytes / uploadSpeed / 100; // convert to seconds
-
-          setEstimatedTime(Math.max(0, estimatedTimeRemaining));
-          if (percentComplete >= 100) {
-            setShowSuccessPopup(true);
-            setTimeout(() => {
-              setShowSuccessPopup(false);
-              // setorderPopup(false);
-            }, 3000);
-          }
-        }
-      });
-      const token = localStorage.getItem("token");
-      xhr.open("POST", upload_file);
-      xhr.setRequestHeader("Authorization", `Bearer ${token}`);
-      // Create a promise to handle the XHR
-      const uploadPromise = new Promise((resolve, reject) => {
-        xhr.onload = () => {
-          if (xhr.status >= 200 && xhr.status < 300) {
-            resolve(xhr.response);
-          } else {
-            reject(new Error("Upload failed"));
-          }
-        };
-
-        xhr.onerror = () =>
-          reject(new Error("Network error occurred during upload"));
-        xhr.onabort = () => reject(new Error("Upload was cancelled"));
+      const token = localStorage.getItem("token"); // Replace with the actual token
+      console.log(formData)
+      const response = await fetch(create_order, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
       });
 
-      xhr.send(form);
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error Creating User:", errorData);
+        return;
+      }
 
-      // Wait for upload to complete
-      await uploadPromise;
-
-      // setShowSuccessPopup(true);
-      // setTimeout(() => {
-      //   setShowSuccessPopup(false);
-      //   setorderPopup(false);
-      // }, 3000);
-
-      // Reset form
-      setFormData({
-        instagramTitle: "",
-        assignmentTitle: "",
-        description: "",
-        deadline: "",
-        orderFixedBy: "",
-        file: null,
-        categories: "",
-        amount: "",
+      const data = await response.json();
+      console.log("success:", data.newOrder._id);
+      setorderPopup(false)
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 4000);
+      navigate(`/client/orders/view/${data.newOrder._id}`, {
+        state: {
+          activate: true,
+        },
       });
-    } catch (err) {
-      setError(err.message || "An error occurred during upload");
-    } finally {
-      setUploading(false);
-      setUploadProgress(0);
-      setEstimatedTime(0);
+      // setId(data.newOrder._id)
+      // // setFileUploadPopup(true)
+    } catch (error) {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 2000);
+      console.error("Failed:", error);
     }
   };
+
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      // setIsLoading(true);
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
+
+        const response = await fetch(cs_names, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch cs");
+        }
+
+        const data = await response.json();
+        setCsNames(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching cs:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+    console.log(formData)
+  };
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   if (Number(formData.paidAmount) > Number(formData.totalAmount)) {
+  //     setError("Paid Amount cannot be greater than Total Amount");
+  //     return;
+  //   }
+
+  //   setError("");
+
+  //   const form = new FormData();
+  //   for (const key in formData) {
+  //     form.append(key, formData[key]);
+  //   }
+
+  //   try {
+
+  //     setFormData({
+  //       instagramTitle: "",
+  //       assignmentTitle: "",
+  //       description: "",
+  //       deadline: "",
+  //       orderFixedBy: "",
+  //       file: null,
+  //       categories: "",
+  //       amount: "",
+  //     });
+  //   } catch (err) {
+  //     setError(err.message || "An error occurred during upload");
+  //   } finally {
+
+  //   }
+  // };
 
 
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="w-full max-w-7xl mx-4 bg-white rounded-lg p-8 relative h-[95vh] overflow-y-auto">
+      {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
+          <div className="flex flex-col items-center">
+            <CircularProgress />
+            <p className="mt-2 text-lg font-medium">Uploading</p>
+          </div>
+        </div>
+      )}
+      <div className="max-w-full  mx-4 bg-white rounded-lg p-8 relative h-[95vh] overflow-y-auto">
         <button
           onClick={() => setorderPopup(false)}
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
@@ -155,7 +176,7 @@ const ClientOrderPopup = ({ setorderPopup }) => {
         <form onSubmit={handleSubmit} className="space-y-7">
           <div>
             <div className="flex">
-              <div className=" w-[47rem] border-r-[1px] border-r-gray-200 pr-7">
+              <div className=" w-[47rem]">
                 <div>
                   <h2 className="text-lg font-semibold mb-6">
                     Basic Information
@@ -208,6 +229,7 @@ const ClientOrderPopup = ({ setorderPopup }) => {
                         value={formData.deadline}
                         onChange={handleChange}
                         className="w-full px-4 py-2.5 border border-gray-200 rounded text-sm"
+                        min={new Date().toISOString().split('T')[0]}
                         required
                       />
                     </div>
@@ -216,27 +238,41 @@ const ClientOrderPopup = ({ setorderPopup }) => {
                       <label className="block text-sm mb-2">
                         Order fixed by
                       </label>
-                      <input
-                        type="text"
+                      <select
                         name="orderFixedBy"
-                        placeholder="Type Here"
                         value={formData.orderFixedBy}
                         onChange={handleChange}
                         className="w-full px-4 py-2.5 border border-gray-200 rounded text-sm"
                         required
-                      />
+                      >
+                        <option value="" disabled>
+                          Select a CS Name
+                        </option>
+                        {csNames.map((cs) => (
+                          <option key={cs._id} value={`${cs.firstName} ${cs.lastName}`}>
+                            {cs.firstName} {cs.lastName}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                     <div>
                       <label className="block text-sm mb-2">Category</label>
-                      <input
-                        type="text"
+                      <select
                         name="categorie"
-                        placeholder="Type Here"
                         value={formData.categorie}
                         onChange={handleChange}
                         className="w-full px-4 py-2.5 border border-gray-200 rounded text-sm"
                         required
-                      />
+                      >
+                        <option value="" disabled>
+                          Select a Category
+                        </option>
+                        {categories.map((category, index) => (
+                          <option key={index} value={category}>
+                            {category.charAt(0).toUpperCase() + category.slice(1)}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   </div>
                 </div>
@@ -246,7 +282,7 @@ const ClientOrderPopup = ({ setorderPopup }) => {
                   <div>
                     <label className="block text-sm mb-2">Total Amount</label>
                     <input
-                      type="text"
+                      type="number"
                       name="totalAmount"
                       placeholder="Total Amount"
                       value={formData.totalAmount}
@@ -258,7 +294,7 @@ const ClientOrderPopup = ({ setorderPopup }) => {
                   <div>
                     <label className="block text-sm mb-2">Paid Amount</label>
                     <input
-                      type="text"
+                      type="number"
                       name="paidAmount"
                       placeholder="Paid Amount"
                       value={formData.paidAmount}
@@ -269,43 +305,25 @@ const ClientOrderPopup = ({ setorderPopup }) => {
                   </div>
                 </div>
 
-                {uploading && (
-                  <div className="flex flex-col items-center w-full mt-7">
-                    <div className="relative w-full h-4 bg-gray-200 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-blue-500 rounded-full transition-all duration-300 ease-in-out"
-                        style={{ width: `${uploadProgress}%` }}
-                      />
-                    </div>
-                    <div className="mt-2 flex justify-between w-full text-sm">
-                      <span>{uploadProgress.toFixed(0)}%</span>
-                      <span>
-                        Estimated time:{" "}
-                        {((1 - uploadProgress / 100) * 10).toFixed(1)}s
-                      </span>
-                    </div>
-                  </div>
-                )}
-
                 {error && <div className="text-red-500 mt-5">{error}</div>}
               </div>
-              <div className="flex-1 pl-6">
+              {/* <div className="flex-1 pl-6">
                 <label className="block text-sm mb-2">File Upload</label>
-                <FileUploaderWithPopup />
-              </div>
+                // {/* <FileUploaderWithPopup /> */}
+              {/* </div> */}
             </div>
           </div>
           <button
             type="submit"
-            className="w-[42rem] bg-[#6466F1] text-white py-3 rounded hover:bg-[#5355ED] transition-colors text-sm font-medium mx-auto"
+            className="w-full bg-[#6466F1] text-white py-3 rounded hover:bg-[#5355ED] transition-colors text-sm font-medium mx-auto"
           >
-            Submit
+            Next
           </button>
-          <FileUploader />
+          {/* <FileUploader /> */}
         </form>
       </div>
 
-      {showSuccessPopup && (
+      {/* {showSuccessPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60]">
           <div className="bg-white rounded-lg p-8 flex flex-col items-center max-w-sm mx-4">
             <div className="w-16 h-16 bg-[#0066FF] rounded-full flex items-center justify-center mb-4">
@@ -328,9 +346,9 @@ const ClientOrderPopup = ({ setorderPopup }) => {
             </p>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
 
-export default ClientOrderPopup;
+export default NewOrderPopup;

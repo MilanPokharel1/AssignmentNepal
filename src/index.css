@@ -7,6 +7,16 @@
   /* Chrome, Safari, Edge */
 }
 
+
+input:focus, 
+textarea:focus, 
+select:focus {
+  outline: none;
+  border-color: #ddd; /* Optional: Set a softer border color */
+  box-shadow: none; /* Remove any box shadow if applied */
+}
+
+
 @media (min-width: 1200px) and (max-width: 1500px) {
   html {
     font-size: 15px !important;

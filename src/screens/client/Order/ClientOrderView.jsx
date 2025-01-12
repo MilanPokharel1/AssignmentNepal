@@ -10,7 +10,17 @@ import csIcon from "../../../assets/customer-service.png";
 import clientIcon from "../../../assets/user.png";
 import writerIcon from "../../../assets/writer.png";
 import FileIconRenderer from "./Components/FileIconRenderer";
-const AssignmentView = () => {
+import FileUploader from "./Components/FileUploader";
+
+import { useLocation, useNavigate } from "react-router-dom";
+
+const AssignmentView = (setFilePopup = false) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  // const { activate: initialActivate = false } = location.state || {};
+  // Use local state to manage `activate`
+  const [activate, setActivate] = useState(false);
+
   const [comments, setComments] = useState("");
   const [assignment, setAssignment] = useState({
     files: [], // Initialize with empty array
@@ -28,11 +38,32 @@ const AssignmentView = () => {
   const { orderId } = useParams(); // Get orderId from the URL
   const [isLoading, setIsLoading] = useState(true);
   const [icon, seticon] = useState("client");
+  const [fileUploadPopup, setFileUploadPopup] = useState(false);
+
+  const [showNotice, setShowNotice] = useState(false)
+
 
   const scrollToBottom = () => {
     commentsContainerRef.current.scrollTop =
       commentsContainerRef.current.scrollHeight;
   };
+
+
+
+  useEffect(() => {
+    if (location.state?.activate) {
+      setActivate(true);
+      setShowNotice(true)
+      setTimeout(() => {
+        setShowNotice(false)
+      }, 7000)
+
+      // Clear the state after setting activate to avoid persistence on refresh
+      navigate(location.pathname, { replace: true, state: {} });
+      // return () => clearTimeout(timer)
+    }
+  }, [location.state, navigate]);
+
 
   useEffect(() => {
     scrollToBottom();
@@ -67,7 +98,9 @@ const AssignmentView = () => {
       } catch (error) {
         console.error("Error fetching orders:", error);
       } finally {
-        setIsLoading(false);
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1000);
       }
     };
 
@@ -263,6 +296,16 @@ const AssignmentView = () => {
           <CircularProgress />
         </div>
       )}
+      {activate && (
+        <FileUploader setActivate={setActivate} orderId={orderId} instagramTitle={assignment.instagramTitle} />
+      )}
+      {showNotice && (
+        <div
+          className="z-50 fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded transform transition-all duration-500 ease-in-out"
+        >
+          ✔ Assignment created Successfully!
+        </div>
+      )}
       <h2 className="text-2xl font-bold mb-6">Assignment</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-8 gap-0 md:gap-6">
@@ -334,7 +377,10 @@ const AssignmentView = () => {
                         ref={commenttextareaRef}
                         readOnly
                         className="text-sm text-gray-600 w-full focus:outline-none resize-none overflow-hidden"
-                        value={comment.text}
+                        value={comment.text
+                          .replace(/^\s+|\s+$/g, '')  // Remove leading and trailing whitespace/newlines
+                          .replace(/\n{2,}/g, '\n\n')  // Replace multiple consecutive newlines with a single empty line
+                        }
                       />
                     </div>
                   </div>
@@ -348,17 +394,20 @@ const AssignmentView = () => {
               className="relative flex items-center w-full"
             >
               <textarea
-                type="text"
                 ref={commentAreaRef}
                 value={newComment}
-                onChange={(e) =>
-                  setNewComment(e.target.value.replace(/\n/g, ""))
-                }
-                placeholder={`Comment as ${localStorage.getItem(
-                  "firstName"
-                )}...`}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder={`Comment as ${localStorage.getItem("firstName")}...`}
                 className="flex-1 p-4 pr-10 border border-gray-200 rounded-[30px] resize-none h-18 max-h-52 overflow-y-auto focus:outline-none"
                 rows={1}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault(); // Prevents default Enter behavior
+                    handleAddComment(e); // Your submit function
+                  } else if (e.key === "Enter" && e.shiftKey) {
+                    // Shift + Enter adds a new line (no need to do anything here)
+                  }
+                }}
                 onInput={(e) => {
                   e.target.style.height = "auto"; // Reset height to auto on each input
                   e.target.style.height = `${e.target.scrollHeight}px`; // Adjust height based on scrollHeight
@@ -390,8 +439,8 @@ const AssignmentView = () => {
                     <div key={index} className="relative">
                       <div
                         className={`flex flex-col p-2 rounded border ${file.fileUrl
-                            ? "bg-white border-gray-200"
-                            : "bg-gray-100 border-gray-300"
+                          ? "bg-white border-gray-200"
+                          : "bg-gray-100 border-gray-300"
                           }`}
                       >
                         <div className="flex items-center justify-between">
@@ -437,8 +486,8 @@ const AssignmentView = () => {
                             ) : (
                               <Download
                                 className={`w-4 h-4  ${file.fileStatus === "approved"
-                                    ? "text-gray-500"
-                                    : "text-gray-400"
+                                  ? "text-gray-500"
+                                  : "text-gray-400"
                                   } hover:cursor-pointer`}
                                 disabled={
                                   file.fileStatus == "approved" && file.fileUrl
@@ -476,10 +525,10 @@ const AssignmentView = () => {
                                   className="h-2 bg-blue-500 rounded-full"
                                   style={{
                                     width: `${downloadingFiles[
-                                        new URL(file.fileUrl).searchParams.get(
-                                          "id"
-                                        )
-                                      ]?.progress
+                                      new URL(file.fileUrl).searchParams.get(
+                                        "id"
+                                      )
+                                    ]?.progress
                                       }%`,
                                   }}
                                 ></div>
@@ -511,8 +560,8 @@ const AssignmentView = () => {
                     <div key={index} className="relative">
                       <div
                         className={`flex flex-col p-2 rounded border ${file.fileUrl
-                            ? "bg-white border-gray-200"
-                            : "bg-gray-100 border-gray-300"
+                          ? "bg-white border-gray-200"
+                          : "bg-gray-100 border-gray-300"
                           }`}
                       >
                         <div className="flex items-center justify-between">
@@ -555,8 +604,8 @@ const AssignmentView = () => {
                             ) : (
                               <Download
                                 className={`w-4 h-4  ${file.fileStatus === "approved"
-                                    ? "text-gray-500"
-                                    : "text-gray-400"
+                                  ? "text-gray-500"
+                                  : "text-gray-400"
                                   } hover:cursor-pointer`}
                                 disabled={
                                   file.fileStatus == "approved" && file.fileUrl
@@ -594,10 +643,10 @@ const AssignmentView = () => {
                                   className="h-2 bg-blue-500 rounded-full"
                                   style={{
                                     width: `${downloadingFiles[
-                                        new URL(file.fileUrl).searchParams.get(
-                                          "id"
-                                        )
-                                      ]?.progress
+                                      new URL(file.fileUrl).searchParams.get(
+                                        "id"
+                                      )
+                                    ]?.progress
                                       }%`,
                                   }}
                                 ></div>
@@ -612,6 +661,7 @@ const AssignmentView = () => {
                           <Loader className="w-5 h-5 text-gray-500 animate-spin" />
                         </div>
                       )}
+
                     </div>
                   ))}
             </div>

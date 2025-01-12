@@ -9,9 +9,11 @@ import FilterButtons from "./components/FilterButtons";
 
 import { HiArrowRight } from "react-icons/hi";
 import PaymentCard from "../Payments/Components/PaymentCard";
-import ClientOrderPopup from "../Order/Components/ClientOrderPopup.jsx";
+// import ClientOrderPopup from "../Order/Components/ClientOrderPopup.jsx";
 import { UseTheme } from "../../../contexts/ThemeContext/useTheme.js";
 import { get_orders, get_payment_dashboard } from "../../../api/Api.jsx";
+
+import NewOrderPopup from "../Order/Components/NewOrderPopup.jsx";
 
 const Dashboard = () => {
   const [activeFilter, setActiveFilter] = useState("all");
@@ -21,7 +23,7 @@ const Dashboard = () => {
   const [paymentData, setPaymentData] = useState([]);
 
   const { currentTheme, themes } = UseTheme();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const countAssignments = () => {
     const totalAssignments = assignments.length;
@@ -211,7 +213,8 @@ const Dashboard = () => {
         >
           +Create Order
         </button>
-        {orderPopup && <ClientOrderPopup setorderPopup={setorderPopup} />}
+        {orderPopup && <NewOrderPopup setorderPopup={setorderPopup} />}
+
       </div>
       <div className="flex flex-wrap gap-4 mt-4">
         {filteredAssignments.length > 0 ? (
