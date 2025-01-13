@@ -1,7 +1,7 @@
 // const url = "http://46.202.164.135:3000/api/v1";
-// const url = "http://localhost:3000/api/v1";
+const url = "http://localhost:3000/api/v1";
 export const imagePath = "https://server.assignmentnepal.com"
-const url = "https://server.assignmentnepal.com/api/v1";
+// const url = "https://server.assignmentnepal.com/api/v1";
 
 export const google_login = `${url}/auth/google-login`;
 export const manual_login = `${url}/auth/login`;
@@ -44,6 +44,13 @@ export const set_price = `${url}/user/setprice`;
 export const update_settings = `${url}/admin/updatesettings`;
 export const get_settings = `${url}/admin/getsettings`;
 export const admin_payment_tab = `${url}/admin/paymentstab`;
+
+
+//admin categories
+
+export const get_categories = `${url}/admin/categories`;
+export const add_categories = `${url}/admin/addcategory`;
+export const delete_categories = `${url}/admin/deletecategory`;
 
 
 

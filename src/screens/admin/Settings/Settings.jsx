@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Save, Upload, X } from "lucide-react";
 import { get_settings, update_settings } from "../../../api/Api";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Categories from "./components/Categories";
 
 const Settings = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -111,61 +112,6 @@ const Settings = () => {
     setFileState(null);
     setFileUpload(null);
   };
-
-  // const handleSave = async () => {
-  //   setIsLoading(true);
-  //   try {
-  //     const formData = new FormData();
-
-  //     // Add files if they exist
-  //     if (logoFile) {
-  //       formData.append('logo', logoFile);
-  //     }
-  //     if (staticQrFile) {
-  //       formData.append('qrcode', staticQrFile);
-  //     }
-
-  //     // Add other fields
-  //     if (appPassword) {
-  //       formData.append('apppass', appPassword);
-  //     }
-
-  //     if (serviceAccountObject) {
-  //       formData.append(
-  //         'driveCredentials',
-  //         typeof serviceAccountObject === 'string'
-  //           ? serviceAccountObject
-  //           : JSON.stringify(serviceAccountObject)
-  //       );
-  //     }
-
-  //     formData.append('paymentMethods', JSON.stringify(paymentMethods));
-
-  //     const response = await fetch(update_settings, {
-  //       method: 'PUT',
-  //       body: formData,
-  //     });
-
-  //     const data = await response.json();
-
-  //     if (data.success) {
-  //       // Update initial settings
-  //       Object.assign(initialSettings, data.data);
-
-  //       // Reset file states
-  //       setLogoFile(null);
-  //       setStaticQrFile(null);
-
-  //       setIsChanged(false);
-  //     } else {
-  //       throw new Error(data.message || 'Failed to update settings');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error saving settings:', error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
 
   const handleSave = async (e) => {
     console.log("clicked");
@@ -382,6 +328,8 @@ const Settings = () => {
               ></textarea>
             </div>
           </div>
+
+          <Categories/>
 
           {/* Payment Methods Section */}
           <div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { IoClose } from "react-icons/io5";
-import { create_order, cs_names } from "../../../../api/Api";
+import { create_order, cs_names, get_categories } from "../../../../api/Api";
 import { useNavigate } from "react-router-dom";
 
 import CircularProgress from "@material-ui/core/CircularProgress";
@@ -24,10 +24,28 @@ const NewOrderPopup = ({ setorderPopup }) => {
 
   const [error, setError] = useState("");
   const [id, setId] = useState("");
+  const [categories, setCategories] = useState([]);
+
   const [csNames, setCsNames] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const categories = ["finance", "management", "civil", "electronic", "iot"];
-
+  // const categories = ["finance", "management", "civil", "electronic", "iot"];
+  const fetchCategories = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(get_categories, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        method: 'GET'
+      });
+      const data = await response.json();
+      setCategories(data);
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      setIsLoading(false);
+    }
+  };
 
   // const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const handleSubmit = async (e) => {
@@ -80,7 +98,7 @@ const NewOrderPopup = ({ setorderPopup }) => {
 
 
   useEffect(() => {
-    const fetchOrders = async () => {
+    const fetchcs = async () => {
       // setIsLoading(true);
       try {
         const token = localStorage.getItem("token"); // Replace with the actual token
@@ -106,7 +124,8 @@ const NewOrderPopup = ({ setorderPopup }) => {
       }
     };
 
-    fetchOrders();
+    fetchcs();
+    fetchCategories()
   }, []);
 
 
@@ -267,9 +286,14 @@ const NewOrderPopup = ({ setorderPopup }) => {
                         <option value="" disabled>
                           Select a Category
                         </option>
-                        {categories.map((category, index) => (
+                        {/* {categories.map((category, index) => (
                           <option key={index} value={category}>
                             {category.charAt(0).toUpperCase() + category.slice(1)}
+                          </option>
+                        ))} */}
+                        {categories.map((category) => (
+                          <option key={category._id} value={`${category.name}`}>
+                            {category.name}
                           </option>
                         ))}
                       </select>
@@ -315,7 +339,7 @@ const NewOrderPopup = ({ setorderPopup }) => {
           </div>
           <button
             type="submit"
-            className="w-full bg-[#6466F1] text-white py-3 rounded hover:bg-[#5355ED] transition-colors text-sm font-medium mx-auto"
+            className="w-full bg-[#6466F1] text-white py-3 rounded hover:bg-[#5355ED] transition-colors text-sm font-medium "
           >
             Next
           </button>
