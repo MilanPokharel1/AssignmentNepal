@@ -36,6 +36,7 @@ const GoogleLoginComponent = () => {
       localStorage.setItem("lastName", data.user.lastName);
       localStorage.setItem("picture", data.user.picture);
       localStorage.setItem("status", data.user.status);
+      localStorage.setItem("role", data.user.role);
 
       if (data.user.status === "pending") {
         navigate("/pending");

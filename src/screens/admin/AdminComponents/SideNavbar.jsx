@@ -85,6 +85,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
     localStorage.removeItem("firstName");
     localStorage.removeItem("lastName");
     localStorage.removeItem("picture");
+    localStorage.removeItem("role");
     if (isMobile && onClose) {
       onClose();
     }

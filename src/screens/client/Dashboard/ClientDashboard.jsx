@@ -25,6 +25,23 @@ const Dashboard = () => {
   const { currentTheme, themes } = UseTheme();
   const [isLoading, setIsLoading] = useState(true);
 
+
+
+  useEffect(() => {
+    // Reset history and prevent back navigation
+    window.history.pushState(null, '', window.location.href);
+
+    const handleBackNavigation = () => {
+      window.history.pushState(null, '', window.location.href); // Keep pushing state to prevent back
+    };
+
+    window.addEventListener('popstate', handleBackNavigation);
+
+    return () => {
+      window.removeEventListener('popstate', handleBackNavigation);
+    };
+  }, []);
+
   const countAssignments = () => {
     const totalAssignments = assignments.length;
 

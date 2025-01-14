@@ -39,6 +39,7 @@ const Categories = () => {
 
     if (!name.trim()) {
       alert('Category name is required');
+      setIsLoading(false);
       return;
     }
 

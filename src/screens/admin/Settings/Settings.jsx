@@ -15,28 +15,27 @@ const Settings = () => {
     dynamicQr: false,
     cardPayment: false,
   });
+  const [paymentMethodsOld, setPaymentMethodsOld] = useState({
+    staticQr: false,
+    dynamicQr: false,
+    cardPayment: false,
+  });
 
   const [appPass, setAppPassword] = useState("");
-  const [folderId, setFolderId] = useState("");
+  const [appPassOld, setAppPasswordOld] = useState("");
   const [emailuser, setEmailuser] = useState("");
+  const [emailuserOld, setEmailuserOld] = useState("");
+  const [folderId, setFolderId] = useState("");
+  const [folderIdOld, setFolderIdOld] = useState("");
   const [serviceAccountObject, setServiceAccountObject] = useState("");
+  const [serviceAccountObjectOld, setServiceAccountObjectOld] = useState("");
   const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [maintenanceModeOld, setMaintenanceModeOld] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
+  const [isEmailPassChanged, setIsEmailPasschanged] = useState(false);
+  const [isDriveFileChanged, setIsDriveFileChanged] = useState(false);
+  const [showNotice, setShowNotice] = useState(false)
 
-  const initialSettings = {
-    logo: null,
-    serviceAccountObject: "",
-    appPass: "",
-    folderId: "",
-    emailuser: "",
-    staticQr: null,
-    paymentMethods: {
-      staticQr: false,
-      dynamicQr: false,
-      cardPayment: false,
-    },
-    maintenanceMode: false,
-  };
 
   const handleObjectInputChange = (e) => {
     try {
@@ -57,20 +56,27 @@ const Settings = () => {
         });
         if (!response.ok) throw new Error("Failed to fetch settings");
         const data = await response.json();
-
+        const responseData = data.data
         if (data.success) {
           // Populate state with API data
-          setLogo(data.data.logo ? `/uploads/${data.data.logo}` : null);
-          setStaticQr(data.data.qrcode ? `/uploads/${data.data.qrcode}` : null);
+          setLogo(responseData.logo ? `/uploads/${responseData.logo}` : null);
+          setStaticQr(responseData.qrcode ? `/uploads/${responseData.qrcode}` : null);
           setPaymentMethods(
-            data.data.paymentMethods || initialSettings.paymentMethods
+            responseData.paymentMethods
           );
-          setAppPassword(data.data.appPass || "");
-          setFolderId(data.data.folderId || "");
-          setEmailuser(data.data.emailuser || "");
-          setServiceAccountObject(data.data.driveCredentials || "");
-          console.log(data.data);
-          Object.assign(initialSettings, data.data);
+          setPaymentMethodsOld(
+            responseData.paymentMethods
+          );
+          setAppPassword(responseData.appPass || "");
+          setAppPasswordOld(responseData.appPass || "");
+          setEmailuser(responseData.emailuser || "");
+          setEmailuserOld(responseData.emailuser || "");
+          setFolderId(responseData.folderId || "");
+          setFolderIdOld(responseData.folderId || "");
+          setServiceAccountObject(responseData.driveCredentials || "");
+          setServiceAccountObjectOld(responseData.driveCredentials || "");
+          setMaintenanceMode(responseData.maintenanceMode || "");
+          setMaintenanceModeOld(responseData.maintenanceMode || "");
         }
       } catch (error) {
         console.error("Error fetching settings:", error);
@@ -84,17 +90,32 @@ const Settings = () => {
 
   useEffect(() => {
     const hasChanges =
-      appPass !== initialSettings.appPass ||
-      folderId !== initialSettings.folderId ||
-      emailuser !== initialSettings.emailuser ||
-      serviceAccountObject !== initialSettings.serviceAccountObject ||
-      staticQrFile !== null ||
       JSON.stringify(paymentMethods) !==
-      JSON.stringify(initialSettings.paymentMethods) ||
-      maintenanceMode !== initialSettings.maintenanceMode;
+      JSON.stringify(paymentMethodsOld) ||
+      maintenanceMode !== maintenanceModeOld;
 
     setIsChanged(hasChanges);
-  }, [paymentMethods, maintenanceMode, appPass, folderId, emailuser, serviceAccountObject, initialSettings]);
+  }, [paymentMethods, maintenanceMode, appPass, folderId, emailuser, serviceAccountObject]);
+
+
+  useEffect(() => {
+    const hasChanges =
+      appPass !== appPassOld ||
+      emailuser !== emailuserOld
+    setIsEmailPasschanged(hasChanges);
+  }, [paymentMethods, maintenanceMode, appPass, folderId, emailuser, serviceAccountObject]);
+
+  useEffect(() => {
+    const hasChanges =
+      JSON.stringify(serviceAccountObject) !==
+      JSON.stringify(serviceAccountObjectOld) ||
+      folderId !== folderIdOld
+    setIsDriveFileChanged(hasChanges);
+  }, [paymentMethods, maintenanceMode, appPass, folderId, emailuser, serviceAccountObject]);
+
+
+
+
 
   const handleFileUpload = (e, setFileState, setFileUpload) => {
     const file = e.target.files[0];
@@ -145,6 +166,128 @@ const Settings = () => {
       console.error("Failed:", error);
     }
   };
+
+  const updateDriveSecrets = async () => {
+    setIsLoading(true)
+    try {
+
+      const token = localStorage.getItem("token"); // Replace with the actual token
+      const response = await fetch(update_settings, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          folderId: folderId,
+          driveCredentials: serviceAccountObject,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error Creating User:", errorData);
+        return;
+      }
+
+      const data = await response.json();
+      setShowNotice(true)
+      setIsDriveFileChanged(false)
+
+      console.log("success:", data);
+    } catch (error) {
+      console.error("Failed:", error);
+    } finally {
+
+
+      setIsLoading(false)
+
+      setTimeout(() => {
+        setShowNotice(false)
+      }, 7000)
+    }
+  };
+
+
+  const updateOther = async () => {
+    console.log("Update other");
+    try {
+      setIsLoading(true)
+      const token = localStorage.getItem("token"); // Replace with the actual token
+      const response = await fetch(update_settings, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          paymentMethods: paymentMethods,
+          maintenanceMode: maintenanceMode
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error Creating User:", errorData);
+        return;
+      }
+
+      const data = await response.json();
+      console.log("success:", data);
+      setShowNotice(true)
+      setIsChanged(false)
+    } catch (error) {
+      console.error("Failed:", error);
+    } finally {
+      setIsLoading(false)
+      setTimeout(() => {
+        setShowNotice(false)
+      }, 7000)
+    }
+  };
+
+  const updateEmailPassword = async () => {
+    setIsLoading(true)
+    try {
+      const token = localStorage.getItem("token"); // Replace with the actual token
+      const response = await fetch(update_settings, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          appPass: appPass,
+          emailuser: emailuser,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Error Creating User:", errorData);
+        return;
+      }
+
+      const data = await response.json();
+      console.log("success:", data);
+      setShowNotice(true)
+      setIsEmailPasschanged(false)
+
+    } catch (error) {
+      console.error("Failed:", error);
+    }
+    finally {
+      setIsLoading(false)
+      setTimeout(() => {
+        setShowNotice(false)
+      }, 7000)
+    }
+  };
+
+
+
+
+
   const handleSaveLogo = () => {
     console.log("Logo preview URL:", logo);
     console.log("Logo file object:", logoFile);
@@ -160,6 +303,13 @@ const Settings = () => {
       {isLoading && (
         <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
           <CircularProgress />
+        </div>
+      )}
+      {showNotice && (
+        <div
+          className="z-50 fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded transform transition-all duration-500 ease-in-out"
+        >
+          ✔ Setting Update Successfully!
         </div>
       )}
       <div className="p-6 space-y-8">
@@ -267,7 +417,7 @@ const Settings = () => {
           </div>
         </div>
         {/* Security Keys */}
-        <form onSubmit={handleSave}>
+        <div>
           <div>
             {/* App Password Field */}
             <div className="mt-4">
@@ -294,6 +444,22 @@ const Settings = () => {
                 className="w-full mt-2 p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
+            {isEmailPassChanged && (
+              <div className="flex justify-end mt-7">
+                <button
+                  onClick={() => updateEmailPassword()}
+                  disabled={!isEmailPassChanged}
+                  className={`px-6 py-3 rounded-lg flex items-center gap-2 transition 
+             
+                 bg-[#5d5fef] text-white hover:bg-[#5d5fef]
+            
+            `}
+                >
+                  <Save className="w-5 h-5" />
+                  Save Settings
+                </button>
+              </div>
+            )}
             <div className="mt-4">
               <label htmlFor="folderId" className="block text-gray-700">
                 Folder Id
@@ -327,9 +493,25 @@ const Settings = () => {
                 className="w-full mt-2 p-2 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
               ></textarea>
             </div>
+            {isDriveFileChanged && (
+              <div className="flex justify-end mt-7">
+                <button
+                  onClick={() => updateDriveSecrets()}
+                  disabled={!isDriveFileChanged}
+                  className={`px-6 py-3 rounded-lg flex items-center gap-2 transition 
+             
+                 bg-[#5d5fef] text-white hover:bg-[#5d5fef]
+            
+            `}
+                >
+                  <Save className="w-5 h-5" />
+                  Save Settings
+                </button>
+              </div>
+            )}
           </div>
 
-          <Categories/>
+          <Categories />
 
           {/* Payment Methods Section */}
           <div>
@@ -399,7 +581,7 @@ const Settings = () => {
           {isChanged && (
             <div className="flex justify-end">
               <button
-                type="submit"
+                onClick={() => updateOther()}
                 disabled={!isChanged}
                 className={`px-6 py-3 rounded-lg flex items-center gap-2 transition 
              
@@ -412,7 +594,7 @@ const Settings = () => {
               </button>
             </div>
           )}
-        </form>
+        </div>
       </div>
     </div>
   );

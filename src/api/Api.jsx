@@ -44,6 +44,8 @@ export const set_price = `${url}/user/setprice`;
 export const update_settings = `${url}/admin/updatesettings`;
 export const get_settings = `${url}/admin/getsettings`;
 export const admin_payment_tab = `${url}/admin/paymentstab`;
+export const updateEmailPass = `${url}/admin/updateemailpass`;
+export const updateJsonFolder = `${url}/admin/updatejsonfolder`;
 
 
 //admin categories

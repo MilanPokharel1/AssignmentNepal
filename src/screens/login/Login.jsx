@@ -19,7 +19,7 @@ const Login = () => {
 
   // Prevent back navigation
   useEffect(() => {
-    localStorage.clear(); // Clear all local storage items
+    // Clear all local storage items
 
     // Prevent back navigation
     const handleBackNavigation = (event) => {
@@ -34,6 +34,12 @@ const Login = () => {
       window.removeEventListener("popstate", handleBackNavigation);
     };
   }, [navigate]);
+
+  useEffect(() => {
+    if (localStorage.getItem("token") !== null && localStorage.getItem("role") !== null) {
+      navigate(`/${localStorage.getItem("role")}`, { replace: true });
+    }
+  }, []);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -60,13 +66,14 @@ const Login = () => {
         localStorage.setItem("lastName", data.user.lastName);
         localStorage.setItem("picture", data.user.picture);
         localStorage.setItem("status", data.user.status);
+        localStorage.setItem("role", data.user.role);
         if (data.user.status === "pending") {
           navigate("/pending");
         } else if (data.user.status === "disabled") {
           navigate("/pending");
         }
         else {
-          navigate(`/${data.user.role}`);
+          navigate(`/${data.user.role}`, { replace: true });
         }
       } else {
         setIsLoading(false);

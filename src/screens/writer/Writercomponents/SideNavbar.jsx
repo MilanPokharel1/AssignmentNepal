@@ -20,6 +20,8 @@ const SideNavbar = ({ onClose, isMobile }) => {
     localStorage.removeItem("firstName");
     localStorage.removeItem("lastName");
     localStorage.removeItem("picture");
+    localStorage.removeItem("role");
+
     if (isMobile && onClose) {
       onClose();
     }
@@ -56,7 +58,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
           </NavLink>
         </div>
 
-        
+
         <div>
           <NavLink
             to="/writer/writerorder"
