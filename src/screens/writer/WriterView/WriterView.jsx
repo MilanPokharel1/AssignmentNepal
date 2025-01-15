@@ -10,6 +10,10 @@ import {
 } from "../../../api/Api";
 import { useParams } from "react-router-dom";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import adminIcon from "../../../assets/admin.png";
+import csIcon from "../../../assets/customer-service.png";
+import clientIcon from "../../../assets/user.png";
+import writerIcon from "../../../assets/writer.png";
 import FileIconRenderer from "../../client/Order/Components/FileIconRenderer";
 const WriterView = () => {
   const [comments, setComments] = useState("");
@@ -18,6 +22,7 @@ const WriterView = () => {
     assignmentTitle: "",
     description: "",
   });
+
   const [isExpanded, setIsExpanded] = useState(false);
   const [isDownloading, setisDownloading] = useState(false);
   const textareaRef = useRef(null);
@@ -337,44 +342,44 @@ const WriterView = () => {
               Comments:
             </h3>
             <div
-              ref={commentsContainerRef}
-              className="space-y-3 max-h-[35rem] overflow-y-auto mb-2 px-3"
-            >
-              {comments && comments.length > 0 ? (
-                comments.map((comment) => (
-                  <div key={comment._id} className="flex items-top">
-                    <img
-                      src="https://cdn-icons-png.flaticon.com/512/9187/9187604.png"
-                      alt={comment.name}
-                      className="w-8 h-8 rounded-full"
-                    />
-                    <div className="flex-1 bg-white rounded-lg px-3">
-                      <div className="flex items-center space-x-auto mb-1">
-                        <span className="text-sm font-medium ">
-                          {comment.name}
-                        </span>
-                        <span className="text-xs text-gray-500 ml-1">
-                          {comment.createdAt
-                            ? formatDate(comment.createdAt)
-                            : "Just Now"}
-                        </span>
-                        <span className="text-xs text-gray-500 ml-1">
-                          {comment.createdTime}
-                        </span>
-                      </div>
-                      <textarea
-                        ref={commenttextareaRef}
-                        readOnly
-                        className="text-sm text-gray-600 w-full focus:outline-none resize-none overflow-hidden"
-                        value={comment.text}
-                      />
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-gray-500 text-sm ">No comments yet</p>
-              )}
-            </div>
+                       ref={commentsContainerRef}
+                       className="space-y-3 max-h-[35rem] overflow-y-auto mb-2 px-3"
+                     >
+                       {comments && comments.length > 0 ? (
+                         comments.map((comment) => (
+                           <div key={comment._id} className="flex items-top mt-3">
+                             <img
+                               src={roleIcons[comment.role] || clientIcon}
+                               alt={comment.name}
+                               className="w-8 h-8 rounded-full"
+                             />
+                             <div className="flex-1 bg-white rounded-lg px-3">
+                               <div className="flex items-center space-x-auto mb-1">
+                                 <span className="text-sm font-medium ">
+                                   {comment.name}
+                                 </span>
+                                 <span className="text-xs text-gray-500 ml-1">
+                                   {comment.createdAt
+                                     ? formatDate(comment.createdAt)
+                                     : "Just Now"}
+                                 </span>
+                                 <span className="text-xs text-gray-500 ml-1">
+                                   {comment.createdTime}
+                                 </span>
+                               </div>
+                               <textarea
+                                 ref={commenttextareaRef}
+                                 readOnly
+                                 className="text-sm text-gray-600 w-full focus:outline-none resize-none overflow-hidden"
+                                 value={comment.text}
+                               />
+                             </div>
+                           </div>
+                         ))
+                       ) : (
+                         <p className="text-gray-500 text-sm ">No comments yet</p>
+                       )}
+                     </div>
             <form
               onSubmit={handleAddComment}
               className="relative flex items-center w-full"

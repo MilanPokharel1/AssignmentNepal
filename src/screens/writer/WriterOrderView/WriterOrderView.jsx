@@ -319,7 +319,7 @@ const WriterOrderView = () => {
             disabled={submitStatus}
           >
             {/* <submit className="w-5 h-5 mr-2" /> */}
-            {submitStatus ? "Submittd" : "Submit Assignment"}
+            {submitStatus ? "Submitted" : "Submit Assignment"}
           </button>
         </div>
       </div>

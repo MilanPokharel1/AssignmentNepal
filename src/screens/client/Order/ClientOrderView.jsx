@@ -558,9 +558,10 @@ const AssignmentView = (setFilePopup = false) => {
               Downloads Available
             </h3>
             <div className="space-y-2">
-              {assignment &&
+              {assignment 
+               &&
                 assignment.files
-                  .filter((file) => file.uploadedBy === "writer")
+.filter((file) => file.uploadedBy === "writer")
                   .map((file, index) => (
                     <div key={index} className="relative">
                       <div
