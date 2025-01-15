@@ -1,5 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import writerPic from "../../../../assets/writer.png";
+import clientpic from "../../../../assets/user.png";
 
 const TaskCard = ({ task }) => {
   const navigate = useNavigate();
@@ -30,19 +32,27 @@ const TaskCard = ({ task }) => {
     completed: "bg-green-100 text-green-600", // Green for completed tasks
     cancelled: "bg-red-100 text-red-600",
   };
+  const maskName = (name) => {
+    if (!name) return "";
+    return name.length <= 2
+      ? name
+      : `${name.slice(0, 2)}${"*".repeat(name.length - 3)}${name.slice(-1)}`;
+  };
 
+  const maskedFirstName = maskName(firstName);
+  const maskedLastName = maskName(lastName);
   return (
     <div className="p-4 bg-white rounded-lg shadow-2xl w-full lg:w-[40%] sm:max-lg:w-full drop-shadow-2x2">
       <div className="flex justify-between items-center mt-4 border-b-2 pb-3 mb-2">
         <div className="flex items-center gap-2">
           <img
-            src="https://static.vecteezy.com/system/resources/previews/025/220/125/non_2x/picture-a-captivating-scene-of-a-tranquil-lake-at-sunset-ai-generative-photo.jpg"
+            src={clientpic}
             className="w-8 h-8 rounded-full object-cover"
             alt="Profile"
           />
           <div className="flex flex-col gap-0">
             <span className="text-base font-medium text-gray-900 truncate max-w-[120px] sm:max-w-[200px]">
-              {firstName} {lastName}
+              {maskedFirstName} {maskedLastName}
             </span>
           </div>
         </div>
@@ -80,7 +90,7 @@ const TaskCard = ({ task }) => {
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-2">
           <img
-            src="https://static.vecteezy.com/system/resources/previews/025/220/125/non_2x/picture-a-captivating-scene-of-a-tranquil-lake-at-sunset-ai-generative-photo.jpg"
+            src={writerPic}
             className="w-8 h-8 rounded-full object-cover"
             alt="Writer"
           />

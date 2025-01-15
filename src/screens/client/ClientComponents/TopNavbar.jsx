@@ -8,6 +8,7 @@ const pathToTitleMap = {
   "/client/orders": "Orders",
   "/client/payments": "Payments",
   "/client/reminders": "Reminders",
+  "/client/helpsupport": "Help & Support",
 };
 
 const TopNavbar = ({
