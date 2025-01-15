@@ -3,7 +3,7 @@ import { FiUpload, FiTrash2, FiCheckCircle } from "react-icons/fi";
 import { ImCross } from "react-icons/im";
 import { upload_file_after_order } from "../../../../api/Api";
 
-const FileUploaderWithPopup = ({ orderId, instagramTitle }) => {
+const FileUploaderWithPopup = ({ orderId, instagramTitle, uploadRefresh }) => {
   const [files, setFiles] = useState([]);
   const [progress, setProgress] = useState({});
   const [status, setStatus] = useState({});
@@ -120,6 +120,9 @@ const FileUploaderWithPopup = ({ orderId, instagramTitle }) => {
     } finally {
       setIsUploading(false);
       setIsAllComplete(true);
+      console.log("file Uploaded")
+      uploadRefresh();
+
     }
   };
 

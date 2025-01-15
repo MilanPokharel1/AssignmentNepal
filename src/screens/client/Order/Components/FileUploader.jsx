@@ -7,7 +7,7 @@ import { UseTheme } from "../../../../contexts/ThemeContext/useTheme";
 import { IoClose } from "react-icons/io5";
 
 
-const FileUploader = ({ orderId, instagramTitle, setActivate }) => {
+const FileUploader = ({ orderId, instagramTitle, setActivate, uploadRefresh }) => {
   const [files, setFiles] = useState([]);
   const [progress, setProgress] = useState({});
   const [status, setStatus] = useState({});
@@ -133,6 +133,7 @@ const FileUploader = ({ orderId, instagramTitle, setActivate }) => {
     } finally {
       setIsUploading(false);
       setIsAllComplete(true);
+      uploadRefresh();
     }
   };
 
