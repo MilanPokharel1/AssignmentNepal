@@ -109,8 +109,8 @@ const ClientPayments = () => {
   });
 
   const sortedPayments = [...filteredPayments].sort((a, b) => {
-    const dateA = new Date(a.createdAt.split("-").reverse().join("-"));
-    const dateB = new Date(b.createdAt.split("-").reverse().join("-"));
+    const dateA = new Date(a.createdAt);
+    const dateB = new Date(b.createdAt);
 
     switch (sortOrder) {
       case "Newest":
@@ -118,13 +118,27 @@ const ClientPayments = () => {
       case "Oldest":
         return dateA - dateB;
       case "Amount (High to Low)":
-        return b.amount - a.amount;
+        return b.paidAmount - a.paidAmount;
       case "Amount (Low to High)":
-        return a.amount - b.amount;
+        return a.paidAmount - b.paidAmount;
       default:
         return 0;
     }
   });
+
+  // const sortedAssignments = [...filteredAssignments].sort((a, b) => {
+  //   const dateA = new Date(a.createdAt);
+  //   const dateB = new Date(b.createdAt);
+
+  //   switch (sortOrder) {
+  //     case "Newest":
+  //       return dateB - dateA;
+  //     case "Oldest":
+  //       return dateA - dateB;
+  //     default:
+  //       return 0;
+  //   }
+  // });
 
   const sortOptions = [
     "Newest",

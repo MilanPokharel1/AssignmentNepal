@@ -41,15 +41,15 @@ const ClientReminders = () => {
   // Sorting reminders based on the selected order
   const sortedReminders = Array.isArray(reminderData)
     ? [...reminderData].sort((a, b) => {
-        const dateA = new Date(a.date.split("-").reverse().join("-"));
-        const dateB = new Date(b.date.split("-").reverse().join("-"));
-        return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
-      })
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
+    })
     : [];
 
-    const formatDate = (dateString) => {
-      return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
-    };
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("en-CA"); // Format as YYYY-MM-DD
+  };
 
   return (
     <div className="bg-[#fafbfc] min-h-screen p-6">
@@ -61,32 +61,32 @@ const ClientReminders = () => {
 
       {reminderData.length > 0 ? (
         <div className="w-full md:w-[81%] mx-auto">
-        <div className="flex justify-between items-center mb-6 flex-row-reverse">
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Sort by:</span>
-            <select
-              className="bg-blue-50 text-sm text-blue-900 py-2 px-4 rounded-md cursor-pointer"
-              value={sortOrder}
-              onChange={(e) => setSortOrder(e.target.value)}
-            >
-              <option value="newest">Newest</option>
-              <option value="oldest">Oldest</option>
-            </select>
+          <div className="flex justify-between items-center mb-6 flex-row-reverse">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">Sort by:</span>
+              <select
+                className="bg-blue-50 text-sm text-blue-900 py-2 px-4 rounded-md cursor-pointer"
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value)}
+              >
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {sortedReminders.map((reminder) => (
+              <ReminderCard
+                key={reminder.id}
+                title={reminder.title}
+                date={reminder.date}
+                type={reminder.type}
+                description={reminder.description}
+              />
+            ))}
           </div>
         </div>
-
-        <div className="space-y-4">
-          {sortedReminders.map((reminder) => (
-            <ReminderCard
-              key={reminder.id}
-              title={reminder.title}
-              date={reminder.date}
-              type={reminder.type}
-              description={reminder.description}
-            />
-          ))}
-        </div>
-      </div>
       ) : (
         <p className="text-gray-500 h-[5rem] py-[5rem] text-center mr-[16%] items-center">No data to show</p>
       )}

@@ -264,7 +264,7 @@ const Dashboard = () => {
               <PaymentCard
                 key={index}
                 title={payment.assignmentTitle}
-                date={payment.createdAt}
+                createdAt={payment.createdAt}
                 method={payment.paymentMethod}
                 currency={payment.paymentCurrency}
                 remarks={payment.remark}
