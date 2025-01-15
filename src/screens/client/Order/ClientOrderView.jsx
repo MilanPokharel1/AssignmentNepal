@@ -73,37 +73,39 @@ const AssignmentView = (setFilePopup = false) => {
     }
   }, [comments]);
 
-  useEffect(() => {
-    const fetchOrderById = async () => {
-      setIsLoading(true);
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(get_orderById, {
-          method: "POST",
-          body: JSON.stringify({ orderId }),
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch orders");
-        }
+  const fetchOrderById = async () => {
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(get_orderById, {
+        method: "POST",
+        body: JSON.stringify({ orderId }),
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-        const data = await response.json();
-        setAssignment(data);
-        setComments(data.comments);
-        console.log(data);
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-      } finally {
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 1000);
+      if (!response.ok) {
+        throw new Error("Failed to fetch orders");
       }
-    };
 
+      const data = await response.json();
+      setAssignment(data);
+      setComments(data.comments);
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    } finally {
+      console.log("refreshed")
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
+    }
+  };
+
+  useEffect(() => {
     fetchOrderById();
   }, []);
 
@@ -297,7 +299,7 @@ const AssignmentView = (setFilePopup = false) => {
         </div>
       )}
       {activate && (
-        <FileUploader setActivate={setActivate} orderId={orderId} instagramTitle={assignment.instagramTitle} />
+        <FileUploader setActivate={setActivate} orderId={orderId} instagramTitle={assignment.instagramTitle} uploadRefresh={fetchOrderById} />
       )}
       {showNotice && (
         <div
@@ -429,7 +431,7 @@ const AssignmentView = (setFilePopup = false) => {
               <h3 className="text-sm font-medium text-gray-700 mb-2">
                 Uploaded Files
               </h3>
-              <FileUploaderWithPopup orderId={orderId} instagramTitle={assignment.instagramTitle} readData={readData} />
+              <FileUploaderWithPopup orderId={orderId} instagramTitle={assignment.instagramTitle} readData={readData} uploadRefresh={fetchOrderById} />
             </div>
             <div className="space-y-2">
               {assignment &&
@@ -469,7 +471,7 @@ const AssignmentView = (setFilePopup = false) => {
                                 : "Download not approved"
                             }
                             disabled={
-                              file.fileStatus == "approved" && file.fileUrl
+                              file.fileUrl
                                 ? downloadingFiles[
                                 new URL(file.fileUrl).searchParams.get("id")
                                 ]
@@ -487,7 +489,7 @@ const AssignmentView = (setFilePopup = false) => {
                               <Download
                                 className={`w-4 h-4  ${file.fileStatus === "approved"
                                   ? "text-gray-500"
-                                  : "text-gray-400"
+                                  : "text-gray-500"
                                   } hover:cursor-pointer`}
                                 disabled={
                                   file.fileStatus == "approved" && file.fileUrl
@@ -546,6 +548,9 @@ const AssignmentView = (setFilePopup = false) => {
                     </div>
                   ))}
             </div>
+            {assignment.files.filter((file) => file.uploadedBy === "client").length === 0 && (
+              <div className="text-gray-500 text-sm text-center m-11">No file uploaded</div>
+            )}
           </div>
 
           <div>
@@ -666,6 +671,9 @@ const AssignmentView = (setFilePopup = false) => {
                     </div>
                   ))}
             </div>
+            {assignment.files.filter((file) => file.uploadedBy === "writer").length === 0 && (
+              <div className="text-gray-500 text-sm text-center m-11">No file uploaded</div>
+            )}
           </div>
         </div>
       </div>

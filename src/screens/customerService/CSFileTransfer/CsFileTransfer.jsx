@@ -97,8 +97,8 @@ const CsFileTransfer = () => {
       );
     });
   const sortedAssignments = [...filteredAssignments].sort((a, b) => {
-    const dateA = new Date(a.deadline);
-    const dateB = new Date(b.deadline);
+    const dateA = new Date(a.createdAt);
+    const dateB = new Date(b.createdAt);
 
     switch (sortOrder) {
       case "Newest":

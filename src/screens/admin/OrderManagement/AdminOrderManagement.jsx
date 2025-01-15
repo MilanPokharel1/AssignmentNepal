@@ -103,8 +103,8 @@ const AdminOrderManagement = () => {
 
   // Sort by deadline instead of createdAt
   const sortedAssignments = [...filteredAssignments].sort((a, b) => {
-    const dateA = new Date(a.deadline);
-    const dateB = new Date(b.deadline);
+    const dateA = new Date(a.createdAt);
+    const dateB = new Date(b.createdAt);
 
     switch (sortOrder) {
       case "Newest":
@@ -135,34 +135,31 @@ const AdminOrderManagement = () => {
         <Card
           Icon={MdShoppingCart}
           heading="Pending Orders"
-          number={`${
-            assignments.filter((assignment) => assignment.status === "pending")
+          number={`${assignments.filter((assignment) => assignment.status === "pending")
               .length
-          }`}
+            }`}
           theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
         />
         <Card
           Icon={IoBookSharp}
           heading="Active Assignment"
-          number={`${
-            assignments.filter(
-              (assignment) =>
-                assignment.status === "ongoing" ||
-                assignment.status === "approved" ||
-                assignment.status === "submitted"
-            ).length
-          }`}
+          number={`${assignments.filter(
+            (assignment) =>
+              assignment.status === "ongoing" ||
+              assignment.status === "approved" ||
+              assignment.status === "submitted"
+          ).length
+            }`}
           theme={{ bgColor: "bg-yellow-100", iconBgColor: "bg-orange-400" }}
         />
 
         <Card
           Icon={IoCheckmarkSharp}
           heading="Completed"
-          number={`${
-            assignments.filter(
-              (assignment) => assignment.status === "completed"
-            ).length
-          }`}
+          number={`${assignments.filter(
+            (assignment) => assignment.status === "completed"
+          ).length
+            }`}
           theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
         />
       </div>

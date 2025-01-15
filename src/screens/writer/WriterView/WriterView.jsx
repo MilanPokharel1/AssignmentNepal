@@ -14,6 +14,7 @@ import adminIcon from "../../../assets/admin.png";
 import csIcon from "../../../assets/customer-service.png";
 import clientIcon from "../../../assets/user.png";
 import writerIcon from "../../../assets/writer.png";
+import FileIconRenderer from "../../client/Order/Components/FileIconRenderer";
 const WriterView = () => {
   const [comments, setComments] = useState("");
   const [assignment, setAssignment] = useState({
@@ -420,15 +421,17 @@ const WriterView = () => {
                   .map((file, index) => (
                     <div key={index} className="relative">
                       <div
-                        className={`flex flex-col p-2 rounded border ${
-                          file.fileUrl
-                            ? "bg-white border-gray-200"
-                            : "bg-gray-100 border-gray-300"
-                        }`}
+                        className={`flex flex-col p-2 rounded border ${file.fileUrl
+                          ? "bg-white border-gray-200"
+                          : "bg-gray-100 border-gray-300"
+                          }`}
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2 min-w-0 flex-grow">
-                            <FolderIcon className="h-5 min-w-5 text-yellow-500" />
+                            <FileIconRenderer
+                              fileName={file.fileName}
+                              className="h-5 min-w-5 text-gray-500"
+                            />
                             <div className="flex flex-col min-w-0 overflow-hidden flex-grow">
                               <p className="text-sm font-medium text-gray-700 truncate">
                                 {file.fileName}
@@ -451,32 +454,31 @@ const WriterView = () => {
                             disabled={
                               file.fileStatus == "approved" && file.fileUrl
                                 ? downloadingFiles[
-                                    new URL(file.fileUrl).searchParams.get("id")
-                                  ]
+                                new URL(file.fileUrl).searchParams.get("id")
+                                ]
                                 : true
                             }
                           >
                             {file?.fileUrl &&
-                            downloadingFiles[
+                              downloadingFiles[
                               new URL(file.fileUrl).searchParams.get("id")
-                            ] ? (
+                              ] ? (
                               <div className="flex flex-col items-end">
                                 <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
                               </div>
                             ) : (
                               <Download
-                                className={`w-4 h-4  ${
-                                  file.fileStatus === "approved"
-                                    ? "text-gray-500"
-                                    : "text-gray-400"
-                                } hover:cursor-pointer`}
+                                className={`w-4 h-4  ${file.fileStatus === "approved"
+                                  ? "text-gray-500"
+                                  : "text-gray-400"
+                                  } hover:cursor-pointer`}
                                 disabled={
                                   file.fileStatus == "approved" && file.fileUrl
                                     ? downloadingFiles[
-                                        new URL(file.fileUrl).searchParams.get(
-                                          "id"
-                                        )
-                                      ]
+                                    new URL(file.fileUrl).searchParams.get(
+                                      "id"
+                                    )
+                                    ]
                                     : true
                                 }
                               />
@@ -485,7 +487,7 @@ const WriterView = () => {
                         </div>
                         {file.fileUrl &&
                           downloadingFiles?.[
-                            new URL(file.fileUrl).searchParams.get("id")
+                          new URL(file.fileUrl).searchParams.get("id")
                           ] && (
                             <div className="mt-2 ml-7">
                               <div className="text-xs text-gray-500 mb-1">
@@ -505,13 +507,12 @@ const WriterView = () => {
                                 <div
                                   className="h-2 bg-blue-500 rounded-full"
                                   style={{
-                                    width: `${
-                                      downloadingFiles[
-                                        new URL(file.fileUrl).searchParams.get(
-                                          "id"
-                                        )
-                                      ]?.progress
-                                    }%`,
+                                    width: `${downloadingFiles[
+                                      new URL(file.fileUrl).searchParams.get(
+                                        "id"
+                                      )
+                                    ]?.progress
+                                      }%`,
                                   }}
                                 ></div>
                               </div>
@@ -528,6 +529,9 @@ const WriterView = () => {
                     </div>
                   ))}
             </div>
+            {assignment.files.filter((file) => file.uploadedBy === "client").length === 0 && (
+              <div className="text-gray-500 text-sm text-center m-11">No file uploaded</div>
+            )}
           </div>
 
           <div>
@@ -541,15 +545,17 @@ const WriterView = () => {
                   .map((file, index) => (
                     <div key={index} className="relative">
                       <div
-                        className={`flex flex-col p-2 rounded border ${
-                          file.fileUrl
-                            ? "bg-white border-gray-200"
-                            : "bg-gray-100 border-gray-300"
-                        }`}
+                        className={`flex flex-col p-2 rounded border ${file.fileUrl
+                          ? "bg-white border-gray-200"
+                          : "bg-gray-100 border-gray-300"
+                          }`}
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2 min-w-0 flex-grow">
-                            <FolderIcon className="h-5 min-w-5 text-yellow-500" />
+                            <FileIconRenderer
+                              fileName={file.fileName}
+                              className="h-5 min-w-5 text-gray-500"
+                            />
                             <div className="flex flex-col min-w-0 overflow-hidden flex-grow">
                               <p className="text-sm font-medium text-gray-700 truncate">
                                 {file.fileName}
@@ -572,32 +578,31 @@ const WriterView = () => {
                             disabled={
                               file.fileStatus == "approved" && file.fileUrl
                                 ? downloadingFiles[
-                                    new URL(file.fileUrl).searchParams.get("id")
-                                  ]
+                                new URL(file.fileUrl).searchParams.get("id")
+                                ]
                                 : true
                             }
                           >
                             {file?.fileUrl &&
-                            downloadingFiles[
+                              downloadingFiles[
                               new URL(file.fileUrl).searchParams.get("id")
-                            ] ? (
+                              ] ? (
                               <div className="flex flex-col items-end">
                                 <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
                               </div>
                             ) : (
                               <Download
-                                className={`w-4 h-4  ${
-                                  file.fileStatus === "approved"
-                                    ? "text-gray-500"
-                                    : "text-gray-400"
-                                } hover:cursor-pointer`}
+                                className={`w-4 h-4  ${file.fileStatus === "approved"
+                                  ? "text-gray-500"
+                                  : "text-gray-400"
+                                  } hover:cursor-pointer`}
                                 disabled={
                                   file.fileStatus == "approved" && file.fileUrl
                                     ? downloadingFiles[
-                                        new URL(file.fileUrl).searchParams.get(
-                                          "id"
-                                        )
-                                      ]
+                                    new URL(file.fileUrl).searchParams.get(
+                                      "id"
+                                    )
+                                    ]
                                     : true
                                 }
                               />
@@ -606,7 +611,7 @@ const WriterView = () => {
                         </div>
                         {file.fileUrl &&
                           downloadingFiles?.[
-                            new URL(file.fileUrl).searchParams.get("id")
+                          new URL(file.fileUrl).searchParams.get("id")
                           ] && (
                             <div className="mt-2 ml-7">
                               <div className="text-xs text-gray-500 mb-1">
@@ -626,13 +631,12 @@ const WriterView = () => {
                                 <div
                                   className="h-2 bg-blue-500 rounded-full"
                                   style={{
-                                    width: `${
-                                      downloadingFiles[
-                                        new URL(file.fileUrl).searchParams.get(
-                                          "id"
-                                        )
-                                      ]?.progress
-                                    }%`,
+                                    width: `${downloadingFiles[
+                                      new URL(file.fileUrl).searchParams.get(
+                                        "id"
+                                      )
+                                    ]?.progress
+                                      }%`,
                                   }}
                                 ></div>
                               </div>
@@ -649,6 +653,9 @@ const WriterView = () => {
                     </div>
                   ))}
             </div>
+            {assignment.files.filter((file) => file.uploadedBy === "writer").length === 0 && (
+              <div className="text-gray-500 text-sm text-center m-11">No file uploaded</div>
+            )}
           </div>
         </div>
       </div>
