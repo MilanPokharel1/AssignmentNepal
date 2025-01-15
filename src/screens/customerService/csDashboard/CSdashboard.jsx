@@ -8,7 +8,7 @@ import { UseTheme } from "../../../contexts/ThemeContext/useTheme";
 import Card from "./components/Card";
 import Chart from "./components/Chart";
 
-import OrderCard from "./components/OrderCard";
+import OrderCard from "../csDashboard/components/OrderCard";
 import { cs_dashboard } from "../../../api/Api";
 
 const Dashboard = () => {

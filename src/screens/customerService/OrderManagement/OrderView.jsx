@@ -46,6 +46,10 @@ const OrdertView = () => {
   const [logs, setLogs] = useState([
     { id: 1, date: '15 Jan 2025, 10:00 AM', csName: 'Milan Pokharel', message: 'Changed the assignment status to Approved.' },
     { id: 2, date: '15 Jan 2025, 10:10 AM', csName: 'Milan Pokharel', message: 'Approved client upload file (1).png.' },
+    { id: 1, date: '15 Jan 2025, 10:00 AM', csName: 'Milan Pokharel', message: 'Changed the assignment status to Approved.' },
+    { id: 2, date: '15 Jan 2025, 10:10 AM', csName: 'Milan Pokharel', message: 'Approved client upload file (1).png.' },
+    { id: 1, date: '15 Jan 2025, 10:00 AM', csName: 'Milan Pokharel', message: 'Changed the assignment status to Approved.' },
+    { id: 2, date: '15 Jan 2025, 10:10 AM', csName: 'Milan Pokharel', message: 'Approved client upload file (1).png.' },
   ]);
 
 
@@ -864,12 +868,12 @@ const OrdertView = () => {
 <div className="bg-white p-6 rounded-lg shadow-md">
   <h3 className="text-lg font-semibold text-gray-700 mb-6">Activity Log</h3>
 
-  <div className="relative border-l-2 border-gray-300 pl-8">
+  <div className="relative border-l-2 border-gray-300 pl-4">
     {logs.map((log, index) => (
       <div key={log.id} className="relative mb-8">
         {/* Dot */}
         <span
-          className="absolute -left-10 top-0 w-4 h-4 bg-blue-600 rounded-full border-2 border-white"
+          className="absolute -left-6 top-0 w-4 h-4 bg-blue-600 rounded-full border-2 border-white"
           style={{ transform: "translateY(10%)" }}
         ></span>
 
@@ -877,7 +881,7 @@ const OrdertView = () => {
         <div className="ml-0">
           <p className="text-sm font-medium text-gray-800">{log.csName}</p>
           <p className="text-xs text-gray-500">{log.date}</p>
-          <p className="text-gray-600 mt-1">{log.message}</p>
+          <p className="text-gray-600 text-sm mt-1">{log.message}</p>
         </div>
       </div>
     ))}
