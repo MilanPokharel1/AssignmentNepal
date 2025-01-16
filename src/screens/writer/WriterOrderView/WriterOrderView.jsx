@@ -405,17 +405,20 @@ const WriterOrderView = () => {
               className="relative flex items-center w-full"
             >
               <textarea
-                type="text"
                 ref={commentAreaRef}
                 value={newComment}
-                onChange={(e) =>
-                  setNewComment(e.target.value.replace(/\n/g, ""))
-                }
-                placeholder={`Comment as ${localStorage.getItem(
-                  "firstName"
-                )}...`}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder={`Comment as ${localStorage.getItem("firstName")}...`}
                 className="flex-1 p-4 pr-10 border border-gray-200 rounded-[30px] resize-none h-18 max-h-52 overflow-y-auto focus:outline-none"
                 rows={1}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault(); // Prevents default Enter behavior
+                    handleAddComment(e); // Your submit function
+                  } else if (e.key === "Enter" && e.shiftKey) {
+                    // Shift + Enter adds a new line (no need to do anything here)
+                  }
+                }}
                 onInput={(e) => {
                   e.target.style.height = "auto"; // Reset height to auto on each input
                   e.target.style.height = `${e.target.scrollHeight}px`; // Adjust height based on scrollHeight
