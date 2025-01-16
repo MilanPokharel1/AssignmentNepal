@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PaymentPopup from "./ClientPaymentPopup";
 import { useNavigate } from "react-router-dom";
-import profileIcon from "../../ClientComponents/profileIcon.jpg";
+import profileIcon from "../../../../assets/writer.png";
 import { UseTheme } from "../../../../contexts/ThemeContext/useTheme";
 const AssignmentCard = ({
   _id,
@@ -81,6 +81,18 @@ const AssignmentCard = ({
   };
 
   const progressClasses = getProgressClasses();
+  const maskWriterName = (name) => {
+    if (name === "Not Assigned") {
+      return name;
+    }
+    if (!name || name.length <= 4) {
+      return "*".repeat(name.length);
+    }
+    const start = name.slice(0, 2); // First two letters
+    const end = name.slice(-2); // Last two letters
+    const maskedPart = "*".repeat(name.length - 4); // Mask all other characters
+    return `${start}${maskedPart}${end}`;
+  };
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-2xl w-full lg:w-[40%] sm:max-lg:w-full drop-shadow-2x2">
@@ -140,7 +152,7 @@ const AssignmentCard = ({
           />
           <div className="flex flex-col gap-1">
             <span className="text-sm font-medium text-gray-900">
-              {writerName}
+              {maskWriterName(writerName)}
             </span>
             <span className="text-xs text-gray-500">writer</span>
           </div>
