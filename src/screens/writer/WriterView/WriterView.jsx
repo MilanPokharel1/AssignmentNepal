@@ -296,12 +296,6 @@ const WriterView = () => {
     ); // en-GB gives day-month-year order
     return formattedDate.replace(",", ""); // Remove any commas if present
   };
-    const roleIcons = {
-      admin: adminIcon,
-      cs: csIcon,
-      client: clientIcon,
-      writer: writerIcon,
-    };
 
   return (
     <div className="w-full mx-auto p-6 bg-[#fafbfc] rounded-lg pb-10">

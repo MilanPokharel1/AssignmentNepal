@@ -893,7 +893,7 @@ const OrdertView = () => {
               <h3 className="text-lg font-semibold text-gray-700 mb-6">Activity Log</h3>
 
               <div
-                className="relative border-l-2 border-gray-300 pl-6 overflow-y-auto"
+                className="relative border-l-2 border-gray-300 pl-4"
                 style={{ maxHeight: "300px" }} // Adjust height as needed
               >
                 {assignment.logs &&
@@ -904,7 +904,7 @@ const OrdertView = () => {
                       <div key={log.id} className="relative mb-8">
                         {/* Dot */}
                         <span
-                          className="absolute -left-6 top-0 w-4 h-4j bg-blue-600 rounded-full border-2 border-white"
+                          className="absolute -left-6 top-0 w-4 h-4 bg-blue-600 rounded-full border-2 border-white"
                           style={{ transform: "translateY(10%)" }}
                         ></span>
 
