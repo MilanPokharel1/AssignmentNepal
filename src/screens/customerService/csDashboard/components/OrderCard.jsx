@@ -35,6 +35,15 @@ const OrderCard = ({
     const percentage = (paid / total) * 100;
     return percentage.toFixed(0);
   };
+
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "short", day: "2-digit" };
+    const formattedDate = new Date(dateString).toLocaleDateString(
+      "en-GB",
+      options
+    ); // en-GB gives day-month-year order
+    return formattedDate.replace(",", ""); // Remove any commas if present
+  };
   
   const percentage = calculatePercentage(totalAmount, paidAmount);
 
@@ -140,7 +149,7 @@ const OrderCard = ({
           </div>
         </div>
 
-        <span className="text-xs text-red-500">Due {deadline}</span>
+        <span className="text-xs text-red-500">Due {formatDate(deadline)}</span>
         {/* Payment Info */}
         <div className="mb-2">
           <div className="text-sm text-gray-600">

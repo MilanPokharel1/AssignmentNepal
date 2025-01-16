@@ -3,6 +3,8 @@ import PaymentPopup from "./ClientPaymentPopup";
 import { useNavigate } from "react-router-dom";
 import profileIcon from "../../../../assets/writer.png";
 import { UseTheme } from "../../../../contexts/ThemeContext/useTheme";
+import writerIcon from "../../../../assets/writer.png";
+
 const AssignmentCard = ({
   _id,
   assignmentTitle,
@@ -107,9 +109,8 @@ const AssignmentCard = ({
           </span>
         </div>
         <div
-          className={`px-2 py-1 rounded-full text-sm capitalize ${
-            statusColors[status.toLowerCase()]
-          }`}
+          className={`px-2 py-1 rounded-full text-sm capitalize ${statusColors[status.toLowerCase()]
+            }`}
         >
           {status}
         </div>
@@ -146,7 +147,7 @@ const AssignmentCard = ({
       <div className="flex justify-between items-center mt-4">
         <div className="flex items-center gap-2">
           <img
-            src={writerPic}
+            src={writerIcon || ""}
             alt={writerPic}
             className="w-8 h-8 rounded-full object-cover"
           />
