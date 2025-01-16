@@ -47,9 +47,6 @@ const OrdertView = () => {
     { id: 1, date: '15 Jan 2025, 10:00 AM', csName: 'Milan Pokharel', message: 'Changed the assignment status to Approved.' },
     { id: 2, date: '15 Jan 2025, 10:10 AM', csName: 'Milan Pokharel', message: 'Approved client upload file (1).png.' },
     { id: 1, date: '15 Jan 2025, 10:00 AM', csName: 'Milan Pokharel', message: 'Changed the assignment status to Approved.' },
-    { id: 2, date: '15 Jan 2025, 10:10 AM', csName: 'Milan Pokharel', message: 'Approved client upload file (1).png.' },
-    { id: 1, date: '15 Jan 2025, 10:00 AM', csName: 'Milan Pokharel', message: 'Changed the assignment status to Approved.' },
-    { id: 2, date: '15 Jan 2025, 10:10 AM', csName: 'Milan Pokharel', message: 'Approved client upload file (1).png.' },
   ]);
 
 
@@ -105,6 +102,32 @@ const OrdertView = () => {
     }
   };
 
+
+  function formatDateToNepaliTime(isoDateString) {
+    // Parse the ISO date string into a Date object
+    const date = new Date(isoDateString);
+
+    // Convert to Nepal's timezone (+5:45)
+    const offsetInMinutes = 5 * 60 + 45;
+    const localTime = new Date(date.getTime() + offsetInMinutes * 60 * 1000);
+
+    // Define options for date formatting
+    const options = {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    };
+
+    // Format the date using Intl.DateTimeFormat
+    const formattedDate = new Intl.DateTimeFormat('en-US', options).format(localTime);
+
+    // Extract date and time parts to match desired format
+    const [dayMonthYear, time] = formattedDate.split(', ');
+    return `${dayMonthYear}, ${time}`;
+  }
   const handleSendRemainder = async (e) => {
     e.preventDefault();
     try {
@@ -420,7 +443,7 @@ const OrdertView = () => {
     setIsExpanded((prev) => !prev);
   };
 
-  const handlepopup = () =>{
+  const handlepopup = () => {
     setIsAmount(true)
   }
 
@@ -847,7 +870,7 @@ const OrdertView = () => {
                 </div>
               ))}
           </div>
-          
+
           <div className="max-w-sm mx-auto mt-8 p-4 border rounded-md shadow-md bg-white">
             <h2 className="text-lg font-semibold mb-4">Pay Writer</h2>
             <input
@@ -865,33 +888,44 @@ const OrdertView = () => {
             </button>
           </div>
           {/* 🔥 Activity Log Section */}
-<div className="bg-white p-6 rounded-lg shadow-md">
-  <h3 className="text-lg font-semibold text-gray-700 mb-6">Activity Log</h3>
+          {assignment.logs && (
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3 className="text-lg font-semibold text-gray-700 mb-6">Activity Log</h3>
 
-  <div className="relative border-l-2 border-gray-300 pl-4">
-    {logs.map((log, index) => (
-      <div key={log.id} className="relative mb-8">
-        {/* Dot */}
-        <span
-          className="absolute -left-6 top-0 w-4 h-4 bg-blue-600 rounded-full border-2 border-white"
-          style={{ transform: "translateY(10%)" }}
-        ></span>
+              <div
+                className="relative border-l-2 border-gray-300 pl-6 overflow-y-auto"
+                style={{ maxHeight: "300px" }} // Adjust height as needed
+              >
+                {assignment.logs &&
+                  [...assignment.logs]
+                    .reverse()
+                    .slice(0, 4) // Limit to 4 items
+                    .map((log, index) => (
+                      <div key={log.id} className="relative mb-8">
+                        {/* Dot */}
+                        <span
+                          className="absolute -left-6 top-0 w-4 h-4j bg-blue-600 rounded-full border-2 border-white"
+                          style={{ transform: "translateY(10%)" }}
+                        ></span>
 
-        {/* Log Content */}
-        <div className="ml-0">
-          <p className="text-sm font-medium text-gray-800">{log.csName}</p>
-          <p className="text-xs text-gray-500">{log.date}</p>
-          <p className="text-gray-600 text-sm mt-1">{log.message}</p>
+                        {/* Log Content */}
+                        <div className="ml-0">
+                          <p className="text-sm font-medium text-gray-800">{log.name}</p>
+                          <p className="text-xs text-gray-500">
+                            {formatDateToNepaliTime(log.date)} {log.createdTime}
+                          </p>
+                          <p className="text-gray-600 text-sm mt-1">{log.logText}</p>
+                        </div>
+                      </div>
+                    ))}
+              </div>
+            </div>
+          )}
+
         </div>
-      </div>
-    ))}
-  </div>
-</div>
 
-        </div>
-        
       </div>
-      
+
       {isOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <form
@@ -989,7 +1023,7 @@ const OrdertView = () => {
             </h2>
             <div className="mt-4 flex justify-end space-x-4">
               <button
-                onClick={()=>setIsAmount(false)}
+                onClick={() => setIsAmount(false)}
                 className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
               >
                 Cancel
