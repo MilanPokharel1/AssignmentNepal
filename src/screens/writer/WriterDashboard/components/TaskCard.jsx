@@ -31,6 +31,7 @@ const TaskCard = ({ task }) => {
     submitted: "bg-yellow-100 text-yellow-600", // Yellow for tasks submitted but not finalized
     completed: "bg-green-100 text-green-600", // Green for completed tasks
     cancelled: "bg-red-100 text-red-600",
+    approved: "bg-gray-300 text-gray-600",
   };
   const maskName = (name) => {
     if (!name) return "";
@@ -77,7 +78,7 @@ const TaskCard = ({ task }) => {
           </div>
         </div>
 
-        <span className="text-xs text-red-500">Due {formatDate(deadline)}</span>
+        <span className="text-sm text-red-500">Due {formatDate(deadline)}</span>
 
         <div className="mb-2">
           <div className="text-sm text-gray-600">

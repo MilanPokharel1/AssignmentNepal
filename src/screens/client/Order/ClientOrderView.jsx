@@ -20,6 +20,8 @@ const AssignmentView = (setFilePopup = false) => {
   // const { activate: initialActivate = false } = location.state || {};
   // Use local state to manage `activate`
   const [activate, setActivate] = useState(false);
+  const [payments, setPayments] = useState([]);
+
 
   const [comments, setComments] = useState("");
   const [assignment, setAssignment] = useState({
@@ -92,8 +94,9 @@ const AssignmentView = (setFilePopup = false) => {
       }
 
       const data = await response.json();
-      setAssignment(data);
-      setComments(data.comments);
+      setAssignment(data.order);
+      setPayments(data.payments)
+      setComments(data.order.comments);
       console.log(data);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -558,10 +561,10 @@ const AssignmentView = (setFilePopup = false) => {
               Downloads Available
             </h3>
             <div className="space-y-2">
-              {assignment 
-               &&
+              {assignment
+                &&
                 assignment.files
-.filter((file) => file.uploadedBy === "writer")
+                  .filter((file) => file.uploadedBy === "writer")
                   .map((file, index) => (
                     <div key={index} className="relative">
                       <div
@@ -572,7 +575,10 @@ const AssignmentView = (setFilePopup = false) => {
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-2 min-w-0 flex-grow">
-                            <FolderIcon className="h-5 min-w-5 text-yellow-500" />
+                            <FileIconRenderer
+                              fileName={file.fileName}
+                              className="h-5 min-w-5 text-gray-500"
+                            />
                             <div className="flex flex-col min-w-0 overflow-hidden flex-grow">
                               <p className="text-sm font-medium text-gray-700 truncate">
                                 {file.fileName}
@@ -673,6 +679,31 @@ const AssignmentView = (setFilePopup = false) => {
             </div>
             {assignment.files.filter((file) => file.uploadedBy === "writer").length === 0 && (
               <div className="text-gray-500 text-sm text-center m-11">No file uploaded</div>
+            )}
+          </div>
+          <div className="space-y-4 text-sm">
+            <h2 className="text-sm font-medium text-gray-700 mb-2">Payments</h2>
+            {payments &&
+              payments.map((payment, index) => (
+                <div key={index} className="bg-white shadow-md rounded-lg p-4 ">
+                  <div className="flex items-center gap-2 ">
+                    <p className="text-gray-600">Payment Date:</p>
+                    <p>{formatDate(payment.createdAt)}</p>
+                  </div>
+                  <div className="flex items-center gap-2 ">
+                    <p className="text-gray-600">Payment Method:</p>
+                    <p>{payment.paymentMethod}</p>
+                  </div>
+                  <div className="flex items-center gap-2 ">
+                    <p className="text-gray-600">Amount:</p>
+                    <p className="text-[#00b087] font-semibold">
+                      {payment.paidAmount}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            {payments.length <= 0 && (
+              <div className="text-gray-500 text-sm text-center mt-20">No Payments</div>
             )}
           </div>
         </div>

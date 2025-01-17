@@ -12,7 +12,6 @@ const AssignmentCard = ({
   description,
   status,
   totalAmount,
-  paidAmount = 400,
   payments,
   deadline,
   writerName = "Not Assigned",
@@ -20,7 +19,9 @@ const AssignmentCard = ({
   writerId = "",
 }) => {
   const navigate = useNavigate();
-  paidAmount = payments[0].paidAmount;
+  const paidAmount = payments.reduce((total, payment) => {
+    return total + (payment.paidAmount || 0); // Add paidAmount, default to 0 if undefined
+  }, 0);
   const { currentTheme, themes } = UseTheme();
   const handleView = () => {
     navigate(`/client/orders/view/${_id}`);
@@ -34,6 +35,9 @@ const AssignmentCard = ({
     }
 
     const percentage = (paid / total) * 100;
+    if (percentage > 100) {
+      return 100;
+    }
     return percentage.toFixed(0);
   };
   const formatDate = (dateString) => {

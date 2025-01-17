@@ -14,11 +14,10 @@ import { create_withdrawal, get_withdrawal_request } from "../../../api/Api";
 const FilterButton = ({ label, active, onClick }) => (
   <button
     onClick={onClick}
-    className={`px-4 py-1.5 rounded-lg text-base transition-colors ${
-      active
+    className={`px-4 py-1.5 rounded-lg text-base transition-colors ${active
         ? "bg-indigo-600 text-white"
         : "bg-white text-gray-700 border border-indigo-600 hover:bg-gray-50 "
-    }`}
+      }`}
   >
     {label}
   </button>
@@ -31,6 +30,11 @@ const WriterWithdrawal = () => {
   const [remark, setRemark] = useState("");
   const [withdrawalData, setWithdrawalData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [total, setTotal] = useState(0);
+  const [pending, setPending] = useState(0);
+  const [withdrawaled, setWithdrawaled] = useState(0);
+
+
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "short", day: "2-digit" };
     const formattedDate = new Date(dateString).toLocaleDateString(
@@ -61,6 +65,9 @@ const WriterWithdrawal = () => {
 
         const data = await response.json();
         setWithdrawalData(data.withdrawalRequests);
+        setWithdrawaled(data.totals.withdrawaled)
+        setPending(data.totals.pending)
+        setTotal(data.totals.totalEarned)
         console.log(data);
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -107,13 +114,13 @@ const WriterWithdrawal = () => {
   const filteredData =
     withdrawalData.length > 0
       ? withdrawalData.filter((item) => {
-          if (activeFilter === "All") return true;
-          return item.status.toLowerCase() === activeFilter.toLowerCase();
-        })
+        if (activeFilter === "All") return true;
+        return item.status.toLowerCase() === activeFilter.toLowerCase();
+      })
       : [];
   const toggleModal = () => setIsModalOpen(!isModalOpen);
   return (
-    <div className="w-full min-h-screen p-6 bg-gray-50">
+    <div className="w-full min-h-screen ">
       {isLoading && (
         <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
           <CircularProgress />
@@ -123,30 +130,30 @@ const WriterWithdrawal = () => {
         <Card
           Icon={MdAccountBalance}
           heading="Balance"
-          number={0}
+          number={total - withdrawaled}
           theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
         />
         <Card
           Icon={MdPendingActions}
           heading="Pending"
-          number={0}
+          number={pending}
           theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
         />
         <Card
           Icon={MdReceipt}
           heading="Withdrawaled"
-          number={5500}
+          number={withdrawaled}
           theme={{ bgColor: "bg-yellow-100", iconBgColor: "bg-orange-400" }}
         />
 
         <Card
           Icon={FaMoneyBillWave}
           heading="Total"
-          number={5500}
+          number={total}
           theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
         />
       </div>
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+      <div className="flex ml-4 sm:ml-0 justify-between max-w-[91%] items-start sm:items-center gap-4 mb-6">
         <div className="flex flex-wrap gap-2">
           {filters.map((filter) => (
             <FilterButton

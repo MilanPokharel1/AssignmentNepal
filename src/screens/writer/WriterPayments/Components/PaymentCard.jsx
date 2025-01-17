@@ -8,16 +8,15 @@ const formatDate = (dateString) => {
 const PaymentCard = ({
   title,
   createdAt,
-  method,
-  currency,
-  remarks,
+  currency = "Nrs ",
   amount,
+  status
 }) => {
   return (
     <div className="bg-white shadow-lg py-4 md:py-7 rounded-lg mb-4 w-full px-4 md:px-7">
       <div className="flex flex-col md:flex-row md:justify-between md:items-center w-full">
         {/* First Column */}
-        <div className="flex flex-col mb-3 md:mb-0">
+        <div className="flex flex-col max-w-[50%] mb-3 md:mb-0">
           <div className="flex items-center text-md">
             <span className="text-gray-400">Assignment Title: </span>
             <span className="w-48 inline-block overflow-hidden whitespace-nowrap text-ellipsis">
@@ -27,9 +26,9 @@ const PaymentCard = ({
           <div>
             <span className="font-medium text-gray-500">createdAt: </span>
             <span>{formatDate(createdAt)}</span>
-            <span className="mx-6 text-gray-500">
+            {/* <span className="mx-6 text-gray-500">
               Payment Method:<span className="text-black">{method}</span>{" "}
-            </span>
+            </span> */}
           </div>
         </div>
 
@@ -39,8 +38,8 @@ const PaymentCard = ({
             <span className="font-medium text-gray-500">Currency: </span>
             <span>{currency}</span>
             <div>
-              <span className="font-medium text-gray-500">Remarks: </span>
-              <span>{remarks}</span>
+              <span className="font-medium text-gray-500">Status: </span>
+              <span>{status}</span>
             </div>
           </div>
         </div>

@@ -267,6 +267,7 @@ const Dashboard = () => {
                 createdAt={payment.createdAt}
                 method={payment.paymentMethod}
                 currency={payment.paymentCurrency}
+                paymentStatus={payment.paymentStatus}
                 remarks={payment.remark}
                 amount={`Rs ${payment.paidAmount}`}
               />

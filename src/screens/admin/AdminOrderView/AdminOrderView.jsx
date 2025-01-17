@@ -17,33 +17,76 @@ import adminIcon from "../../../assets/admin.png";
 import csIcon from "../../../assets/customer-service.png";
 import clientIcon from "../../../assets/user.png";
 import writerIcon from "../../../assets/writer.png";
+import FileIconRenderer from "../../client/Order/Components/FileIconRenderer";
 const AdminOrderView = () => {
   const [comments, setComments] = useState("");
   const [assignment, setAssignment] = useState({
-    files: [], // Initialize with empty array
+    files: [],
     assignmentTitle: "",
     description: "",
   });
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isDownloading, setisDownloading] = useState(false);
+  const [price, setPrice] = useState(null);
   const textareaRef = useRef(null);
   const commenttextareaRef = useRef(null);
   const commentAreaRef = useRef(null);
   const [downloadingFiles, setDownloadingFiles] = useState({});
   const [newComment, setNewComment] = useState("");
   const commentsContainerRef = useRef(null);
-  const { orderId } = useParams(); // Get orderId from the URL
+  const { orderId } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [status, setStatus] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [price, setPrice] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isAmountConform, setIsAmount] = useState(false);
-
-
-
+  const [showApprove, setshowApprove] = useState(true);
   const [remainderTitle, setRemainderTitle] = useState("");
   const [remainderDescription, setRemainderDescription] = useState("");
   const [remainderType, setRemainderType] = useState("warning");
+  const [orderFixedBy, setOrderFixedBy] = useState("");
+  const [csNames, setCsNames] = useState([]);
+  const [payments, setPayments] = useState([]);
+  const [showNotice, setShowNotice] = useState(false)
+
+
+
+  useEffect(() => {
+    const fetchcs = async () => {
+      // setIsLoading(true);
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
+
+        const response = await fetch(cs_names, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch cs");
+        }
+
+        const data = await response.json();
+        setCsNames(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching cs:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchcs();
+  }, []);
+
+
+  const [logs, setLogs] = useState([
+    { id: 1, date: '15 Jan 2025, 10:00 AM', csName: 'Milan Pokharel', message: 'Changed the assignment status to Approved.' },
+    { id: 2, date: '15 Jan 2025, 10:10 AM', csName: 'Milan Pokharel', message: 'Approved client upload file (1).png.' },
+    { id: 1, date: '15 Jan 2025, 10:00 AM', csName: 'Milan Pokharel', message: 'Changed the assignment status to Approved.' },
+  ]);
+
 
   const toggleModal = () => {
     setIsOpen(!isOpen);
@@ -53,12 +96,12 @@ const AdminOrderView = () => {
     commentsContainerRef.current.scrollTop =
       commentsContainerRef.current.scrollHeight;
   };
-
+  const handleCloseModal = () => setIsModalOpen(false);
   useEffect(() => {
     scrollToBottom();
     if (commenttextareaRef.current) {
-      commenttextareaRef.current.style.height = "auto"; // Reset the height
-      commenttextareaRef.current.style.height = `${commenttextareaRef.current.scrollHeight}px`; // Set height to match content
+      commenttextareaRef.current.style.height = "auto";
+      commenttextareaRef.current.style.height = `${commenttextareaRef.current.scrollHeight}px`;
     }
   }, [comments]);
 
@@ -68,10 +111,9 @@ const AdminOrderView = () => {
     client: clientIcon,
     writer: writerIcon,
   };
-
   const handleStatusChange = async () => {
     try {
-      const token = localStorage.getItem("token"); // Replace with the actual token
+      const token = localStorage.getItem("token");
       const response = await fetch(order_status, {
         method: "POST",
         headers: {
@@ -92,50 +134,38 @@ const AdminOrderView = () => {
 
       const data = await response.json();
       console.log("Status updated successfully:", data);
-      setStatus(data.assignment.status); // Update the local status state
+      setStatus(data.assignment.status);
     } catch (error) {
       console.error("Failed to update status:", error);
     }
   };
 
 
-  const handleSetPrice = async (orderId, price) => {
-    try {
-      if (!orderId || !price) {
-        console.error("Order ID or Amount missing");
-        return;
-      }
-      console.log("order Id: ", orderId)
-      console.log("order price: ", price)
+  function formatDateToNepaliTime(isoDateString) {
+    // Parse the ISO date string into a Date object
+    const date = new Date(isoDateString);
 
-      const token = localStorage.getItem("token");
+    // Convert to Nepal's timezone (+5:45)
+    const offsetInMinutes = 5 * 60 + 45;
+    const localTime = new Date(date.getTime() + offsetInMinutes * 60 * 1000);
 
-      const response = await fetch(set_price, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ orderId, price }),
-      });
+    // Define options for date formatting
+    const options = {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    };
 
-      // Check for a successful response
-      if (!response.ok) {
-        throw new Error("Failed to update Amount");
-      }
+    // Format the date using Intl.DateTimeFormat
+    const formattedDate = new Intl.DateTimeFormat('en-US', options).format(localTime);
 
-      // Process the response data
-      const res = await response.json();
-      console.log(res);
-
-      // Optionally, handle any UI updates based on response here
-    } catch (error) {
-      console.error("Failed to update amount:", error);
-    }
-  };
-
-
-
+    // Extract date and time parts to match desired format
+    const [dayMonthYear, time] = formattedDate.split(', ');
+    return `${dayMonthYear}, ${time}`;
+  }
   const handleSendRemainder = async (e) => {
     e.preventDefault();
     try {
@@ -148,7 +178,7 @@ const AdminOrderView = () => {
         !remainderType
       )
         return;
-      const token = localStorage.getItem("token"); // Replace with the actual token
+      const token = localStorage.getItem("token");
       const response = await fetch(create_remainder, {
         method: "POST",
         headers: {
@@ -173,24 +203,26 @@ const AdminOrderView = () => {
 
       const data = await response.json();
       console.log("Status updated successfully:", data);
-      setIsOpen(false); // Update the local status state
+      setIsOpen(false);
     } catch (error) {
       console.error("Failed to update status:", error);
     }
   };
 
-  const handlepopup = () => {
-    setIsAmount(true)
-  }
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setOrderFixedBy(name)
+  //   console.log(formData);
+  // };
 
   useEffect(() => {
     const fetchOrderById = async () => {
       setIsLoading(true);
       try {
-        const token = localStorage.getItem("token"); // Replace with the actual token
+        const token = localStorage.getItem("token");
         const response = await fetch(get_orderById, {
           method: "POST",
-          body: JSON.stringify({ orderId }), // Convert body to JSON string
+          body: JSON.stringify({ orderId }),
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -202,11 +234,13 @@ const AdminOrderView = () => {
         }
 
         const data = await response.json();
-        setAssignment(data);
+        setAssignment(data.order);
         console.log(data);
-        setStatus(data.status);
-        setPrice(data.price ? data.price : 0)
-        setComments(data.comments);
+        setStatus(data.order.status);
+        setOrderFixedBy(data.order.orderFixedBy)
+        setPayments(data.payments)
+        setPrice(data.order.price ? data.order.price : 0)
+        setComments(data.order.comments);
       } catch (error) {
         console.error("Error fetching orders:", error);
       } finally {
@@ -221,20 +255,19 @@ const AdminOrderView = () => {
     e.preventDefault();
     try {
       if (!newComment) return;
+      console.log(orderFixedBy)
 
       const token = localStorage.getItem("token");
 
       const contactRegex = /\b\d{10}\b/;
 
-      // Mask the phone number if it matches the regex
       let maskedComment = newComment;
       setNewComment("");
       if (commentAreaRef.current) {
-        commentAreaRef.current.style.height = "auto"; // Reset height to initial size
+        commentAreaRef.current.style.height = "auto";
       }
       if (contactRegex.test(maskedComment)) {
         maskedComment = maskedComment.replace(contactRegex, (match) => {
-          // Mask the middle digits, keeping the first 2 and last 2 digits
           return match.slice(0, 2) + "******" + match.slice(-2);
         });
       }
@@ -261,8 +294,8 @@ const AdminOrderView = () => {
   };
 
   const changeFileStatus = async (fileId, status) => {
+    setshowApprove(false);
     try {
-      // Ensure fileId and status are provided
       if (!fileId || !status) {
         console.error("File ID or status missing");
         return;
@@ -271,7 +304,6 @@ const AdminOrderView = () => {
       const token = localStorage.getItem("token");
       console.log("Hit the API");
 
-      // Make the API request to update the file status
       const response = await fetch(file_status, {
         method: "POST",
         headers: {
@@ -295,6 +327,64 @@ const AdminOrderView = () => {
       console.error("Failed to update file status:", error);
     }
   };
+
+
+
+
+
+  const handleSetPrice = async (orderId, price, orderFixedBy) => {
+    try {
+      if (!orderId) {
+        console.error("Order ID missing");
+        return;
+      }
+      setIsLoading(true)
+      console.log("order Id: ", orderId)
+      console.log("order price: ", price)
+
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(set_price, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ orderId, price, orderFixedBy }),
+      });
+
+      // Check for a successful response
+      if (!response.ok) {
+        throw new Error("Failed to update Amount");
+      }
+
+      // Process the response data
+      const res = await response.json();
+      console.log(res);
+      setIsAmount(false)
+      setShowNotice(true)
+
+
+      // Optionally, handle any UI updates based on response here
+    } catch (error) {
+      console.error("Failed to update amount:", error);
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false)
+      }, 1000)
+      setTimeout(() => {
+        setShowNotice(false)
+        setIsLoading(false)
+      }, 2000)
+    }
+  };
+
+
+
+
+
+
+
 
   function formatTimeRemaining(timeRemaining) {
     if (timeRemaining < 60) {
@@ -411,6 +501,10 @@ const AdminOrderView = () => {
     setIsExpanded((prev) => !prev);
   };
 
+  const handlepopup = () => {
+    setIsAmount(true)
+  }
+
   const getDisplayText = (description) => {
     if (!description) return;
     const maxLength = 700;
@@ -425,12 +519,23 @@ const AdminOrderView = () => {
     ); // en-GB gives day-month-year order
     return formattedDate.replace(",", ""); // Remove any commas if present
   };
+  const handleConfirm = () => {
+    handleStatusChange();
 
+    setIsModalOpen(false);
+  };
   return (
     <div className="w-full mx-auto p-6 bg-[#fafbfc] rounded-lg pb-10">
       {isLoading && (
         <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
           <CircularProgress />
+        </div>
+      )}
+      {showNotice && (
+        <div
+          className="z-50 fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded transform transition-all duration-500 ease-in-out"
+        >
+          ✔ Saved Successfully!
         </div>
       )}
       <div className="flex justify-between items-center mb-6">
@@ -439,19 +544,20 @@ const AdminOrderView = () => {
           <div className="flex items-center space-x-2">
             <span className="font-medium">Status:</span>
             <select
-              disabled={assignment.status == "cancelled"}
               value={status}
               onChange={(e) => setStatus(e.target.value)}
               className="border border-gray-300 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="approved">Approved</option>
-              <option value="ongoing">Ongoing</option>
+
               <option value="completed">Completed</option>
-              <option value="cancelled">Cancelled</option>
             </select>
           </div>
           <button
-            onClick={handleStatusChange}
+            // onClick={handleStatusChange}
+            onClick={() => {
+              setIsModalOpen(true);
+            }}
             className="bg-[#5D5FEF] text-white  px-2 py-1 hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 rounded-lg focus:outline-none"
           >
             Change
@@ -593,9 +699,12 @@ const AdminOrderView = () => {
                           : "bg-gray-100 border-gray-300"
                           }`}
                       >
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between w-full">
                           <div className="flex items-center space-x-2 min-w-0 flex-grow">
-                            <FolderIcon className="h-5 min-w-5 text-yellow-500" />
+                            <FileIconRenderer
+                              fileName={file.fileName}
+                              className="h-5 min-w-5 text-gray-500"
+                            />
                             <div className="flex flex-col min-w-0 overflow-hidden flex-grow">
                               <p className="text-sm font-medium text-gray-700 truncate">
                                 {file.fileName}
@@ -607,54 +716,47 @@ const AdminOrderView = () => {
                           </div>
                           {file.fileStatus === "pending" && (
                             <button className="focus:outline-none flex gap-2 items-center">
-                              <span
-                                onClick={() =>
-                                  changeFileStatus(file.fileId, "approved")
-                                }
-                                className="px-1 py-0 rounded-xl text-sm  border border-white bg-white text-blue-500"
-                              >
-                                Approve
-                              </span>
+                              {showApprove && (
+                                <span
+                                  onClick={() =>
+                                    changeFileStatus(file.fileId, "approved")
+                                  }
+                                  className="px-1 py-0 rounded-xl text-sm  border border-white bg-white text-blue-500"
+                                >
+                                  Approve
+                                </span>
+                              )}
                             </button>
                           )}
-                          <button
-                            className="focus:outline-none"
-                            onClick={() =>
-                              handleDownload(file.fileUrl, file.fileName)
-                            }
-                            disabled={
-                              file.fileUrl
-                                ? downloadingFiles[
+                          <div className="ml-2 flex-shrink-0">
+                            <button
+                              className="focus:outline-none"
+                              onClick={() =>
+                                handleDownload(file.fileUrl, file.fileName)
+                              }
+                              disabled={
+                                file.fileUrl
+                                  ? downloadingFiles[
+                                  new URL(file.fileUrl).searchParams.get(
+                                    "id"
+                                  )
+                                  ]
+                                  : false
+                              }
+                            >
+                              {file?.fileUrl &&
+                                downloadingFiles[
                                 new URL(file.fileUrl).searchParams.get("id")
-                                ]
-                                : true
-                            }
-                          >
-                            {file?.fileUrl &&
-                              downloadingFiles[
-                              new URL(file.fileUrl).searchParams.get("id")
-                              ] ? (
-                              <div className="flex flex-col items-end">
+                                ] ? (
                                 <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
-                              </div>
-                            ) : (
-                              <Download
-                                className={"w-4 h-4 text-gray-500"}
-                                disabled={
-                                  file.fileUrl
-                                    ? downloadingFiles[
-                                    new URL(file.fileUrl).searchParams.get(
-                                      "id"
-                                    )
-                                    ]
-                                    : true
-                                }
-                              />
-                            )}
-                          </button>
+                              ) : (
+                                <Download className="w-4 h-4 text-gray-700 hover:cursor-pointer" />
+                              )}
+                            </button>
+                          </div>
                         </div>
                         {file.fileUrl &&
-                          downloadingFiles?.[
+                          downloadingFiles[
                           new URL(file.fileUrl).searchParams.get("id")
                           ] && (
                             <div className="mt-2 ml-7">
@@ -662,13 +764,13 @@ const AdminOrderView = () => {
                                 {
                                   downloadingFiles[
                                     new URL(file.fileUrl).searchParams.get("id")
-                                  ]?.progress
+                                  ].progress
                                 }
                                 % •{" "}
                                 {
                                   downloadingFiles[
                                     new URL(file.fileUrl).searchParams.get("id")
-                                  ]?.timeRemaining
+                                  ].timeRemaining
                                 }
                               </div>
                               <div className="w-full h-2 bg-gray-200 rounded-full">
@@ -679,7 +781,7 @@ const AdminOrderView = () => {
                                       new URL(file.fileUrl).searchParams.get(
                                         "id"
                                       )
-                                    ]?.progress
+                                    ].progress
                                       }%`,
                                   }}
                                 ></div>
@@ -697,6 +799,9 @@ const AdminOrderView = () => {
                     </div>
                   ))}
             </div>
+            {assignment.files.filter((file) => file.uploadedBy === "client").length === 0 && (
+              <div className="text-gray-500 text-sm text-center m-11">No file uploaded</div>
+            )}
           </div>
 
           <div>
@@ -715,9 +820,12 @@ const AdminOrderView = () => {
                           : "bg-gray-100 border-gray-300"
                           }`}
                       >
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between w-full">
                           <div className="flex items-center space-x-2 min-w-0 flex-grow">
-                            <FolderIcon className="h-5 min-w-5 text-yellow-500" />
+                            <FileIconRenderer
+                              fileName={file.fileName}
+                              className="h-5 min-w-5 text-gray-500"
+                            />
                             <div className="flex flex-col min-w-0 overflow-hidden flex-grow">
                               <p className="text-sm font-medium text-gray-700 truncate">
                                 {file.fileName}
@@ -739,49 +847,35 @@ const AdminOrderView = () => {
                               </span>
                             </button>
                           )}
-                          <button
-                            className="focus:outline-none"
-                            onClick={() =>
-                              handleDownload(file.fileUrl, file.fileName)
-                            }
-                            title={
-                              file.fileStatus == "approved" && file.fileUrl
-                                ? ""
-                                : "Download not approved"
-                            }
-                            disabled={
-                              file.fileUrl
-                                ? downloadingFiles[
+                          <div className="ml-2 flex-shrink-0">
+                            <button
+                              className="focus:outline-none"
+                              onClick={() =>
+                                handleDownload(file.fileUrl, file.fileName)
+                              }
+                              disabled={
+                                file.fileUrl
+                                  ? downloadingFiles[
+                                  new URL(file.fileUrl).searchParams.get(
+                                    "id"
+                                  )
+                                  ]
+                                  : false
+                              }
+                            >
+                              {file?.fileUrl &&
+                                downloadingFiles[
                                 new URL(file.fileUrl).searchParams.get("id")
-                                ]
-                                : true
-                            }
-                          >
-                            {file?.fileUrl &&
-                              downloadingFiles[
-                              new URL(file.fileUrl).searchParams.get("id")
-                              ] ? (
-                              <div className="flex flex-col items-end">
+                                ] ? (
                                 <Loader2 className="w-4 h-4 text-blue-500 animate-spin" />
-                              </div>
-                            ) : (
-                              <Download
-                                className={"w-4 h-4 text-gray-500"}
-                                disabled={
-                                  file.fileUrl
-                                    ? downloadingFiles[
-                                    new URL(file.fileUrl).searchParams.get(
-                                      "id"
-                                    )
-                                    ]
-                                    : true
-                                }
-                              />
-                            )}
-                          </button>
+                              ) : (
+                                <Download className="w-4 h-4 text-gray-700 hover:cursor-pointer" />
+                              )}
+                            </button>
+                          </div>
                         </div>
                         {file.fileUrl &&
-                          downloadingFiles?.[
+                          downloadingFiles[
                           new URL(file.fileUrl).searchParams.get("id")
                           ] && (
                             <div className="mt-2 ml-7">
@@ -789,13 +883,13 @@ const AdminOrderView = () => {
                                 {
                                   downloadingFiles[
                                     new URL(file.fileUrl).searchParams.get("id")
-                                  ]?.progress
+                                  ].progress
                                 }
                                 % •{" "}
                                 {
                                   downloadingFiles[
                                     new URL(file.fileUrl).searchParams.get("id")
-                                  ]?.timeRemaining
+                                  ].timeRemaining
                                 }
                               </div>
                               <div className="w-full h-2 bg-gray-200 rounded-full">
@@ -806,7 +900,7 @@ const AdminOrderView = () => {
                                       new URL(file.fileUrl).searchParams.get(
                                         "id"
                                       )
-                                    ]?.progress
+                                    ].progress
                                       }%`,
                                   }}
                                 ></div>
@@ -824,19 +918,22 @@ const AdminOrderView = () => {
                     </div>
                   ))}
             </div>
+            {assignment.files.filter((file) => file.uploadedBy === "writer").length === 0 && (
+              <div className="text-gray-500 text-sm text-center m-11">No file uploaded</div>
+            )}
           </div>
           <div className="space-y-4 text-sm">
             <h2 className="text-2xl font-bold">Payments</h2>
-            {assignment.payments &&
-              assignment.payments.map((payment, index) => (
+            {payments &&
+              payments.map((payment, index) => (
                 <div key={index} className="bg-white shadow-md rounded-lg p-4 ">
                   <div className="flex items-center gap-2 ">
                     <p className="text-gray-600">Payment Date:</p>
-                    <p>{formatDate(payment.date)}</p>
+                    <p>{formatDate(payment.createdAt)}</p>
                   </div>
                   <div className="flex items-center gap-2 ">
                     <p className="text-gray-600">Payment Method:</p>
-                    <p>{payment.method}</p>
+                    <p>{payment.paymentMethod}</p>
                   </div>
                   <div className="flex items-center gap-2 ">
                     <p className="text-gray-600">Amount:</p>
@@ -847,8 +944,43 @@ const AdminOrderView = () => {
                 </div>
               ))}
           </div>
+
+
           <div className="max-w-sm mx-auto mt-8 p-4 border rounded-md shadow-md bg-white">
-            <h2 className="text-lg font-semibold mb-4">Pay Writer</h2>
+            <h2 className="text-lg font-semibold mb-4"></h2>
+            <div className="mb-4">
+              <label className="block text-sm mb-2">
+                Order fixed by
+              </label>
+              <select
+                name="orderFixedBy"
+                value={orderFixedBy}
+                onChange={(e) => {
+                  console.log("Selected value:", e.target.value);
+                  setOrderFixedBy(e.target.value);
+                }}
+                className="w-full px-4 py-2.5 border border-gray-200 rounded text-sm"
+                required
+              >
+                <option value="" disabled>
+                  Select a CS Name
+                </option>
+                {csNames && csNames.length > 0 ? (
+                  csNames.map((cs) => (
+                    <option key={cs._id} value={`${cs.firstName} ${cs.lastName}`}>
+                      {cs.firstName} {cs.lastName}
+                    </option>
+                  ))
+                ) : (
+                  <option value="" disabled>
+                    No CS names available
+                  </option>
+                )}
+              </select>
+            </div>
+            <label className="block text-sm mb-2">
+              Price for writer
+            </label>
             <input
               type="number"
               id="price"
@@ -863,8 +995,45 @@ const AdminOrderView = () => {
               Save
             </button>
           </div>
+          {/* 🔥 Activity Log Section */}
+          {assignment.logs && (
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3 className="text-lg font-semibold text-gray-700 mb-6">Activity Log</h3>
+
+              <div
+                className="relative border-l-2 border-gray-300 pl-4"
+              // style={{ maxHeight: "300px" }} // Adjust height as needed
+              >
+                {assignment.logs &&
+                  [...assignment.logs]
+                    .reverse()
+                    .slice(0, 4) // Limit to 4 items
+                    .map((log, index) => (
+                      <div key={log.id} className="relative mb-8">
+                        {/* Dot */}
+                        <span
+                          className="absolute -left-6 top-0 w-4 h-4 bg-blue-600 rounded-full border-2 border-white"
+                          style={{ transform: "translateY(10%)" }}
+                        ></span>
+
+                        {/* Log Content */}
+                        <div className="ml-0">
+                          <p className="text-sm font-medium text-gray-800">{log.name}</p>
+                          <p className="text-xs text-gray-500">
+                            {formatDateToNepaliTime(log.date)} {log.createdTime}
+                          </p>
+                          <p className="text-gray-600 text-sm mt-1">{log.logText}</p>
+                        </div>
+                      </div>
+                    ))}
+              </div>
+            </div>
+          )}
+
         </div>
+
       </div>
+
       {isOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <form
@@ -931,6 +1100,29 @@ const AdminOrderView = () => {
           </form>
         </div>
       )}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-lg font-semibold text-gray-800">
+              Are you sure you want to change the status?
+            </h2>
+            <div className="mt-4 flex justify-end space-x-4">
+              <button
+                onClick={handleCloseModal}
+                className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirm}
+                className="px-4 py-2 bg-[#5d5fef] text-white rounded-md hover:bg-blue-600"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {isAmountConform && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
@@ -945,7 +1137,7 @@ const AdminOrderView = () => {
                 Cancel
               </button>
               <button
-                onClick={() => handleSetPrice(assignment._id, price)}
+                onClick={() => handleSetPrice(assignment._id, price, orderFixedBy)}
                 className="px-4 py-2 bg-[#5d5fef] text-white rounded-md hover:bg-blue-600"
               >
                 Confirm

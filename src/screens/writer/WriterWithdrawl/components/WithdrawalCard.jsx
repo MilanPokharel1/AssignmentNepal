@@ -12,21 +12,21 @@ const WithdrawalCard = ({ item }) => {
   const { date, time, status, remark, amount } = item; // Destructure from `item`
 
   return (
-    <div className="bg-white rounded-lg py-6 px-6 flex flex-col md:flex-row justify-between items-start md:items-center mb-4 border border-gray-200 w-full md:w-[82%]">
-      {/* Date */}
-      <div className="text-gray-500 text-base flex flex-col justify-center items-start md:items-center mb-4 md:mb-0">
+    <div className="bg-white rounded-lg py-6 px-6 grid grid-cols-1 mb-5 md:grid-cols-5 gap-4 items-start border border-gray-200 w-full md:w-[82%]">
+     {/* Date */}
+      <div className="text-gray-500 text-base flex flex-col justify-center items-start mb-4 md:mb-0">
         <div>Date</div>
         <div className="font-medium text-black">{formatDate(date)}</div>
       </div>
 
       {/* Time */}
-      <div className="text-gray-500 text-base flex flex-col justify-center items-start md:items-center mb-4 md:mb-0">
+      <div className="text-gray-500 text-base flex flex-col justify-center items-start mb-4 md:mb-0">
         <div>Time</div>
         <div className="font-medium text-black">{time}</div>
       </div>
 
       {/* Status */}
-      <div className="text-gray-500 text-base flex flex-col justify-center items-start md:items-center mb-4 md:mb-0">
+      <div className="text-gray-500 text-base flex flex-col justify-center items-start  mb-4 md:mb-0">
         <div>Status</div>
         <div
           className={`font-medium ${
@@ -40,7 +40,7 @@ const WithdrawalCard = ({ item }) => {
       </div>
 
       {/* Approved By */}
-      <div className="text-gray-500 text-base flex flex-col justify-center items-start md:items-center mb-4 md:mb-0">
+      <div className="text-gray-500 text-base flex flex-col justify-center items-start  mb-4 md:mb-0">
         <div>Remark</div>
         <div className="font-medium text-black">{remark}</div>
       </div>

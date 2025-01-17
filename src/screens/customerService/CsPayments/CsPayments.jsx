@@ -119,7 +119,7 @@ const CsPayments = () => {
           <CircularProgress />
         </div>
       )}
-      <div className="flex flex-wrap gap-7 justify-center sm:justify-start mb-14">
+      {/* <div className="flex flex-wrap gap-7 justify-center sm:justify-start mb-14">
         <Card
           Icon={MdAccountBalance}
           heading="Balance"
@@ -145,9 +145,9 @@ const CsPayments = () => {
           number={40}
           theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
         />
-      </div>
-      <div className="flex justify-between items-center flex-row-reverse">
-        <div className="flex justify-between items-center mb-4 mr-9 gap-3">
+      </div> */}
+      <div className="flex justify-between items-center flex-row-reverse max-w-[85%]">
+        <div className="flex justify-between items-center mb-4 mr-9 gap-3 ">
           <div className="relative">
             <input
               type="text"

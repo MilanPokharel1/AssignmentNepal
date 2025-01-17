@@ -2,6 +2,8 @@ import React, { useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 import { writer_accept } from "../../../../api/Api";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
 import clientpic from "../../../../assets/user.png";
 const WriterCard = ({
   _id,
@@ -21,6 +23,10 @@ const WriterCard = ({
   const navigate = useNavigate();
   const [acceptStatus, setIsAccepted] = useState("approved");
   const [showModal, setShowModal] = useState(false);
+  const [showNotice, setShowNotice] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
+
+
   paidAmount = payments[0].paidAmount;
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "short", day: "2-digit" };
@@ -33,6 +39,7 @@ const WriterCard = ({
 
   const handleAccept = async () => {
     try {
+      setIsLoading(true)
       const token = localStorage.getItem("token"); // Replace with the actual token
       const response = await fetch(writer_accept, {
         method: "POST",
@@ -53,10 +60,19 @@ const WriterCard = ({
 
       const data = await response.json();
       setIsAccepted("accepted");
+      setShowNotice(true)
       setShowModal(false);
       console.log("Order Accepted successfully:", data);
     } catch (error) {
       console.error("Failed to accept order:", error);
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false)
+      }, 1000)
+      setTimeout(() => {
+        setShowNotice(false)
+        setIsLoading(false)
+      }, 2000)
     }
   };
   const maskName = (name) => {
@@ -72,6 +88,18 @@ const WriterCard = ({
   return (
     <div className="p-4 bg-white rounded-lg shadow-2xl w-full lg:w-[40%] sm:max-lg:w-full drop-shadow-2x2">
       {/* assignmentTitle and Status */}
+      {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
+          <CircularProgress />
+        </div>
+      )}
+      {showNotice && (
+        <div
+          className="z-50 fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded transform transition-all duration-500 ease-in-out"
+        >
+          ✔ Order Accepted Successfully!
+        </div>
+      )}
       <div className="flex justify-between items-center mt-4 border-b-2 pb-5 mb-2">
         <div className="flex items-center gap-2">
           <img src={clientpic} className="w-8 h-8 rounded-full object-cover" />
@@ -132,11 +160,10 @@ const WriterCard = ({
         )}
         <div>
           <button
-            className={`px-3 py-1 text-sm text-white bg-[#9E9FEE] rounded-md transition-colors ${
-              status === "approved"
-                ? "hover:bg-purple-400"
-                : "bg-gray-300 cursor-not-allowed"
-            }`}
+            className={`px-3 py-1 text-sm text-white bg-[#9E9FEE] rounded-md transition-colors ${status === "approved"
+              ? "hover:bg-purple-400"
+              : "bg-gray-300 cursor-not-allowed"
+              }`}
             disabled={status !== "approved"}
             onClick={() => navigate(`/writer/writerorder/writerView/${_id}`)}
           >

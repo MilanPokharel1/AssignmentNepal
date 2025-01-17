@@ -33,6 +33,8 @@ const WriterOrderView = () => {
   const commentsContainerRef = useRef(null);
   const { orderId } = useParams(); // Get orderId from the URL
   const [isLoading, setIsLoading] = useState(true);
+  const [showNotice, setShowNotice] = useState(false)
+
 
   const [isOpen, setIsOpen] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(false);
@@ -51,6 +53,7 @@ const WriterOrderView = () => {
   };
   const handleAccept = async () => {
     try {
+      setIsLoading(true)
       const token = localStorage.getItem("token"); // Replace with the actual token
       const response = await fetch(writer_submit, {
         method: "POST",
@@ -72,9 +75,18 @@ const WriterOrderView = () => {
       const data = await response.json();
       setSubmitStatus(true);
       setIsOpen(false);
+      setShowNotice(true)
       console.log("Order Submitted successfully:", data);
     } catch (error) {
       console.error("Failed to submit order:", error);
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false)
+      }, 1000)
+      setTimeout(() => {
+        setShowNotice(false)
+        setIsLoading(false)
+      }, 2000)
     }
   };
 
@@ -90,37 +102,37 @@ const WriterOrderView = () => {
       commenttextareaRef.current.style.height = `${commenttextareaRef.current.scrollHeight}px`; // Set height to match content
     }
   }, [comments]);
+  const fetchOrderById = async () => {
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem("token"); // Replace with the actual token
+      const response = await fetch(get_orderById, {
+        method: "POST",
+        body: JSON.stringify({ orderId }), // Convert body to JSON string
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch orders");
+      }
+
+      const data = await response.json();
+      setAssignment(data.order);
+      setComments(data.order.comments);
+      if (data.order.status === "submitted") {
+        setSubmitStatus(true);
+      }
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchOrderById = async () => {
-      setIsLoading(true);
-      try {
-        const token = localStorage.getItem("token"); // Replace with the actual token
-        const response = await fetch(get_orderById, {
-          method: "POST",
-          body: JSON.stringify({ orderId }), // Convert body to JSON string
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch orders");
-        }
-
-        const data = await response.json();
-        setAssignment(data);
-        setComments(data.comments);
-        if (data.status === "submitted") {
-          setSubmitStatus(true);
-        }
-      } catch (error) {
-        console.error("Error fetching orders:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
 
     fetchOrderById();
   }, []);
@@ -308,6 +320,13 @@ const WriterOrderView = () => {
       {isLoading && (
         <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
           <CircularProgress />
+        </div>
+      )}
+      {showNotice && (
+        <div
+          className="z-50 fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded transform transition-all duration-500 ease-in-out"
+        >
+          ✔ Order Submitted Successfully!
         </div>
       )}
       <div className="flex justify-between items-center mb-6">
@@ -554,6 +573,9 @@ const WriterOrderView = () => {
                     </div>
                   ))}
             </div>
+            {assignment.files.filter((file) => file.uploadedBy === "client").length === 0 && (
+              <div className="text-gray-500 text-sm text-center m-11">No file uploaded</div>
+            )}
           </div>
 
           <div>
@@ -561,7 +583,7 @@ const WriterOrderView = () => {
               <h3 className="text-sm font-medium text-gray-700 mb-2">
                 Writer Upload
               </h3>
-              <FileUploaderWithPopup orderId={orderId} readData={readData} />
+              <FileUploaderWithPopup orderId={orderId} readData={readData} uploadRefresh={fetchOrderById} />
             </div>
             <div className="space-y-2">
               {assignment &&
@@ -678,6 +700,9 @@ const WriterOrderView = () => {
                     </div>
                   ))}
             </div>
+            {assignment.files.filter((file) => file.uploadedBy === "writer").length === 0 && (
+              <div className="text-gray-500 text-sm text-center m-11">No file uploaded</div>
+            )}
           </div>
         </div>
       </div>

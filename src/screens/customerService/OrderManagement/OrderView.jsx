@@ -3,6 +3,7 @@ import { Download, Loader, Loader2 } from "lucide-react";
 import { FolderIcon } from "@heroicons/react/solid";
 import {
   create_remainder,
+  cs_names,
   download_file,
   file_status,
   get_orderById,
@@ -42,6 +43,43 @@ const OrdertView = () => {
   const [remainderTitle, setRemainderTitle] = useState("");
   const [remainderDescription, setRemainderDescription] = useState("");
   const [remainderType, setRemainderType] = useState("warning");
+  const [orderFixedBy, setOrderFixedBy] = useState("");
+  const [csNames, setCsNames] = useState([]);
+  const [payments, setPayments] = useState([]);
+  const [showNotice, setShowNotice] = useState(false)
+
+
+
+  useEffect(() => {
+    const fetchcs = async () => {
+      // setIsLoading(true);
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
+
+        const response = await fetch(cs_names, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch cs");
+        }
+
+        const data = await response.json();
+        setCsNames(data);
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching cs:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchcs();
+  }, []);
+
 
   const [logs, setLogs] = useState([
     { id: 1, date: '15 Jan 2025, 10:00 AM', csName: 'Milan Pokharel', message: 'Changed the assignment status to Approved.' },
@@ -171,6 +209,12 @@ const OrdertView = () => {
     }
   };
 
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   setOrderFixedBy(name)
+  //   console.log(formData);
+  // };
+
   useEffect(() => {
     const fetchOrderById = async () => {
       setIsLoading(true);
@@ -190,11 +234,13 @@ const OrdertView = () => {
         }
 
         const data = await response.json();
-        setAssignment(data);
+        setAssignment(data.order);
         console.log(data);
-        setStatus(data.status);
-        setComments(data.comments);
-        setPrice(data.price ? data.price : 0)
+        setStatus(data.order.status);
+        setOrderFixedBy(data.order.orderFixedBy)
+        setPayments(data.payments)
+        setPrice(data.order.price ? data.order.price : 0)
+        setComments(data.order.comments);
       } catch (error) {
         console.error("Error fetching orders:", error);
       } finally {
@@ -209,6 +255,7 @@ const OrdertView = () => {
     e.preventDefault();
     try {
       if (!newComment) return;
+      console.log(orderFixedBy)
 
       const token = localStorage.getItem("token");
 
@@ -285,12 +332,13 @@ const OrdertView = () => {
 
 
 
-  const handleSetPrice = async (orderId, price) => {
+  const handleSetPrice = async (orderId, price, orderFixedBy) => {
     try {
-      if (!orderId || !price) {
-        console.error("Order ID or Amount missing");
+      if (!orderId) {
+        console.error("Order ID missing");
         return;
       }
+      setIsLoading(true)
       console.log("order Id: ", orderId)
       console.log("order price: ", price)
 
@@ -302,7 +350,7 @@ const OrdertView = () => {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ orderId, price }),
+        body: JSON.stringify({ orderId, price, orderFixedBy }),
       });
 
       // Check for a successful response
@@ -314,10 +362,20 @@ const OrdertView = () => {
       const res = await response.json();
       console.log(res);
       setIsAmount(false)
+      setShowNotice(true)
+
 
       // Optionally, handle any UI updates based on response here
     } catch (error) {
       console.error("Failed to update amount:", error);
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false)
+      }, 1000)
+      setTimeout(() => {
+        setShowNotice(false)
+        setIsLoading(false)
+      }, 2000)
     }
   };
 
@@ -471,6 +529,13 @@ const OrdertView = () => {
       {isLoading && (
         <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
           <CircularProgress />
+        </div>
+      )}
+      {showNotice && (
+        <div
+          className="z-50 fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded transform transition-all duration-500 ease-in-out"
+        >
+          ✔ Saved Successfully!
         </div>
       )}
       <div className="flex justify-between items-center mb-6">
@@ -734,6 +799,9 @@ const OrdertView = () => {
                     </div>
                   ))}
             </div>
+            {assignment.files.filter((file) => file.uploadedBy === "client").length === 0 && (
+              <div className="text-gray-500 text-sm text-center m-11">No file uploaded</div>
+            )}
           </div>
 
           <div>
@@ -850,19 +918,22 @@ const OrdertView = () => {
                     </div>
                   ))}
             </div>
+            {assignment.files.filter((file) => file.uploadedBy === "writer").length === 0 && (
+              <div className="text-gray-500 text-sm text-center m-11">No file uploaded</div>
+            )}
           </div>
           <div className="space-y-4 text-sm">
             <h2 className="text-2xl font-bold">Payments</h2>
-            {assignment.payments &&
-              assignment.payments.map((payment, index) => (
+            {payments &&
+              payments.map((payment, index) => (
                 <div key={index} className="bg-white shadow-md rounded-lg p-4 ">
                   <div className="flex items-center gap-2 ">
                     <p className="text-gray-600">Payment Date:</p>
-                    <p>{formatDate(payment.date)}</p>
+                    <p>{formatDate(payment.createdAt)}</p>
                   </div>
                   <div className="flex items-center gap-2 ">
                     <p className="text-gray-600">Payment Method:</p>
-                    <p>{payment.method}</p>
+                    <p>{payment.paymentMethod}</p>
                   </div>
                   <div className="flex items-center gap-2 ">
                     <p className="text-gray-600">Amount:</p>
@@ -874,8 +945,42 @@ const OrdertView = () => {
               ))}
           </div>
 
+
           <div className="max-w-sm mx-auto mt-8 p-4 border rounded-md shadow-md bg-white">
-            <h2 className="text-lg font-semibold mb-4">Pay Writer</h2>
+            <h2 className="text-lg font-semibold mb-4"></h2>
+            <div className="mb-4">
+              <label className="block text-sm mb-2">
+                Order fixed by
+              </label>
+              <select
+                name="orderFixedBy"
+                value={orderFixedBy}
+                onChange={(e) => {
+                  console.log("Selected value:", e.target.value);
+                  setOrderFixedBy(e.target.value);
+                }}
+                className="w-full px-4 py-2.5 border border-gray-200 rounded text-sm"
+                required
+              >
+                <option value="" disabled>
+                  Select a CS Name
+                </option>
+                {csNames && csNames.length > 0 ? (
+                  csNames.map((cs) => (
+                    <option key={cs._id} value={`${cs.firstName} ${cs.lastName}`}>
+                      {cs.firstName} {cs.lastName}
+                    </option>
+                  ))
+                ) : (
+                  <option value="" disabled>
+                    No CS names available
+                  </option>
+                )}
+              </select>
+            </div>
+            <label className="block text-sm mb-2">
+              Price for writer
+            </label>
             <input
               type="number"
               id="price"
@@ -897,7 +1002,7 @@ const OrdertView = () => {
 
               <div
                 className="relative border-l-2 border-gray-300 pl-4"
-                style={{ maxHeight: "300px" }} // Adjust height as needed
+              // style={{ maxHeight: "300px" }} // Adjust height as needed
               >
                 {assignment.logs &&
                   [...assignment.logs]
@@ -922,6 +1027,7 @@ const OrdertView = () => {
                       </div>
                     ))}
               </div>
+
             </div>
           )}
 
@@ -1032,7 +1138,7 @@ const OrdertView = () => {
                 Cancel
               </button>
               <button
-                onClick={() => handleSetPrice(assignment._id, price)}
+                onClick={() => handleSetPrice(assignment._id, price, orderFixedBy)}
                 className="px-4 py-2 bg-[#5d5fef] text-white rounded-md hover:bg-blue-600"
               >
                 Confirm

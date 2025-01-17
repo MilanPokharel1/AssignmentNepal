@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { order_status } from "../../../../api/Api";
 import { UseTheme } from "../../../../contexts/ThemeContext/useTheme";
+import CircularProgress from "@material-ui/core/CircularProgress";
+
 const OrderCard = ({
   _id,
   assignmentTitle,
@@ -19,6 +21,10 @@ const OrderCard = ({
 }) => {
   const navigate = useNavigate();
   const [currentStatus, setCurrentStatus] = useState(status);
+  const [showNotice, setShowNotice] = useState(false)
+  const [showNotice2, setShowNotice2] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
+
   paidAmount = payments[0].paidAmount;
   const { currentTheme, themes } = UseTheme();
   const handleView = () => {
@@ -44,7 +50,7 @@ const OrderCard = ({
     ); // en-GB gives day-month-year order
     return formattedDate.replace(",", ""); // Remove any commas if present
   };
-  
+
   const percentage = calculatePercentage(totalAmount, paidAmount);
 
   // Function to determine progress bar and text classes based on percentage
@@ -71,6 +77,7 @@ const OrderCard = ({
     console.log("New: ", newStatus);
     console.log("Current: ", currentStatus);
     try {
+      setIsLoading(true)
       const token = localStorage.getItem("token"); // Replace with the actual token
       console.log(newStatus);
       const response = await fetch(order_status, {
@@ -93,9 +100,23 @@ const OrderCard = ({
 
       const data = await response.json();
       console.log("Status updated successfully:", data);
+      if (newStatus === "cancelled" || newStatus === "ongoing") {
+        setShowNotice2(true)
+      } else {
+        setShowNotice(true)
+      }
       setCurrentStatus(data.assignment.status); // Update the local status state
     } catch (error) {
       console.error("Failed to update status:", error);
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false)
+      }, 1000)
+      setTimeout(() => {
+        setShowNotice2(false)
+        setShowNotice(false)
+        setIsLoading(false)
+      }, 2000)
     }
   };
 
@@ -114,6 +135,25 @@ const OrderCard = ({
   return (
     <div className="p-4 bg-white rounded-lg shadow-2xl w-full lg:w-[40%] sm:max-lg:w-full drop-shadow-2x2">
       {/* assignmentTitle and Status */}
+      {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
+          <CircularProgress />
+        </div>
+      )}
+      {showNotice && (
+        <div
+          className="z-50 fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded transform transition-all duration-500 ease-in-out"
+        >
+          ✔ Order Accepted Successfully!
+        </div>
+      )}
+      {showNotice2 && (
+        <div
+          className="z-50 fixed top-4 right-4 bg-orange-500 text-white px-4 py-2 rounded transform transition-all duration-500 ease-in-out"
+        >
+          ✔ Order Request Declined!
+        </div>
+      )}
       <div className="flex justify-between items-center mt-4 border-b-2 pb-3 mb-2">
         <div className="flex items-center gap-2">
           <img
@@ -130,9 +170,8 @@ const OrderCard = ({
           </div>
         </div>
         <div
-          className={`px-2 py-1 rounded-full text-sm capitalize ${
-            statusColors[currentStatus.toLowerCase()]
-          }`}
+          className={`px-2 py-1 rounded-full text-sm capitalize ${statusColors[currentStatus.toLowerCase()]
+            }`}
         >
           {currentStatus}
         </div>

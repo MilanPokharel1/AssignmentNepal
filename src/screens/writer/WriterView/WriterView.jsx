@@ -109,9 +109,9 @@ const WriterView = () => {
         }
 
         const data = await response.json();
-        setAssignment(data);
-        setComments(data.comments);
-        if (data.status === "submitted") {
+        setAssignment(data.order);
+        setComments(data.order.comments);
+        if (data.order.status === "submitted") {
           setSubmitStatus(true);
         }
       } catch (error) {

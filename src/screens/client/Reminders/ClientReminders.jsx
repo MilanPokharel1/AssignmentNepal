@@ -60,7 +60,7 @@ const ClientReminders = () => {
       )}
 
       {reminderData.length > 0 ? (
-        <div className="w-full md:w-[81%] mx-auto">
+        <div className="w-full md:w-[81%]">
           <div className="flex justify-between items-center mb-6 flex-row-reverse">
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600">Sort by:</span>

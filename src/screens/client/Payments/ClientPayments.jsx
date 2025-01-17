@@ -219,6 +219,7 @@ const ClientPayments = () => {
               createdAt={highlightText(payment.createdAt, searchTerm)}
               method={highlightText(payment.paymentMethod, searchTerm)}
               currency={payment.paymentCurrency}
+              paymentStatus={payment.paymentStatus}
               remarks={highlightText(payment.remark, searchTerm)}
               amount={highlightText(`Rs ${payment.paidAmount}`, searchTerm)}
             />

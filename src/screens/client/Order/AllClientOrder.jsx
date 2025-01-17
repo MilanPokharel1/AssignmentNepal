@@ -3,7 +3,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import AssignmentCard from "./Components/AssignmentCard";
 import FilterButtons from "./Components/FilterButtons";
 import { ImSearch } from "react-icons/im";
-import { FaChevronDown } from "react-icons/fa";
+import { FaChevronCircleDown, FaChevronDown } from "react-icons/fa";
 import ClientOrderPopup from "./Components/ClientOrderPopup";
 import { get_orders } from "../../../api/Api";
 import NewOrderPopup from "./Components/NewOrderPopup";
@@ -143,7 +143,7 @@ const AllClientOrder = () => {
                 <span className="text-sm text-gray-600">Sort by:&ensp;</span>
                 {sortOrder}
               </div>
-              <FaChevronDown className="h-4 w-4" />
+              <FaChevronCircleDown className="h-4 w-4" />
             </button>
             {showOptions && (
               <div className="absolute right-0 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg z-10 text-base px-4">
@@ -191,6 +191,7 @@ const AllClientOrder = () => {
                   assignment.assignmentTitle,
                   searchTerm
                 )}
+                payments={assignment.payments}
                 writerName={
                   assignment.writerName
                     ? highlightText(assignment.writerName, searchTerm)

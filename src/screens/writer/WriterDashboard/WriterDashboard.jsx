@@ -17,6 +17,7 @@ const WriterDashboard = () => {
   const [writerDashboard, setWriterDashboard] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  
   useEffect(() => {
     const fetchWriterDashboard = async () => {
       setIsLoading(true);

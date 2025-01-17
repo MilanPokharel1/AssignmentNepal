@@ -15,7 +15,6 @@ const NewOrderPopup = ({ setorderPopup }) => {
     description: "",
     categorie: "",
     deadline: "",
-    orderFixedBy: "",
     totalAmount: "",
     paidAmount: "",
     paymentMethod: "Cash",
@@ -26,7 +25,7 @@ const NewOrderPopup = ({ setorderPopup }) => {
   const [id, setId] = useState("");
   const [categories, setCategories] = useState([]);
 
-  const [csNames, setCsNames] = useState([]);
+  // const [csNames, setCsNames] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   // const categories = ["finance", "management", "civil", "electronic", "iot"];
   const fetchCategories = async () => {
@@ -36,13 +35,13 @@ const NewOrderPopup = ({ setorderPopup }) => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        method: 'GET'
+        method: "GET",
       });
       const data = await response.json();
       setCategories(data);
       setIsLoading(false);
     } catch (error) {
-      console.error('Error fetching categories:', error);
+      console.error("Error fetching categories:", error);
       setIsLoading(false);
     }
   };
@@ -55,11 +54,11 @@ const NewOrderPopup = ({ setorderPopup }) => {
       setError("Paid Amount cannot be greater than Total Amount");
       return;
     }
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
       const token = localStorage.getItem("token"); // Replace with the actual token
-      console.log(formData)
+      console.log(formData);
       const response = await fetch(create_order, {
         method: "POST",
         headers: {
@@ -77,7 +76,7 @@ const NewOrderPopup = ({ setorderPopup }) => {
 
       const data = await response.json();
       console.log("success:", data.newOrder._id);
-      setorderPopup(false)
+      setorderPopup(false);
       setTimeout(() => {
         setIsLoading(false);
       }, 4000);
@@ -86,48 +85,20 @@ const NewOrderPopup = ({ setorderPopup }) => {
           activate: true,
         },
       });
-      // setId(data.newOrder._id)
-      // // setFileUploadPopup(true)
     } catch (error) {
       setTimeout(() => {
         setIsLoading(false);
       }, 2000);
       console.error("Failed:", error);
     }
+    finally{
+      setIsLoading(false);
+    }
   };
 
-
   useEffect(() => {
-    const fetchcs = async () => {
-      // setIsLoading(true);
-      try {
-        const token = localStorage.getItem("token"); // Replace with the actual token
-
-        const response = await fetch(cs_names, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch cs");
-        }
-
-        const data = await response.json();
-        setCsNames(data);
-        console.log(data);
-      } catch (error) {
-        console.error("Error fetching cs:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchcs();
-    fetchCategories()
+    fetchCategories();
   }, []);
-
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -135,44 +106,8 @@ const NewOrderPopup = ({ setorderPopup }) => {
       ...prevData,
       [name]: value,
     }));
-    console.log(formData)
+    console.log(formData);
   };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   if (Number(formData.paidAmount) > Number(formData.totalAmount)) {
-  //     setError("Paid Amount cannot be greater than Total Amount");
-  //     return;
-  //   }
-
-  //   setError("");
-
-  //   const form = new FormData();
-  //   for (const key in formData) {
-  //     form.append(key, formData[key]);
-  //   }
-
-  //   try {
-
-  //     setFormData({
-  //       instagramTitle: "",
-  //       assignmentTitle: "",
-  //       description: "",
-  //       deadline: "",
-  //       orderFixedBy: "",
-  //       file: null,
-  //       categories: "",
-  //       amount: "",
-  //     });
-  //   } catch (err) {
-  //     setError(err.message || "An error occurred during upload");
-  //   } finally {
-
-  //   }
-  // };
-
-
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -201,9 +136,9 @@ const NewOrderPopup = ({ setorderPopup }) => {
                     Basic Information
                   </h2>
                   <div className="grid grid-cols-2 gap-6">
-                    <div>
+                    <div className="col-span-2">
                       <label className="block text-sm mb-2">
-                        Instagram Title
+                        Instagram Name
                       </label>
                       <input
                         type="text"
@@ -215,11 +150,11 @@ const NewOrderPopup = ({ setorderPopup }) => {
                         required
                       />
                     </div>
-                    <div>
+                    <div className="col-span-2">
                       <label className="block text-sm mb-2">
                         Assignment Title
                       </label>
-                      <input
+                      <textarea
                         type="text"
                         name="assignmentTitle"
                         placeholder="Type Here"
@@ -236,7 +171,7 @@ const NewOrderPopup = ({ setorderPopup }) => {
                         placeholder="Type Here"
                         value={formData.description}
                         onChange={handleChange}
-                        className="w-full px-4 py-2.5 border border-gray-200 rounded text-sm h-24"
+                        className="w-full px-4 py-2.5 border border-gray-200 rounded text-sm min-h-24"
                         required
                       />
                     </div>
@@ -248,32 +183,11 @@ const NewOrderPopup = ({ setorderPopup }) => {
                         value={formData.deadline}
                         onChange={handleChange}
                         className="w-full px-4 py-2.5 border border-gray-200 rounded text-sm"
-                        min={new Date().toISOString().split('T')[0]}
+                        min={new Date().toISOString().split("T")[0]}
                         required
                       />
                     </div>
 
-                    <div>
-                      <label className="block text-sm mb-2">
-                        Order fixed by
-                      </label>
-                      <select
-                        name="orderFixedBy"
-                        value={formData.orderFixedBy}
-                        onChange={handleChange}
-                        className="w-full px-4 py-2.5 border border-gray-200 rounded text-sm"
-                        required
-                      >
-                        <option value="" disabled>
-                          Select a CS Name
-                        </option>
-                        {csNames.map((cs) => (
-                          <option key={cs._id} value={`${cs.firstName} ${cs.lastName}`}>
-                            {cs.firstName} {cs.lastName}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
                     <div>
                       <label className="block text-sm mb-2">Category</label>
                       <select
@@ -286,11 +200,6 @@ const NewOrderPopup = ({ setorderPopup }) => {
                         <option value="" disabled>
                           Select a Category
                         </option>
-                        {/* {categories.map((category, index) => (
-                          <option key={index} value={category}>
-                            {category.charAt(0).toUpperCase() + category.slice(1)}
-                          </option>
-                        ))} */}
                         {categories.map((category) => (
                           <option key={category._id} value={`${category.name}`}>
                             {category.name}
@@ -316,7 +225,9 @@ const NewOrderPopup = ({ setorderPopup }) => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm mb-2">Paid Amount</label>
+                    <label className="block text-sm mt-5 mb-2">
+                      Paid Amount
+                    </label>
                     <input
                       type="number"
                       name="paidAmount"
@@ -331,10 +242,6 @@ const NewOrderPopup = ({ setorderPopup }) => {
 
                 {error && <div className="text-red-500 mt-5">{error}</div>}
               </div>
-              {/* <div className="flex-1 pl-6">
-                <label className="block text-sm mb-2">File Upload</label>
-                // {/* <FileUploaderWithPopup /> */}
-              {/* </div> */}
             </div>
           </div>
           <button
@@ -343,34 +250,8 @@ const NewOrderPopup = ({ setorderPopup }) => {
           >
             Next
           </button>
-          {/* <FileUploader /> */}
         </form>
       </div>
-
-      {/* {showSuccessPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60]">
-          <div className="bg-white rounded-lg p-8 flex flex-col items-center max-w-sm mx-4">
-            <div className="w-16 h-16 bg-[#0066FF] rounded-full flex items-center justify-center mb-4">
-              <svg
-                className="w-8 h-8 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
-            <p className="text-center text-lg font-medium text-gray-900">
-              Thank you for Submitting your Assignment
-            </p>
-          </div>
-        </div>
-      )} */}
     </div>
   );
 };

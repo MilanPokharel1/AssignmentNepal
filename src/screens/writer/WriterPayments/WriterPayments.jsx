@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { ImSearch } from "react-icons/im";
-import { FaChevronDown } from "react-icons/fa";
+import { FaChevronDown, FaHourglassEnd } from "react-icons/fa";
 import PaymentCard from "./Components/PaymentCard";
-import { get_payment } from "../../../api/Api";
+import { get_payment, get_withdrawal_request } from "../../../api/Api";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import { IoBookSharp, IoCheckmarkSharp } from "react-icons/io5";
+import { MdOutlinePendingActions } from "react-icons/md";
+import Card from "../WriterMyTask/components/Card";
 
 const WriterPayments = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [completed, setCompleted] = useState(0);
+  const [ongoing, setOngoing] = useState(0);
+  const [submitted, setSubmitted] = useState(0);
   const [paymentData, setPaymentData] = useState([]);
   const [sortOrder, setSortOrder] = useState("Newest");
   const [showOptions, setShowOptions] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
 
   useEffect(() => {
     const fetchPayments = async () => {
@@ -42,7 +49,38 @@ const WriterPayments = () => {
     fetchPayments();
   }, []);
 
-  // const paymentData = [
+  useEffect(() => {
+    const fetchOrders = async () => {
+      setIsLoading(true);
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
+
+        const response = await fetch(get_withdrawal_request, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch orders");
+        }
+
+        const data = await response.json();
+        setCompleted(data.totals.totalEarned)
+        setOngoing(data.totals.totalOngoing)
+        setSubmitted(data.totals.totalSubmitted)
+        console.log(data);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
   //   {
   //     title:
   //       "This is my second assignment submission eqwnjkdewnudnqewdnoiqenoandlaskndkaslndkasndklasndlkkasdasnlxnasxlasxnsa",
@@ -100,16 +138,14 @@ const WriterPayments = () => {
     const searchStr = searchTerm.toLowerCase();
     return (
       payment.assignmentTitle.toLowerCase().includes(searchStr) ||
-      payment.paymentMethod.toLowerCase().includes(searchStr) ||
-      payment.remark.toLowerCase().includes(searchStr) ||
-      payment.paidAmount.toString().includes(searchStr) ||
+      payment.price.toString().includes(searchStr) ||
       payment.createdAt.toLowerCase().includes(searchStr)
     );
   });
 
   const sortedPayments = [...filteredPayments].sort((a, b) => {
-    const dateA = new Date(a.createdAt.split("-").reverse().join("-"));
-    const dateB = new Date(b.createdAt.split("-").reverse().join("-"));
+    const dateA = new Date(a.createdAt);
+    const dateB = new Date(b.createdAt);
 
     switch (sortOrder) {
       case "Newest":
@@ -117,9 +153,9 @@ const WriterPayments = () => {
       case "Oldest":
         return dateA - dateB;
       case "Amount (High to Low)":
-        return b.amount - a.amount;
+        return b.price - a.price;
       case "Amount (Low to High)":
-        return a.amount - b.amount;
+        return a.price - b.price;
       default:
         return 0;
     }
@@ -148,13 +184,40 @@ const WriterPayments = () => {
 
   return (
     <div className="bg-[#fafbfc] p-6 flex-1">
-      <div className="  w-full md:w-[85%]">
+      <div className="  w-full md:w-[95%]">
         {isLoading && (
           <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 backdrop-blur-sm z-50">
             <CircularProgress />
           </div>
         )}
-        <div className="flex justify-between items-center flex-row-reverse">
+        <div className="flex flex-wrap gap-7 justify-center sm:justify-start mb-5">
+          <Card
+            Icon={IoBookSharp}
+            heading="Total"
+            number={submitted + completed + ongoing}
+            theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
+          />
+          <Card
+            Icon={MdOutlinePendingActions}
+            heading="Ongoing"
+            number={ongoing}
+            theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
+          />
+          <Card
+            Icon={FaHourglassEnd}
+            heading="Submitted"
+            number={submitted}
+            theme={{ bgColor: "bg-yellow-100", iconBgColor: "bg-orange-400" }}
+          />
+
+          <Card
+            Icon={IoCheckmarkSharp}
+            heading="Completed"
+            number={completed}
+            theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
+          />
+        </div>
+        <div className="flex justify-between items-center md:w-[90%] flex-row-reverse">
           <div className="flex justify-between items-center mb-4 gap-3">
             <div className="relative">
               <input
@@ -196,17 +259,15 @@ const WriterPayments = () => {
             </div>
           </div>
         </div>
-        <div className="space-y-4">
+        <div className="space-y-4 md:w-[90%]">
           {sortedPayments.length > 0 ? (
             sortedPayments.map((payment, index) => (
               <PaymentCard
                 key={index}
                 title={highlightText(payment.assignmentTitle, searchTerm)}
                 createdAt={highlightText(payment.createdAt, searchTerm)}
-                method={highlightText(payment.paymentMethod, searchTerm)}
-                currency={payment.paymentCurrency}
-                remarks={highlightText(payment.remark, searchTerm)}
-                amount={highlightText(`Rs ${payment.paidAmount}`, searchTerm)}
+                amount={highlightText(`Rs ${payment.price}`, searchTerm)}
+                status={payment.status}
               />
             ))
           ) : (
