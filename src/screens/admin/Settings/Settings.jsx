@@ -64,6 +64,8 @@ const Settings = () => {
           setPaymentMethods(
             responseData.paymentMethods
           );
+
+          console.log("fromserver: ", responseData.paymentMethods)
           setPaymentMethodsOld(
             responseData.paymentMethods
           );
@@ -78,6 +80,8 @@ const Settings = () => {
           setMaintenanceMode(responseData.maintenanceMode || "");
           setMaintenanceModeOld(responseData.maintenanceMode || "");
         }
+
+        console.log(Object.keys(paymentMethods));
       } catch (error) {
         console.error("Error fetching settings:", error);
       } finally {

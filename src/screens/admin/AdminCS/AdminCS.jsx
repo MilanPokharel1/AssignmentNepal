@@ -8,7 +8,7 @@ import {
 } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import { cs_clients, manual_register, user_status } from "../../../api/Api";
+import { admin_cs, cs_clients, manual_register, user_status } from "../../../api/Api";
 
 import { IoBookSharp, IoCheckmarkSharp } from "react-icons/io5";
 import { MdShoppingCart } from "react-icons/md";
@@ -96,7 +96,7 @@ const AdminCS = () => {
       try {
         const token = localStorage.getItem("token"); // Replace with the actual token
 
-        const response = await fetch(cs_clients, {
+        const response = await fetch(admin_cs, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -239,8 +239,8 @@ const AdminCS = () => {
           key={i}
           onClick={() => setCurrentPage(i)}
           className={`px-3 py-1 mx-0.5 rounded ${currentPage === i
-              ? "bg-blue-600 text-white"
-              : "bg-gray-100 hover:bg-gray-200"
+            ? "bg-blue-600 text-white"
+            : "bg-gray-100 hover:bg-gray-200"
             }`}
         >
           {i}
@@ -300,7 +300,7 @@ const AdminCS = () => {
           Icon={RiExchangeBoxLine}
           heading="Enabled CS"
           number={`${clients.filter((writer) => writer.accountStatus === "enabled")
-              .length
+            .length
             }`}
           theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
         />
@@ -309,7 +309,7 @@ const AdminCS = () => {
           Icon={MdDisabledByDefault}
           heading="Disabled CS"
           number={`${clients.filter((writer) => writer.accountStatus === "disabled")
-              .length
+            .length
             }`}
           theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
         />
@@ -332,7 +332,7 @@ const AdminCS = () => {
             onClick={() => setShowPopup(true)}
           >
             <FaUsers />
-            <span>Create Client+</span>
+            <span>Create CS+</span>
           </button>
           <div className="flex items-center gap-2">
             <label className="text-sm">Items per page:</label>
@@ -416,8 +416,8 @@ const AdminCS = () => {
                       <button
                         onClick={() => handleTogglePopup(item, index)}
                         className={`px-3 py-1 rounded-lg m-1  flex items-center border  text-sm border-gray-500 ${item.accountStatus === "enabled"
-                            ? "text-red-700"
-                            : "text-green-700"
+                          ? "text-red-700"
+                          : "text-green-700"
                           } bg-gray-100 hover:bg-gray-200 hover:cursor-pointer`}
                       >
                         {item.accountStatus === "enabled"
@@ -461,8 +461,8 @@ const AdminCS = () => {
                                       handleTogglePopup(item, index)
                                     }
                                     className={`px-3 py-1 rounded-lg text-sm border transition-colors ${item.accountStatus === "enabled"
-                                        ? "border-red-500 text-red-700 bg-red-50 hover:bg-red-100"
-                                        : "border-green-500 text-green-700 bg-green-50 hover:bg-green-100"
+                                      ? "border-red-500 text-red-700 bg-red-50 hover:bg-red-100"
+                                      : "border-green-500 text-green-700 bg-green-50 hover:bg-green-100"
                                       }`}
                                   >
                                     {item.accountStatus === "enabled"
