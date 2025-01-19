@@ -10,7 +10,7 @@ import {
   X,
 } from "lucide-react";
 import { UseTheme } from "../../../../contexts/ThemeContext/useTheme";
-import { imagePath, QR_payment } from "../../../../api/Api";
+import { get_logoqr, imagePath, QR_payment } from "../../../../api/Api";
 const PaymentPopup = ({ onClose, assignment }) => {
   const { currentTheme, themes } = UseTheme();
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("fonepay-static");
