@@ -23,22 +23,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
   const navigate = useNavigate();
   const [newOrders, setNewOrders] = useState(0);
   // const [data, setData] = useState({});
-  const [logo, setLogo] = useState({});
 
-
-  const getValidImageUrl = (filePath) => {
-    // console.log(filePath)
-    const serverBaseUrl = imagePath; // Replace with your server's base URL
-    try {
-      return filePath?.replace(
-        "/root/assignmentNepal/assignmentNepalBackend/public/uploads/",
-        `${serverBaseUrl}/uploads/`
-      );
-    } catch (error) {
-      return filePath
-    }
-
-  };
 
   useEffect(() => {
     const fetchOrdersCount = async () => {
@@ -68,6 +53,24 @@ const SideNavbar = ({ onClose, isMobile }) => {
   }, []);
 
 
+  const [logo, setLogo] = useState({});
+
+
+  const getValidImageUrl = (filePath) => {
+    // console.log(filePath)
+    const serverBaseUrl = imagePath; // Replace with your server's base URL
+    try {
+      return filePath?.replace(
+        "/root/assignmentNepal/assignmentNepalBackend/public/uploads/",
+        `${serverBaseUrl}/uploads/`
+      );
+    } catch (error) {
+      return filePath
+    }
+
+  };
+
+
   useEffect(() => {
     const fetchLogo = async () => {
       try {
@@ -86,7 +89,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
 
         const data = await response.json();
         setLogo(data.logoqrcode.logo);
-        console.log("image: ", data.logoqrcode);
+        // console.log("image: ", data.logoqrcode);
       } catch (error) {
         console.error("Error fetching logo:", error);
       }

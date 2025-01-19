@@ -284,16 +284,18 @@ const Settings = () => {
       const result = await response.json();
 
       if (response.ok) {
-        console.log(result.admin); // Success message
+        // console.log(result.admin); // Success message
       } else {
-        console.log('Error uploading logo', response);
+        // console.log('Error uploading logo', response);
       }
       setShowNotice(true)
     } catch (error) {
       // setMessage('Error uploading logo');
       console.error('Error uploading logo:', error);
     } finally {
-      setIsLoading(false)
+      setTimeout(() => {
+        setIsLoading(false)
+      }, 1000)
       setTimeout(() => {
         setShowNotice(false)
       }, 7000)
@@ -321,9 +323,9 @@ const Settings = () => {
       const result = await response.json();
 
       if (response.ok) {
-        console.log(result.admin); // Success message
+        // console.log(result.admin); // Success message
       } else {
-        console.log('Error uploading QR', response);
+        // console.log('Error uploading QR', response);
       }
       setShowNotice(true)
     } catch (error) {
@@ -331,7 +333,9 @@ const Settings = () => {
       console.error('Error uploading QR:', error);
     }
     finally {
-      setIsLoading(false)
+      setTimeout(() => {
+        setIsLoading(false)
+      }, 1000)
       setTimeout(() => {
         setShowNotice(false)
       }, 7000)

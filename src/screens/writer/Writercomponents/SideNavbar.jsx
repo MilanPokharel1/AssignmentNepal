@@ -7,9 +7,61 @@ import { RiPieChart2Fill } from "react-icons/ri";
 import { MdShoppingCart } from "react-icons/md";
 import { FaPenAlt } from "react-icons/fa";
 import { FaMoneyBillWave } from "react-icons/fa6";
+import { get_logoqr, imagePath } from "../../../api/Api";
 
 const SideNavbar = ({ onClose, isMobile }) => {
   const navigate = useNavigate();
+
+
+
+  const [logo, setLogo] = useState({});
+
+
+  const getValidImageUrl = (filePath) => {
+    // console.log(filePath)
+    const serverBaseUrl = imagePath; // Replace with your server's base URL
+    try {
+      return filePath?.replace(
+        "/root/assignmentNepal/assignmentNepalBackend/public/uploads/",
+        `${serverBaseUrl}/uploads/`
+      );
+    } catch (error) {
+      return filePath
+    }
+
+  };
+
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
+
+        const response = await fetch(get_logoqr, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch logo");
+        }
+
+        const data = await response.json();
+        setLogo(data.logoqrcode.logo);
+        // console.log("image: ", data.logoqrcode);
+      } catch (error) {
+        console.error("Error fetching logo:", error);
+      }
+    };
+
+    fetchLogo();
+  }, []);
+
+
+
+
 
   const linkStyles =
     "flex items-center space-x-4 pl-6 text-gray-600 transition-all duration-300 ease-in-out py-2";
@@ -40,7 +92,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
       )}
 
       <div className="w-44 h-22 overflow-hidden mx-auto mb-10">
-        <img src={logo} className="w-full object-cover" alt="logo" />
+        <img src={getValidImageUrl(logo)} className="w-full object-cover" alt="logo" />
       </div>
 
       <div className="w-[98%]  gap-7 flex-col flex h-[50%] justify-between navbarClass2">

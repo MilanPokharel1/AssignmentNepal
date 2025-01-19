@@ -9,11 +9,61 @@ import {
   FaSignOutAlt,
   FaTimes,
 } from "react-icons/fa";
-import logo from "../../../assets/random-logo.png";
+// import logo from "../../../assets/random-logo.png";
 import { RiPieChart2Fill } from "react-icons/ri";
 import { UseTheme } from "../../../contexts/ThemeContext/useTheme.js";
+import { get_logoqr, imagePath } from "../../../api/Api.jsx";
 const SideNavbar = ({ onClose, isMobile }) => {
   const navigate = useNavigate();
+
+
+const [logo, setLogo] = useState({});
+
+
+  const getValidImageUrl = (filePath) => {
+    // console.log(filePath)
+    const serverBaseUrl = imagePath; // Replace with your server's base URL
+    try {
+      return filePath?.replace(
+        "/root/assignmentNepal/assignmentNepalBackend/public/uploads/",
+        `${serverBaseUrl}/uploads/`
+      );
+    } catch (error) {
+      return filePath
+    }
+
+  };
+
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
+
+        const response = await fetch(get_logoqr, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch logo");
+        }
+
+        const data = await response.json();
+        setLogo(data.logoqrcode.logo);
+        // console.log("image: ", data.logoqrcode);
+      } catch (error) {
+        console.error("Error fetching logo:", error);
+      }
+    };
+
+    fetchLogo();
+  }, []);
+
+
+
 
   const { currentTheme, themes } = UseTheme();
   const linkStyles =
@@ -45,7 +95,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
       )}
 
       <div className="w-44 h-22 overflow-hidden mx-auto mb-10">
-        <img src={logo} className="w-full object-cover" alt="logo" />
+        <img src={getValidImageUrl(logo)} className="w-full object-cover" alt="logo" />
       </div>
 
       <div className="w-[74%] mx-auto space-y-4 flex-col flex h-[50%] justify-between navbarClass">
