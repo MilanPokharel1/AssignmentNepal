@@ -266,9 +266,10 @@ const Settings = () => {
     if (!logo) {
       return;
     }
+    setIsLoading(true)
 
     const formData = new FormData();
-    formData.append('file', logo);
+    formData.append('image', logo);
 
     try {
       const token = localStorage.getItem("token"); // Replace with the actual token
@@ -287,18 +288,25 @@ const Settings = () => {
       } else {
         console.log('Error uploading logo', response);
       }
+      setShowNotice(true)
     } catch (error) {
       // setMessage('Error uploading logo');
       console.error('Error uploading logo:', error);
+    } finally {
+      setIsLoading(false)
+      setTimeout(() => {
+        setShowNotice(false)
+      }, 7000)
     }
   };
-  const handleSaveQr = async() => {
+  const handleSaveQr = async () => {
     if (!staticQr) {
       return;
     }
+    setIsLoading(true)
 
     const formData = new FormData();
-    formData.append('file', staticQr);
+    formData.append('image', staticQr);
 
     try {
       const token = localStorage.getItem("token"); // Replace with the actual token
@@ -317,9 +325,16 @@ const Settings = () => {
       } else {
         console.log('Error uploading QR', response);
       }
+      setShowNotice(true)
     } catch (error) {
       // setMessage('Error uploading Qr');
       console.error('Error uploading QR:', error);
+    }
+    finally {
+      setIsLoading(false)
+      setTimeout(() => {
+        setShowNotice(false)
+      }, 7000)
     }
   };
 
