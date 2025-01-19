@@ -266,7 +266,7 @@ const PaymentPopup = ({ onClose, assignment }) => {
                     <label className="text-sm text-gray-500">
                       Payment Status:
                     </label>
-                    <div className="text-sm text-red-500">Unpaid</div>
+                    <div className="text-sm text-red-500">{(assignment.totalAmount - assignment.paidAmount) > 0?"Unpaid": "Paid"}</div>
                   </div>
                   <div>
                     <label className="text-sm text-gray-500">Remaining:</label>
