@@ -58,7 +58,7 @@ const NewOrderPopup = ({ setorderPopup }) => {
 
     try {
       const token = localStorage.getItem("token"); // Replace with the actual token
-      console.log(formData);
+      // console.log(formData);
       const response = await fetch(create_order, {
         method: "POST",
         headers: {
@@ -75,7 +75,7 @@ const NewOrderPopup = ({ setorderPopup }) => {
       }
 
       const data = await response.json();
-      console.log("success:", data.newOrder._id);
+      // console.log("success:", data.newOrder._id);
       setorderPopup(false);
       setTimeout(() => {
         setIsLoading(false);
@@ -106,7 +106,7 @@ const NewOrderPopup = ({ setorderPopup }) => {
       ...prevData,
       [name]: value,
     }));
-    console.log(formData);
+    // console.log(formData);
   };
 
   return (

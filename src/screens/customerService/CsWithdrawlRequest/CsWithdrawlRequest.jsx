@@ -41,7 +41,7 @@ const CsWithdrawlRequest = () => {
 
         const data = await response.json();
         setWithdrawalData(data.withdrawalRequests || []);
-        console.log("Fetched Data:", data);
+        // console.log("Fetched Data:", data);
       } catch (error) {
         console.error("Error fetching orders:", error.message);
       } finally {

@@ -12,7 +12,7 @@ const GoogleLoginComponent = () => {
 
   const handleLoginSuccess = async (response) => {
     try {
-      console.log("Login Success:", response);
+      // console.log("Login Success:", response);
 
       const { credential } = response;
 
@@ -29,7 +29,7 @@ const GoogleLoginComponent = () => {
       }
 
       const data = await res.json();
-      console.log("Backend Response:", data);
+      // console.log("Backend Response:", data);
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("firstName", data.user.firstName);

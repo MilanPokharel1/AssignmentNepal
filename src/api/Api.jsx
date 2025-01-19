@@ -1,7 +1,7 @@
 // const url = "http://46.202.164.135:3000/api/v1";
-// const url = "http://localhost:3000/api/v1";
+const url = "http://localhost:3000/api/v1";
 export const imagePath = "https://server.assignmentnepal.com"
-const url = "https://server.assignmentnepal.com/api/v1"
+// const url = "https://server.assignmentnepal.com/api/v1"
 
 export const google_login = `${url}/auth/google-login`;
 export const manual_login = `${url}/auth/login`;
@@ -58,6 +58,10 @@ export const delete_categories = `${url}/admin/deletecategory`;
 
 
 
+// admin Logo
+export const upload_logo = `${url}/admin/uploadlogo`;
+export const upload_qr = `${url}/admin/uploadqr`;
+export const get_logoqr = `${url}/user/logoqr`;
 
 
 

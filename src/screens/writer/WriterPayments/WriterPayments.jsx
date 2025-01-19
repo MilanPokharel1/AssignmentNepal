@@ -38,7 +38,7 @@ const WriterPayments = () => {
 
         const data = await response.json();
         setPaymentData(data.payments);
-        console.log("this is data: ", data);
+        // console.log("this is data: ", data);
       } catch (error) {
         console.error("Error fetching payments:", error);
       } finally {
@@ -70,7 +70,7 @@ const WriterPayments = () => {
         setCompleted(data.totals.totalEarned)
         setOngoing(data.totals.totalOngoing)
         setSubmitted(data.totals.totalSubmitted)
-        console.log(data);
+        // console.log(data);
       } catch (error) {
         console.error("Error fetching orders:", error);
       } finally {

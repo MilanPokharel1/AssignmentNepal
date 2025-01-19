@@ -97,11 +97,11 @@ const AssignmentView = (setFilePopup = false) => {
       setAssignment(data.order);
       setPayments(data.payments)
       setComments(data.order.comments);
-      console.log(data);
+      // console.log(data);
     } catch (error) {
       console.error("Error fetching orders:", error);
     } finally {
-      console.log("refreshed")
+      // console.log("refreshed")
       setTimeout(() => {
         setIsLoading(false);
       }, 1000);
@@ -363,7 +363,7 @@ const AssignmentView = (setFilePopup = false) => {
                       alt={comment.name}
                       className="w-8 h-8 rounded-full"
                     />
-                    {console.log("This is role", comment.role)}
+                    {/* {console.log("This is role", comment.role)} */}
                     <div className="flex-1 bg-white rounded-lg px-3">
                       <div className="flex items-center space-x-auto mb-1">
                         <span className="text-sm font-medium ">

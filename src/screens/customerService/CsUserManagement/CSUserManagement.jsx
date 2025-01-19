@@ -78,7 +78,7 @@ const CsUserManagement = () => {
       }
 
       const data = await response.json();
-      console.log("success:", data);
+      // console.log("success:", data);
       setShowPopup(false)
     } catch (error) {
       console.error("Failed:", error);
@@ -106,7 +106,7 @@ const CsUserManagement = () => {
         }
 
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         setClients(data.clients); // Assuming the key is 'remainder', set it properly
       } catch (error) {
         console.error("Error fetching reminders:", error);

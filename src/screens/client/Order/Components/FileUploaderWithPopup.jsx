@@ -12,7 +12,7 @@ const FileUploaderWithPopup = ({ orderId, instagramTitle, uploadRefresh }) => {
   const [isAllComplete, setIsAllComplete] = useState(false);
 
   const handleFileChange = (event) => {
-    console.log(instagramTitle)
+    // console.log(instagramTitle)
     const selectedFiles = Array.from(event.target.files);
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
   };
@@ -120,7 +120,7 @@ const FileUploaderWithPopup = ({ orderId, instagramTitle, uploadRefresh }) => {
     } finally {
       setIsUploading(false);
       setIsAllComplete(true);
-      console.log("file Uploaded")
+      // console.log("file Uploaded")
       uploadRefresh();
 
     }

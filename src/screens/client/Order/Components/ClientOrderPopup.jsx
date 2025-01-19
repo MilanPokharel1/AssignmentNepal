@@ -27,12 +27,12 @@ const ClientOrderPopup = ({ setorderPopup }) => {
 
   const handleFilesChange = (newFiles) => {
     setFiles(newFiles);
-    console.log(files);
+    // console.log(files);
     setFormData((prevData) => ({
       ...prevData,
       file: newFiles[0], // or handle as needed
     }));
-    console.log("this is file ", formData, "files changed")
+    // console.log("this is file ", formData, "files changed")
   };
 
   const handleChange = (e) => {

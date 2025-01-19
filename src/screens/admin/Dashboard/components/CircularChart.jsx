@@ -6,7 +6,7 @@ const CircularChart = ({ value, title }) => {
     { name: "completed", value: parseInt(value) },
     { name: "remaining", value: 100.0 - value },
   ];
-  console.log(data);
+  // console.log(data);
 
   return (
     <div className="flex flex-col items-center justify-center w-full h-full space-y-2">

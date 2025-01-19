@@ -61,18 +61,19 @@ const Login = () => {
       const data = await response.json();
       if (response.ok) {
         setIsLoading(false);
-        localStorage.setItem("token", data.token);
-        localStorage.setItem("firstName", data.user.firstName);
-        localStorage.setItem("lastName", data.user.lastName);
-        localStorage.setItem("picture", data.user.picture);
-        localStorage.setItem("status", data.user.status);
-        localStorage.setItem("role", data.user.role);
+
         if (data.user.status === "pending") {
           navigate("/pending");
         } else if (data.user.status === "disabled") {
           navigate("/pending");
         }
         else {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("firstName", data.user.firstName);
+          localStorage.setItem("lastName", data.user.lastName);
+          localStorage.setItem("picture", data.user.picture);
+          localStorage.setItem("status", data.user.status);
+          localStorage.setItem("role", data.user.role);
           navigate(`/${data.user.role}`, { replace: true });
         }
       } else {

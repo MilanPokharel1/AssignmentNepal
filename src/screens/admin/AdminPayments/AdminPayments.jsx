@@ -33,7 +33,7 @@ const AdminPayments = () => {
         }
 
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
 
 
         setAdminPayments(data);
@@ -47,7 +47,7 @@ const AdminPayments = () => {
         );
 
 
-        console.log("total amount:", data.totalPayment);
+        // console.log("total amount:", data.totalPayment);
       } catch (error) {
         console.error("Error fetching reminders:", error);
       } finally {
@@ -77,7 +77,7 @@ const AdminPayments = () => {
 
         const data = await response.json();
         setPaymentData(data.payments);
-        console.log("this is data: ", data);
+        // console.log("this is data: ", data);
       } catch (error) {
         console.error("Error fetching payments:", error);
       } finally {

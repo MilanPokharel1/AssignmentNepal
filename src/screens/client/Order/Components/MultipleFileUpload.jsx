@@ -11,7 +11,7 @@ const MultiFileUpload = ({ onFilesChange }) => {
     const newFiles = Array.from(e.target.files);
     const updatedFiles = [...files, ...newFiles];
     setFiles(updatedFiles);
-    console.log("test",updatedFiles);
+    // console.log("test",updatedFiles);
 
     // Callback to parent component
     if (onFilesChange) {

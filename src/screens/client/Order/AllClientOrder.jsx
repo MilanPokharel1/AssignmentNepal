@@ -36,7 +36,7 @@ const AllClientOrder = () => {
 
         const data = await response.json();
         setAssignments(data);
-        console.log(data);
+        // console.log(data);
       } catch (error) {
         console.error("Error fetching orders:", error);
       } finally {

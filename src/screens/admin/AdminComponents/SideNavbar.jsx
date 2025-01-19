@@ -9,7 +9,7 @@ import {
   FaTimes,
   FaUserPlus,
 } from "react-icons/fa";
-import logo from "../../../assets/random-logo.png";
+// import logo from "../../../assets/random-logo.png";
 import { RiPieChart2Fill } from "react-icons/ri";
 import { MdShoppingCart } from "react-icons/md";
 import { FaUser, FaUsers } from "react-icons/fa";
@@ -18,12 +18,27 @@ import { RiShieldUserFill } from "react-icons/ri";
 import { Settings } from "lucide-react";
 import { FaFolder } from "react-icons/fa";
 import { BsQrCode } from "react-icons/bs";
-import { get_new_orders_count, reset_count } from "../../../api/Api";
+import { get_logoqr, get_new_orders_count, imagePath, reset_count } from "../../../api/Api";
 const SideNavbar = ({ onClose, isMobile }) => {
   const navigate = useNavigate();
   const [newOrders, setNewOrders] = useState(0);
+  // const [data, setData] = useState({});
+  const [logo, setLogo] = useState({});
 
 
+  const getValidImageUrl = (filePath) => {
+    // console.log(filePath)
+    const serverBaseUrl = imagePath; // Replace with your server's base URL
+    try {
+      return filePath?.replace(
+        "/root/assignmentNepal/assignmentNepalBackend/public/uploads/",
+        `${serverBaseUrl}/uploads/`
+      );
+    } catch (error) {
+      return filePath
+    }
+
+  };
 
   useEffect(() => {
     const fetchOrdersCount = async () => {
@@ -42,7 +57,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
         }
 
         const data = await response.json();
-        setNewOrders(data);
+        // setData(data);
         console.log("ordercount: ", data);
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -53,9 +68,37 @@ const SideNavbar = ({ onClose, isMobile }) => {
   }, []);
 
 
-  
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
+
+        const response = await fetch(get_logoqr, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch logo");
+        }
+
+        const data = await response.json();
+        setLogo(data.logoqrcode.logo);
+        console.log("image: ", data.logoqrcode);
+      } catch (error) {
+        console.error("Error fetching logo:", error);
+      }
+    };
+
+    fetchLogo();
+  }, []);
+
+
+
   const handleSeenReset = async (countof) => {
-    console.log("clicked: ");
+    // console.log("clicked: ");
     if (newOrders == 0) {
       return;
     }
@@ -71,7 +114,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
       });
     } catch (error) {
       console.error("error:", error);
-    }finally{
+    } finally {
       setNewOrders(0);
     }
   };
@@ -104,7 +147,7 @@ const SideNavbar = ({ onClose, isMobile }) => {
       )}
 
       <div className="w-44 h-22 overflow-hidden mx-auto mb-10">
-        <img src={logo} className="w-full object-cover" alt="logo" />
+        <img src={getValidImageUrl(logo)} className="w-full object-cover" alt="logo" />
       </div>
 
       <div className="w-[98%]  gap-4 flex-col flex h-[50%] justify-between navbarClass2">

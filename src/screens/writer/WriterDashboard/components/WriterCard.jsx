@@ -16,6 +16,7 @@ const WriterCard = ({
   deadline,
   firstName,
   lastName,
+  price,
   writerName,
   writerPic = "https://unsplash.com/photos/a-close-up-of-a-motherboard-and-a-pen-on-a-table-boMKfQkphro",
   writerId = "",
@@ -62,7 +63,7 @@ const WriterCard = ({
       setIsAccepted("accepted");
       setShowNotice(true)
       setShowModal(false);
-      console.log("Order Accepted successfully:", data);
+      // console.log("Order Accepted successfully:", data);
     } catch (error) {
       console.error("Failed to accept order:", error);
     } finally {
@@ -127,7 +128,7 @@ const WriterCard = ({
         {/* Payment Info */}
         <div className="mb-2">
           <div className="text-sm text-gray-600">
-            Amount: <span className="font-medium">{totalAmount}</span>
+            Amount: <span className="font-medium">{price ? price : "-"}</span>
           </div>
         </div>
       </div>
@@ -150,7 +151,7 @@ const WriterCard = ({
                              acceptStatus == "accepted" ? "hidden" : ""
                            } rounded-md transition-all duration-200 
                            border-2 border-red-400`}
-              onClick={() => console.log("Declined")}
+              onClick={() => // console.log("Declined")}
             >
               Decline
             </button> */}

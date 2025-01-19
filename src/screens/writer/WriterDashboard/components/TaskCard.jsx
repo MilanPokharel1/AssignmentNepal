@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import writerPic from "../../../../assets/writer.png";
 import clientpic from "../../../../assets/user.png";
-
+ 
 const TaskCard = ({ task }) => {
   const navigate = useNavigate();
   const {

@@ -12,7 +12,6 @@ const OrderCard = ({
   instagramTitle,
   status,
   totalAmount,
-  paidAmount = 400,
   payments,
   deadline,
   writerName = "Not Assigned",
@@ -25,11 +24,13 @@ const OrderCard = ({
   const [showNotice2, setShowNotice2] = useState(false)
   const [isLoading, setIsLoading] = useState(false);
 
-  paidAmount = payments[0].paidAmount;
   const { currentTheme, themes } = UseTheme();
   const handleView = () => {
     navigate(`/cs/OrderManagement/OrderView/${_id}`);
   };
+  const paidAmount = payments.reduce((total, payment) => {
+    return total + (payment.paidAmount || 0); // Add paidAmount, default to 0 if undefined
+  }, 0);
   const calculatePercentage = (totalAmount, paidAmount) => {
     const total = parseFloat(totalAmount);
     const paid = parseFloat(paidAmount);
@@ -74,12 +75,12 @@ const OrderCard = ({
   };
 
   const handleStatusChange = async (newStatus) => {
-    console.log("New: ", newStatus);
-    console.log("Current: ", currentStatus);
+    // console.log("New: ", newStatus);
+    // console.log("Current: ", currentStatus);
     try {
       setIsLoading(true)
       const token = localStorage.getItem("token"); // Replace with the actual token
-      console.log(newStatus);
+      // console.log(newStatus);
       const response = await fetch(order_status, {
         method: "POST",
         headers: {
@@ -99,7 +100,7 @@ const OrderCard = ({
       }
 
       const data = await response.json();
-      console.log("Status updated successfully:", data);
+      // console.log("Status updated successfully:", data);
       if (newStatus === "cancelled" || newStatus === "ongoing") {
         setShowNotice2(true)
       } else {

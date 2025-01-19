@@ -9,11 +9,7 @@ import {
 import { IoMdClose } from "react-icons/io";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { admin_cs, cs_clients, manual_register, user_status } from "../../../api/Api";
-
-import { IoBookSharp, IoCheckmarkSharp } from "react-icons/io5";
-import { MdShoppingCart } from "react-icons/md";
 import Card from "../../client/Dashboard/components/Card";
-import { FcCustomerSupport } from "react-icons/fc";
 import { RiCustomerService2Fill, RiExchangeBoxLine } from "react-icons/ri";
 import { BiExpandVertical } from "react-icons/bi";
 import { MdOutlineExpandMore } from "react-icons/md";
@@ -68,10 +64,10 @@ const AdminCS = () => {
       }
 
       const data = await response.json();
-      console.log("success:", data);
+      // console.log("success:", data);
       setShowPopup(false)
     } catch (error) {
-      console.error("Failed:", error);
+      // console.error("Failed:", error);
     }
   }
 
@@ -104,14 +100,14 @@ const AdminCS = () => {
         });
 
         if (!response.ok) {
-          throw new Error("Failed to fetch reminders");
+          throw new Error("Failed to fetch cs");
         }
 
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         setClients(data.clients); // Assuming the key is 'remainder', set it properly
       } catch (error) {
-        console.error("Error fetching reminders:", error);
+        console.error("Error fetching cs:", error);
       } finally {
         setIsLoading(false);
       }
@@ -290,12 +286,6 @@ const AdminCS = () => {
           number={`${clients.length}`}
           theme={{ bgColor: "bg-yellow-100", iconBgColor: "bg-yellow-400" }}
         />
-        {/* <Card
-          Icon={MdShoppingCart}
-          heading="Assigned Writers"
-          number={`${clients.filter((writer) => writer.status === "assigned").length}`}
-          theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
-        /> */}
         <Card
           Icon={RiExchangeBoxLine}
           heading="Enabled CS"

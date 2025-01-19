@@ -6,12 +6,12 @@ const AppleLoginComponent = () => {
   const redirectURI = 'YOUR_REDIRECT_URI';  // The URL where Apple will send the user after login
 
   const onSuccess = (response) => {
-    console.log("Apple Login Success:", response);
+    // console.log("Apple Login Success:", response);
     // You can send response.authorization.code to your backend for further verification
   };
 
   const onFailure = (response) => {
-    console.log("Apple Login Failed:", response);
+    // console.log("Apple Login Failed:", response);
   };
 
   return (

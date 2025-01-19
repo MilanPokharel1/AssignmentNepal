@@ -32,7 +32,7 @@ const ClientPayments = () => {
 
         const data = await response.json();
         setPaymentData(data.payments);
-        console.log("this is data: ", data);
+        // console.log("this is data: ", data);
       } catch (error) {
         console.error("Error fetching payments:", error);
       } finally {
@@ -43,44 +43,6 @@ const ClientPayments = () => {
     fetchPayments();
   }, []);
 
-  // const paymentData = [
-  //   {
-  //     title:
-  //       "This is my second assignment submission eqwnjkdewnudnqewdnoiqenoandlaskndkaslndkasndklasndlkkasdasnlxnasxlasxnsa",
-  //     createdAt: "20/02/2024",
-  //     method: "Fonepay",
-  //     currency: "NPR",
-  //     remarks: "First Payment",
-  //     amount: 8000,
-  //   },
-  //   {
-  //     title:
-  //       "This is my second assignment submission sndiasncasnclkasncoisdacwslkdcnoisdancosdancosc",
-  //     createdAt: "20/01/2024",
-  //     method: "Fonepay",
-  //     currency: "NPR",
-  //     remarks: "First Payment",
-  //     amount: 7000,
-  //   },
-  //   {
-  //     title:
-  //       "It should be relatively short, but still anxcoilasncxoilasndcxoliasnxnlzkm",
-  //     createdAt: "20/01/2024",
-  //     method: "Fonepay",
-  //     currency: "NPR",
-  //     remarks: "Mid payment",
-  //     amount: 8000,
-  //   },
-  //   {
-  //     title:
-  //       "It should be relatively short, but still nsnjakdcnjskdncksdncksdncsdncsd",
-  //     createdAt: "20/01/2024",
-  //     method: "Cash",
-  //     currency: "NPR",
-  //     remarks: "Last Payment",
-  //     amount: 7000,
-  //   },
-  // ];
 
   const highlightText = (text, searchTerm) => {
     if (!searchTerm) return text;

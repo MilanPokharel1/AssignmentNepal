@@ -37,7 +37,7 @@ const AdminOrderManagement = () => {
 
         const data = await response.json();
         setAssignments(data);
-        console.log(data);
+        // console.log(data);
       } catch (error) {
         console.error("Error fetching orders:", error);
       } finally {
@@ -136,7 +136,7 @@ const AdminOrderManagement = () => {
           Icon={MdShoppingCart}
           heading="Pending Orders"
           number={`${assignments.filter((assignment) => assignment.status === "pending")
-              .length
+            .length
             }`}
           theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
         />
@@ -216,9 +216,9 @@ const AdminOrderManagement = () => {
           )}
         </div>
 
-        <div className="flex flex-wrap gap-4 mt-5">
-          {sortedAssignments.length > 0 ? (
-            sortedAssignments.map((assignment) => (
+        {sortedAssignments.length > 0 ? (
+          sortedAssignments.map((assignment) => (
+            <div className="flex flex-wrap gap-4 mt-5">
               <OrderCard
                 key={assignment._id}
                 {...assignment}
@@ -237,11 +237,14 @@ const AdminOrderManagement = () => {
                 }
                 deadline={highlightText(assignment.deadline, searchTerm)}
               />
-            ))
-          ) : (
+            </div>
+          ))
+        ) : (
+          // <NoDataFound />
+          <div className="w-[80%]">
             <NoDataFound />
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

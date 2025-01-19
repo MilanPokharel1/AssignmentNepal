@@ -23,7 +23,7 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const[chartData , setChartData] = useState([
+  const [chartData, setChartData] = useState([
     { month: "Jan", thisMonth: 0, lastMonth: 0 },
     { month: "Fev", thisMonth: 0, lastMonth: 0 },
     { month: "Mar", thisMonth: 0, lastMonth: 0 },
@@ -59,7 +59,7 @@ const Dashboard = () => {
         }
 
         const data = await response.json();
-        console.log(data.newWriters);
+        // console.log(data.newWriters);
 
         setWriters(data.newWriters);
         setAssignments(data.recentAssignments);
@@ -75,7 +75,7 @@ const Dashboard = () => {
         );
 
 
-        console.log("total amount:", data.totalPayment);
+        // console.log("total amount:", data.totalPayment);
       } catch (error) {
         console.error("Error fetching reminders:", error);
       } finally {
@@ -130,29 +130,29 @@ const Dashboard = () => {
         </div>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-      <div className="bg-white p-4 shadow-md rounded-lg flex items-center justify-center">
-        <MainPieChart
-          orderCancelData={[
-            { name: "Orders", value: adminDashboard.totalOrders },
-            { name: "Cancelled", value: adminDashboard.cancelledOrders },
-          ]}
-        />
+        <div className="bg-white p-4 shadow-md rounded-lg flex items-center justify-center">
+          <MainPieChart
+            orderCancelData={[
+              { name: "Orders", value: adminDashboard.totalOrders },
+              { name: "Cancelled", value: adminDashboard.cancelledOrders },
+            ]}
+          />
+        </div>
+        <div className="bg-white p-4 shadow-md rounded-lg grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <CircularChart
+            value={((adminDashboard.assignedWriters / adminDashboard.totalWriters) * 100).toFixed(2)}
+            title="Assigned Writers"
+          />
+          <CircularChart
+            value={((adminDashboard.completedOrders / adminDashboard.totalOrders) * 100).toFixed(2)}
+            title="Orders Completed"
+          />
+          <CircularChart
+            value={((adminDashboard.totalPayment / adminDashboard.totalAmount) * 100).toFixed(0)}
+            title="Payment Received"
+          />
+        </div>
       </div>
-      <div className="bg-white p-4 shadow-md rounded-lg grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <CircularChart
-          value={((adminDashboard.assignedWriters / adminDashboard.totalWriters) * 100).toFixed(2)}
-          title="Assigned Writers"
-        />
-        <CircularChart
-          value={((adminDashboard.completedOrders / adminDashboard.totalOrders) * 100).toFixed(2)}
-          title="Orders Completed"
-        />
-        <CircularChart
-          value={((adminDashboard.totalPayment / adminDashboard.totalAmount) * 100).toFixed(0)}
-          title="Payment Received"
-        />
-      </div>
-    </div>
 
       <div className="mb-8">
         <div className="flex justify-between items-center">
@@ -165,11 +165,16 @@ const Dashboard = () => {
             <HiArrowRight className="text-lg" />
           </div>
         </div>
-        <div className="flex flex-wrap gap-4">
-          {assignments.map((assignment) => (
-            <OrderCard key={assignment._id} {...assignment} />
-          ))}
-        </div>
+        {assignments.length > 0 ? (
+          <div className="flex flex-wrap gap-4">
+            {assignments.map((assignment) => (
+              <OrderCard key={assignment._id} {...assignment} />
+            ))}
+          </div>
+        ) : (
+          <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center p-4">
+            <p className="text-gray-800">No data to show</p>
+          </div>)}
       </div>
 
       <div className="flex justify-between items-center">

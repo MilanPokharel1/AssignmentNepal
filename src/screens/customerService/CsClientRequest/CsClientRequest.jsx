@@ -43,7 +43,7 @@ const CsClientRequest = () => {
         }
 
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         setClients(data.pendingUsers);
       } catch (error) {
         console.error("Error fetching clients:", error);

@@ -68,7 +68,7 @@ const WriterWithdrawal = () => {
         setWithdrawaled(data.totals.withdrawaled)
         setPending(data.totals.pending)
         setTotal(data.totals.totalEarned)
-        console.log(data);
+        // console.log(data);
       } catch (error) {
         console.error("Error fetching orders:", error);
       } finally {
@@ -102,7 +102,7 @@ const WriterWithdrawal = () => {
       }
 
       const data = await response.json();
-      console.log("success:", data);
+      // console.log("success:", data);
       setWithdrawalData([...withdrawalData, data.newWithdrawal]);
       toggleModal();
     } catch (error) {

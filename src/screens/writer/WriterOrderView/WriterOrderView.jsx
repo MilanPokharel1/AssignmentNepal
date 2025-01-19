@@ -76,7 +76,7 @@ const WriterOrderView = () => {
       setSubmitStatus(true);
       setIsOpen(false);
       setShowNotice(true)
-      console.log("Order Submitted successfully:", data);
+      // console.log("Order Submitted successfully:", data);
     } catch (error) {
       console.error("Failed to submit order:", error);
     } finally {
@@ -173,7 +173,7 @@ const WriterOrderView = () => {
       }
 
       const res = await response.json();
-      console.log(res);
+      // console.log(res);
       setComments([...comments, res.newComment]);
     } catch (error) {
       console.error("Add comment error:", error);
@@ -296,7 +296,7 @@ const WriterOrderView = () => {
   };
 
   const readData = (data) => {
-    console.log("millu bhai: ", data);
+    // console.log("millu bhai: ", data);
     setAssignment(data);
   };
 

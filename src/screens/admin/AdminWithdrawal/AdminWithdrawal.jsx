@@ -39,7 +39,7 @@ const AdminWithdrawlRequest = () => {
 
         const data = await response.json();
         setWithdrawalData(data.withdrawalRequests);
-        console.log(data);
+        // console.log(data);
       } catch (error) {
         console.error("Error fetching orders:", error);
       } finally {

@@ -91,7 +91,7 @@ const Dashboard = () => {
 
         const data = await response.json();
         setAssignments(data);
-        console.log(data);
+        // console.log(data);
       } catch (error) {
         console.error("Error fetching orders:", error);
       } finally {
@@ -121,7 +121,7 @@ const Dashboard = () => {
 
         const data = await response.json();
         setPaymentData(data.payments);
-        console.log("this is data: ", data);
+        // console.log("this is data: ", data);
       } catch (error) {
         console.error("Error fetching payments:", error);
       } finally {

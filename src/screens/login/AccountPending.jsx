@@ -28,7 +28,7 @@ const AccountStatus = ({ status = "pending" }) => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-4">
-      <div className="w-full max-w-xl mx-auto">
+      <div className="w-full md:max-w-[50%] max-w-xl mx-auto">
         <div className="bg-white shadow-2xl rounded-2xl overflow-hidden border border-gray-200 transform transition-all hover:shadow-3xl">
           <div className="p-6 md:p-10 text-center">
             <div className="flex flex-col items-center mb-6">

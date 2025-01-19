@@ -6,7 +6,7 @@ const FacebookLoginComponent = () => {
   const appId = '1480573876678632';
 
   const responseFacebook = (response) => {
-    console.log("Facebook Login Success:", response);
+    // console.log("Facebook Login Success:", response);
     // You can now send response.accessToken to your backend for further processing
   };
 

@@ -32,7 +32,7 @@ const WriterOrder = () => {
   
           const data = await response.json();
           setWriterDashboard(data);
-          console.log(data);
+          // console.log(data);
         } catch (error) {
           console.error("Error fetching reminders:", error);
         } finally {
@@ -63,7 +63,7 @@ const WriterOrder = () => {
 
         const data = await response.json();
         setAssignments(data?.allApprovedAssignments);
-        console.log(data);
+        // console.log(data);
       } catch (error) {
         console.error("Error fetching orders:", error);
       } finally {

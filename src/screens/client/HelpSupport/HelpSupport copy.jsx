@@ -24,7 +24,7 @@ const HelpSupport = () => {
 
         const data = await response.json();
         setOrders(data);
-        console.log(data);
+        // console.log(data);
       } catch (error) {
         console.error("Error fetching orders:", error);
       }
@@ -40,7 +40,7 @@ const HelpSupport = () => {
     try {
       const token = localStorage.getItem("token");
       const fileId = new URL(fileUrl).searchParams.get("id"); // Get the id from the URL
-      console.log(fileId)
+      // console.log(fileId)
       if (!fileId) {
         throw new Error("Invalid file URL");
       }

@@ -53,7 +53,7 @@ const Dashboard = () => {
         }
 
         const data = await response.json();
-        console.log(data.newWriters);
+        // console.log(data.newWriters);
         setCsDashboard(data);
         setAssignments(data.recentAssignments);
         setWriters(data.newWriters);

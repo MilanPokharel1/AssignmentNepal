@@ -191,6 +191,7 @@ const AssignmentCard = ({
             totalAmount,
             paidAmount,
             deadline,
+            payments
           }}
         />
       )}

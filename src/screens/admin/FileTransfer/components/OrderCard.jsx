@@ -32,10 +32,10 @@ const OrderCard = ({
   };
 
   const handleStatusChange = async (newStatus) => {
-    console.log("New: ", newStatus);
+    // console.log("New: ", newStatus);
     try {
       const token = localStorage.getItem("token"); // Replace with the actual token
-      console.log(newStatus);
+      // console.log(newStatus);
       const response = await fetch(all_file_status, {
         method: "POST",
         headers: {
@@ -55,7 +55,7 @@ const OrderCard = ({
       }
 
       const data = await response.json();
-      console.log("Status updated successfully:", data);
+      // console.log("Status updated successfully:", data);
       setCurrentStatus(newStatus);
     } catch (error) {
       console.error("Failed to update status:", error);

@@ -25,7 +25,7 @@ const FileUploader = ({ orderId, instagramTitle, setActivate, uploadRefresh }) =
 
 
   const handleFileChange = (event) => {
-    console.log(instagramTitle)
+    // console.log(instagramTitle)
     const selectedFiles = Array.from(event.target.files);
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
   };

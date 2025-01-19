@@ -27,7 +27,7 @@ const AdminReminders = () => {
         }
 
         const data = await response.json();
-        console.log(data)
+        // console.log(data)
         setReminderData(data.remainders); // Assuming the key is 'remainder', set it properly
       } catch (error) {
         console.error("Error fetching reminders:", error);

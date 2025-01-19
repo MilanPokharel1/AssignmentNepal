@@ -49,7 +49,7 @@ const QRRequest = () => {
   }, []);
 
   const getValidImageUrl = (filePath) => {
-    console.log(filePath)
+    // console.log(filePath)
     const serverBaseUrl = imagePath; // Replace with your server's base URL
     return filePath.replace(
       "/root/assignmentNepal/assignmentNepalBackend/public/uploads/",
@@ -84,7 +84,7 @@ const QRRequest = () => {
 
   const changePaymentStatus = async (paymentId, paymentStatus) => {
     setIsLoading(true);
-    console.log(paymentId, paymentStatus)
+    // console.log(paymentId, paymentStatus)
     try {
       const token = localStorage.getItem("token"); // Replace with the actual token
 

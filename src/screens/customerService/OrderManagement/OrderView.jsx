@@ -69,7 +69,7 @@ const OrdertView = () => {
 
         const data = await response.json();
         setCsNames(data);
-        console.log(data);
+        // // console.log(data);
       } catch (error) {
         console.error("Error fetching cs:", error);
       } finally {
@@ -133,7 +133,7 @@ const OrdertView = () => {
       }
 
       const data = await response.json();
-      console.log("Status updated successfully:", data);
+      // // console.log("Status updated successfully:", data);
       setStatus(data.assignment.status);
     } catch (error) {
       console.error("Failed to update status:", error);
@@ -202,7 +202,7 @@ const OrdertView = () => {
       }
 
       const data = await response.json();
-      console.log("Status updated successfully:", data);
+      // // console.log("Status updated successfully:", data);
       setIsOpen(false);
     } catch (error) {
       console.error("Failed to update status:", error);
@@ -212,7 +212,7 @@ const OrdertView = () => {
   // const handleChange = (e) => {
   //   const { name, value } = e.target;
   //   setOrderFixedBy(name)
-  //   console.log(formData);
+  //   // console.log(formData);
   // };
 
   useEffect(() => {
@@ -235,7 +235,7 @@ const OrdertView = () => {
 
         const data = await response.json();
         setAssignment(data.order);
-        console.log(data);
+        // console.log(data);
         setStatus(data.order.status);
         setOrderFixedBy(data.order.orderFixedBy)
         setPayments(data.payments)
@@ -255,7 +255,7 @@ const OrdertView = () => {
     e.preventDefault();
     try {
       if (!newComment) return;
-      console.log(orderFixedBy)
+      // console.log(orderFixedBy)
 
       const token = localStorage.getItem("token");
 
@@ -286,7 +286,7 @@ const OrdertView = () => {
       }
 
       const res = await response.json();
-      console.log(res);
+      // console.log(res);
       setComments([...comments, res.newComment]);
     } catch (error) {
       console.error("Add comment error:", error);
@@ -302,7 +302,7 @@ const OrdertView = () => {
       }
 
       const token = localStorage.getItem("token");
-      console.log("Hit the API");
+      // console.log("Hit the API");
 
       const response = await fetch(file_status, {
         method: "POST",
@@ -320,7 +320,7 @@ const OrdertView = () => {
 
       // Process the response data
       const res = await response.json();
-      console.log(res);
+      // console.log(res);
 
       // Optionally, handle any UI updates based on response here
     } catch (error) {
@@ -339,8 +339,8 @@ const OrdertView = () => {
         return;
       }
       setIsLoading(true)
-      console.log("order Id: ", orderId)
-      console.log("order price: ", price)
+      // console.log("order Id: ", orderId)
+      // console.log("order price: ", price)
 
       const token = localStorage.getItem("token");
 
@@ -360,7 +360,7 @@ const OrdertView = () => {
 
       // Process the response data
       const res = await response.json();
-      console.log(res);
+      // console.log(res);
       setIsAmount(false)
       setShowNotice(true)
 
@@ -956,7 +956,7 @@ const OrdertView = () => {
                 name="orderFixedBy"
                 value={orderFixedBy}
                 onChange={(e) => {
-                  console.log("Selected value:", e.target.value);
+                  // console.log("Selected value:", e.target.value);
                   setOrderFixedBy(e.target.value);
                 }}
                 className="w-full px-4 py-2.5 border border-gray-200 rounded text-sm"

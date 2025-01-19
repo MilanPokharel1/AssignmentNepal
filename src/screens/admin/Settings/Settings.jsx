@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Save, Upload, X } from "lucide-react";
-import { get_settings, update_settings } from "../../../api/Api";
+import { get_settings, update_settings, upload_logo, upload_qr } from "../../../api/Api";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Categories from "./components/Categories";
 
@@ -59,13 +59,11 @@ const Settings = () => {
         const responseData = data.data
         if (data.success) {
           // Populate state with API data
-          setLogo(responseData.logo ? `/uploads/${responseData.logo}` : null);
-          setStaticQr(responseData.qrcode ? `/uploads/${responseData.qrcode}` : null);
           setPaymentMethods(
             responseData.paymentMethods
           );
 
-          console.log("fromserver: ", responseData.paymentMethods)
+          // console.log("fromserver: ", responseData.paymentMethods)
           setPaymentMethodsOld(
             responseData.paymentMethods
           );
@@ -81,7 +79,7 @@ const Settings = () => {
           setMaintenanceModeOld(responseData.maintenanceMode || "");
         }
 
-        console.log(Object.keys(paymentMethods));
+        // console.log(Object.keys(paymentMethods));
       } catch (error) {
         console.error("Error fetching settings:", error);
       } finally {
@@ -118,7 +116,12 @@ const Settings = () => {
   }, [paymentMethods, maintenanceMode, appPass, folderId, emailuser, serviceAccountObject]);
 
 
-
+  const handleFileChange = (e) => {
+    setLogo(e.target.files[0]);
+  };
+  const handleQrChange = (e) => {
+    setStaticQr(e.target.files[0]);
+  };
 
 
   const handleFileUpload = (e, setFileState, setFileUpload) => {
@@ -136,39 +139,6 @@ const Settings = () => {
   const handleRemoveFile = (setFileState, setFileUpload) => {
     setFileState(null);
     setFileUpload(null);
-  };
-
-  const handleSave = async (e) => {
-    console.log("clicked");
-    e.preventDefault();
-    try {
-      const token = localStorage.getItem("token"); // Replace with the actual token
-      const response = await fetch(update_settings, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          appPass: appPass,
-          folderId: folderId,
-          emailuser: emailuser,
-          driveCredentials: serviceAccountObject,
-          paymentMethods: paymentMethods,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Error Creating User:", errorData);
-        return;
-      }
-
-      const data = await response.json();
-      console.log("success:", data);
-    } catch (error) {
-      console.error("Failed:", error);
-    }
   };
 
   const updateDriveSecrets = async () => {
@@ -198,7 +168,7 @@ const Settings = () => {
       setShowNotice(true)
       setIsDriveFileChanged(false)
 
-      console.log("success:", data);
+      // console.log("success:", data);
     } catch (error) {
       console.error("Failed:", error);
     } finally {
@@ -237,7 +207,7 @@ const Settings = () => {
       }
 
       const data = await response.json();
-      console.log("success:", data);
+      // console.log("success:", data);
       setShowNotice(true)
       setIsChanged(false)
     } catch (error) {
@@ -273,7 +243,7 @@ const Settings = () => {
       }
 
       const data = await response.json();
-      console.log("success:", data);
+      // console.log("success:", data);
       setShowNotice(true)
       setIsEmailPasschanged(false)
 
@@ -292,13 +262,65 @@ const Settings = () => {
 
 
 
-  const handleSaveLogo = () => {
-    console.log("Logo preview URL:", logo);
-    console.log("Logo file object:", logoFile);
+  const handleSaveLogo = async () => {
+    if (!logo) {
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', logo);
+
+    try {
+      const token = localStorage.getItem("token"); // Replace with the actual token
+      const response = await fetch(upload_logo, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log(result.admin); // Success message
+      } else {
+        console.log('Error uploading logo', response);
+      }
+    } catch (error) {
+      // setMessage('Error uploading logo');
+      console.error('Error uploading logo:', error);
+    }
   };
-  const handleSaveQr = () => {
-    console.log("Qr preview URL:", staticQr);
-    console.log("Qr file object:", staticQrFile);
+  const handleSaveQr = async() => {
+    if (!staticQr) {
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', staticQr);
+
+    try {
+      const token = localStorage.getItem("token"); // Replace with the actual token
+      const response = await fetch(upload_qr, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log(result.admin); // Success message
+      } else {
+        console.log('Error uploading QR', response);
+      }
+    } catch (error) {
+      // setMessage('Error uploading Qr');
+      console.error('Error uploading QR:', error);
+    }
   };
 
   // JSX remains the same, but update the file upload handlers
@@ -336,7 +358,7 @@ const Settings = () => {
               id="logoUpload"
               accept="image/*"
               className="hidden"
-              onChange={(e) => handleFileUpload(e, setLogo, setLogoFile)}
+              onChange={handleFileChange}
             />
             <label
               htmlFor="logoUpload"
@@ -345,7 +367,7 @@ const Settings = () => {
               {logo ? (
                 <div className="relative">
                   <img
-                    src={logo}
+                    src={URL.createObjectURL(logo)}
                     alt="Uploaded Logo"
                     className="max-h-40 max-w-full object-contain"
                   />
@@ -386,9 +408,7 @@ const Settings = () => {
               id="staticQrUpload"
               accept="image/*"
               className="hidden"
-              onChange={(e) =>
-                handleFileUpload(e, setStaticQr, setStaticQrFile)
-              }
+              onChange={handleQrChange}
             />
             <label
               htmlFor="staticQrUpload"
@@ -397,7 +417,7 @@ const Settings = () => {
               {staticQr ? (
                 <div className="relative">
                   <img
-                    src={staticQr}
+                    src={URL.createObjectURL(staticQr)}
                     alt="Uploaded Static QR"
                     className="max-h-40 max-w-full object-contain"
                   />

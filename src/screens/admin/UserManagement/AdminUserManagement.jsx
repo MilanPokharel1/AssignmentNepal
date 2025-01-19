@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaSearch, FaUsers } from "react-icons/fa";
 import {
-  MdApproval,
   MdChevronLeft,
   MdChevronRight,
   MdDisabledByDefault,
@@ -9,13 +8,9 @@ import {
 import { IoMdClose } from "react-icons/io";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { cs_clients, manual_register, user_status } from "../../../api/Api";
-
-import { IoBookSharp, IoCheckmarkSharp } from "react-icons/io5";
-import { MdShoppingCart } from "react-icons/md";
 import Card from "../../client/Dashboard/components/Card";
-import { User2Icon, UserCircle } from "lucide-react";
+import { User2Icon } from "lucide-react";
 import { RiExchangeBoxLine, RiPassPendingFill } from "react-icons/ri";
-import { FcApprove } from "react-icons/fc";
 
 import { BiExpandVertical } from "react-icons/bi";
 import { MdOutlineExpandMore } from "react-icons/md";
@@ -69,7 +64,7 @@ const AdminUserManagement = () => {
       }
 
       const data = await response.json();
-      console.log("success:", data);
+      // console.log("success:", data);
       setShowPopup(false)
     } catch (error) {
       console.error("Failed:", error);
@@ -104,14 +99,14 @@ const AdminUserManagement = () => {
         });
 
         if (!response.ok) {
-          throw new Error("Failed to fetch reminders");
+          throw new Error("Failed to fetch user");
         }
 
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         setClients(data.clients); // Assuming the key is 'remainder', set it properly
       } catch (error) {
-        console.error("Error fetching reminders:", error);
+        console.error("Error fetching user:", error);
       } finally {
         setIsLoading(false);
       }
@@ -142,10 +137,10 @@ const AdminUserManagement = () => {
         prevClients.map((client) =>
           client._id === item._id
             ? {
-                ...client,
-                accountStatus:
-                  item.accountStatus === "enabled" ? "disabled" : "enabled",
-              }
+              ...client,
+              accountStatus:
+                item.accountStatus === "enabled" ? "disabled" : "enabled",
+            }
             : client
         )
       );
@@ -238,11 +233,10 @@ const AdminUserManagement = () => {
         <button
           key={i}
           onClick={() => setCurrentPage(i)}
-          className={`px-3 py-1 mx-0.5 rounded ${
-            currentPage === i
+          className={`px-3 py-1 mx-0.5 rounded ${currentPage === i
               ? "bg-blue-600 text-white"
               : "bg-gray-100 hover:bg-gray-200"
-          }`}
+            }`}
         >
           {i}
         </button>
@@ -293,26 +287,23 @@ const AdminUserManagement = () => {
         <Card
           Icon={RiPassPendingFill}
           heading="Pending Clients"
-          number={`${
-            clients.filter((client) => client.status === "pending").length
-          }`}
+          number={`${clients.filter((client) => client.status === "pending").length
+            }`}
           theme={{ bgColor: "bg-purple-100", iconBgColor: "bg-purple-400" }}
         />
         <Card
           Icon={RiExchangeBoxLine}
           heading="Approved Clients"
-          number={`${
-            clients.filter((client) => client.status === "approved").length
-          }`}
+          number={`${clients.filter((client) => client.status === "approved").length
+            }`}
           theme={{ bgColor: "bg-green-100", iconBgColor: "bg-green-400" }}
         />
 
         <Card
           Icon={MdDisabledByDefault}
           heading="Declined Clients"
-          number={`${
-            clients.filter((client) => client.status === "declined").length
-          }`}
+          number={`${clients.filter((client) => client.status === "declined").length
+            }`}
           theme={{ bgColor: "bg-red-100", iconBgColor: "bg-red-400" }}
         />
       </div>
@@ -417,11 +408,10 @@ const AdminUserManagement = () => {
                       </button>
                       <button
                         onClick={() => handleTogglePopup(item, index)}
-                        className={`px-3 py-1 rounded-lg m-1  flex items-center border  text-sm border-gray-500 ${
-                          item.accountStatus === "enabled"
+                        className={`px-3 py-1 rounded-lg m-1  flex items-center border  text-sm border-gray-500 ${item.accountStatus === "enabled"
                             ? "text-red-700"
                             : "text-green-700"
-                        } bg-gray-100 hover:bg-gray-200 hover:cursor-pointer`}
+                          } bg-gray-100 hover:bg-gray-200 hover:cursor-pointer`}
                       >
                         {item.accountStatus === "enabled"
                           ? "Disable"
@@ -463,11 +453,10 @@ const AdminUserManagement = () => {
                                     onClick={() =>
                                       handleTogglePopup(item, index)
                                     }
-                                    className={`px-3 py-1 rounded-lg text-sm border transition-colors ${
-                                      item.accountStatus === "enabled"
+                                    className={`px-3 py-1 rounded-lg text-sm border transition-colors ${item.accountStatus === "enabled"
                                         ? "border-red-500 text-red-700 bg-red-50 hover:bg-red-100"
                                         : "border-green-500 text-green-700 bg-green-50 hover:bg-green-100"
-                                    }`}
+                                      }`}
                                   >
                                     {item.accountStatus === "enabled"
                                       ? "Disable"
@@ -522,12 +511,10 @@ const AdminUserManagement = () => {
             </h2>
             <p className="text-gray-600 mb-6">
               {selectedItem.accountStatus === "enabled"
-                ? `Are you sure you want to disable ${
-                    selectedItem.firstName
-                  }${" "}${selectedItem.lastName}? `
-                : `Are you sure you want to enable ${
-                    selectedItem.firstName
-                  }${" "}${selectedItem.lastName}?`}
+                ? `Are you sure you want to disable ${selectedItem.firstName
+                }${" "}${selectedItem.lastName}? `
+                : `Are you sure you want to enable ${selectedItem.firstName
+                }${" "}${selectedItem.lastName}?`}
             </p>
             <div className="flex justify-end space-x-4">
               <button
@@ -548,11 +535,10 @@ const AdminUserManagement = () => {
             py-2 
             rounded-lg 
             transition-colors
-            ${
-              selectedItem.accountStatus === "enabled"
-                ? "bg-red-500 text-white hover:bg-red-600"
-                : "bg-blue-500 text-white hover:bg-blue-600"
-            }
+            ${selectedItem.accountStatus === "enabled"
+                    ? "bg-red-500 text-white hover:bg-red-600"
+                    : "bg-blue-500 text-white hover:bg-blue-600"
+                  }
           `}
               >
                 {selectedItem.accountStatus === "enabled"

@@ -10,14 +10,63 @@ import {
   X,
 } from "lucide-react";
 import { UseTheme } from "../../../../contexts/ThemeContext/useTheme";
-import { QR_payment } from "../../../../api/Api";
+import { imagePath, QR_payment } from "../../../../api/Api";
 const PaymentPopup = ({ onClose, assignment }) => {
   const { currentTheme, themes } = UseTheme();
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("fonepay-static");
   const [showScreenshotPopup, setShowScreenshotPopup] = useState(false);
   const [file, setSelectedFile] = useState(null);
   const [amount, setAmount] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [qrCode, setQrcode] = useState({});
+  const [showNotice, setShowNotice] = useState(false)
+
+
+  const getValidImageUrl = (filePath) => {
+    // console.log(filePath)
+    const serverBaseUrl = imagePath; // Replace with your server's base URL
+    try {
+      return filePath?.replace(
+        "/root/assignmentNepal/assignmentNepalBackend/public/uploads/",
+        `${serverBaseUrl}/uploads/`
+      );
+    } catch (error) {
+      return filePath
+    }
+
+  };
+
+
+  useEffect(() => {
+    const fetchQr = async () => {
+      try {
+        const token = localStorage.getItem("token"); // Replace with the actual token
+
+        const response = await fetch(get_logoqr, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch Qrcode");
+        }
+
+        const data = await response.json();
+        setQrcode(data.logoqrcode.qrcode);
+        console.log("image: ", data.logoqrcode.qrcode);
+      } catch (error) {
+        console.error("Error fetching Qrcode:", error);
+      }
+    };
+
+    fetchQr();
+  }, []);
+
+
+
+
 
 
   const paymentMethods = [
@@ -54,6 +103,9 @@ const PaymentPopup = ({ onClose, assignment }) => {
   const handleProceedToPay = () => {
     if (amount <= 0) {
       alert("Please enter an amount greater than 0.");
+      return;
+    } else if (amount > assignment.totalAmount - assignment.paidAmount) {
+      alert("Amount cannot be higher than remaining amount.");
       return;
     }
     setShowScreenshotPopup(true);
@@ -103,14 +155,26 @@ const PaymentPopup = ({ onClose, assignment }) => {
       }
 
       const data = await response.json();
-      console.log("success:", data);
+      // console.log("success:", data);
       setShowScreenshotPopup(false);
       setSelectedFile(null)
+      setShowNotice(true)
+
+      setTimeout(() => {
+        setIsLoading(false)
+      }, 1000)
+      setTimeout(() => {
+        setShowNotice(false)
+        setIsLoading(false)
+        onClose()
+      }, 2000)
 
     } catch (error) {
       console.error("Failed:", error);
+      onClose()
     } finally {
       setIsLoading(false)
+
     }
   };
 
@@ -121,11 +185,18 @@ const PaymentPopup = ({ onClose, assignment }) => {
   return (
     <>
       {isLoading && (
-        <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-20 backdrop-blur-sm z-[100]">
+        <div className=" z-50 fixed inset-0 flex items-center justify-center bg-white bg-opacity-20 backdrop-blur-sm">
           <CircularProgress />
         </div>
       )}
-      <div className="fixed inset-0 flex z-50 items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
+      {showNotice && (
+        <div
+          className="z-50 fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded transform transition-all duration-500 ease-in-out"
+        >
+          ✔ Payment Successful!
+        </div>
+      )}
+      <div className="fixed inset-0 flex z-40 items-center justify-center bg-black bg-opacity-45 backdrop-blur-sm">
         <div className="relative w-full max-w-5xl mx-auto bg-white p-6 rounded-md shadow-lg flex">
           {/* Payment Details */}
           <div className="w-2/3 pr-6">
@@ -200,7 +271,7 @@ const PaymentPopup = ({ onClose, assignment }) => {
                   <div>
                     <label className="text-sm text-gray-500">Remaining:</label>
                     <div className="text-sm text-red-500">
-                      {assignment.totalAmount}
+                      Rs. {assignment.totalAmount - assignment.paidAmount}
                     </div>
                   </div>
                 </div>
@@ -277,7 +348,7 @@ const PaymentPopup = ({ onClose, assignment }) => {
                   Fonepay Static QR
                 </h3>
                 <img
-                  src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg"
+                  src={getValidImageUrl(qrCode)}
                   alt="Static QR Code"
                   className="mx-auto border-2 border-gray-200 rounded-lg"
                 />

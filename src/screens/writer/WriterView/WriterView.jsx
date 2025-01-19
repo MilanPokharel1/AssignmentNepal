@@ -71,7 +71,7 @@ const WriterView = () => {
       const data = await response.json();
       setSubmitStatus(true);
       setIsOpen(false);
-      console.log("Order Submitted successfully:", data);
+      // // console.log("Order Submitted successfully:", data);
     } catch (error) {
       console.error("Failed to submit order:", error);
     }
@@ -160,7 +160,7 @@ const WriterView = () => {
       }
 
       const res = await response.json();
-      console.log(res);
+      // // console.log(res);
       setComments([...comments, res.newComment]);
     } catch (error) {
       console.error("Add comment error:", error);

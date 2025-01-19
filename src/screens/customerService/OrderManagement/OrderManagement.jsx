@@ -34,7 +34,7 @@ const OrderManagement = () => {
 
         const data = await response.json();
         setAssignments(data);
-        console.log(data);
+        // console.log(data);
       } catch (error) {
         console.error("Error fetching orders:", error);
       } finally {
@@ -201,6 +201,7 @@ const OrderManagement = () => {
                   assignment.instagramTitle,
                   searchTerm
                 )}
+                payments={assignment.payments}
                 writerName={
                   assignment.writerName
                     ? highlightText(assignment.writerName, searchTerm)

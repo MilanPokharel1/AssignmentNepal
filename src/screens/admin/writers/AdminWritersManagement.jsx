@@ -70,7 +70,7 @@ const createUser = async (e) => {
       }
 
       const data = await response.json();
-      console.log("success:", data);
+      // console.log("success:", data);
       setShowPopup(false)
     } catch (error) {
       console.error("Failed:", error);
@@ -110,7 +110,7 @@ const createUser = async (e) => {
         }
 
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         setWriters(data.writers); // Assuming the key is 'remainder', set it properly
       } catch (error) {
         console.error("Error fetching reminders:", error);
